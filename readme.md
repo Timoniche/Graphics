@@ -1,0 +1,1 @@
+1) RTTI - own fast dynamic_cast

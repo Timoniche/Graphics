@@ -1,7 +1,8 @@
-#ifndef GRAPHICS_DYNAMICCAST_H
-#define GRAPHICS_DYNAMICCAST_H
+#ifndef GRAPHICS_DYNAMICCASTOBJECT_H
+#define GRAPHICS_DYNAMICCASTOBJECT_H
 
 #include <unordered_map>
+#include <typeindex>
 
 /**
  * Problems:
@@ -14,20 +15,20 @@
 class DynamicCastObject
 {
 public:
-    DynamicCastObject() = default;
+    DynamicCastObject() : m_most_derived(nullptr)
+    {}
 
     virtual ~DynamicCastObject() = default;
 
+    //__________________________________________________________________________________________________________________
     template<class T>
     T const *fast_cast() const
     {
-        char const *name = typeid(T).name();
-        auto it = m_derived_hash_map.find(name);
+        auto it = m_derived_hash_map.find(std::type_index(typeid(T)));
         if (it == m_derived_hash_map.end())
         {
             return nullptr;
-        }
-        else
+        } else
         {
             return reinterpret_cast<T const *>(it->second);
         }
@@ -39,18 +40,36 @@ public:
         DynamicCastObject const &this_const = *this;
         return const_cast<T *>(this_const.fast_cast<T>());
     }
+
+    void *fast_cast()
+    {
+        return m_most_derived;
+    }
 //______________________________________________________________________________________________________________________
 protected:
     template<class T>
     void tie(T *t)
     {
         void *address = t;
-        m_derived_hash_map[typeid(t).name()] = address;
+        m_derived_hash_map[std::type_index(typeid(t))] = address;
+        if (m_most_derived == nullptr ||
+            m_most_derived > address)
+        {
+            m_most_derived = address;
+        }
     }
 //______________________________________________________________________________________________________________________
 private:
-    typedef std::unordered_map<char const *, void *> derived_t;
+    typedef std::unordered_map<std::type_index, void *> derived_t;
     derived_t m_derived_hash_map;
+    void *m_most_derived;
 };
 
-#endif //GRAPHICS_DYNAMICCAST_H
+template<>
+void *DynamicCastObject::fast_cast<void>()
+{
+    return m_most_derived;
+}
+
+
+#endif //GRAPHICS_DYNAMICCASTOBJECT_H

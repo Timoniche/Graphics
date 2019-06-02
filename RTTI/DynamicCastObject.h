@@ -5,17 +5,19 @@
 #include <typeindex>
 
 /**
- * Problems:
- * dynamic_cast<Derived*>(&base); returns null if base is not an instance of Derived.
- * dynamic_cast<Derived&>(base); throws std::bad_cast in this case.
- * dynamic_cast<void*>(base); returns the address of the most derived class
- * dynamic_cast respect the access specifications (public, protected and private inheritance)
+ * returns null if base is not an instance of Derived:
+ * base.fast_cast<Derived>() OR fast_cast<Derived>(&base)
+ * throws std::bad_cast in this case:
+ * fast_cast<Derived>(base)
+ * returns the address of the most derived class:
+ * base.fast_cast<void>() OR fast_cast<void>(&base)
+ * NB: respect the access specifications (public/protected/private inheritance)
  */
 //______________________________________________________________________________________________________________________
 class DynamicCastObject
 {
 public:
-    DynamicCastObject() : m_most_derived(nullptr)
+    DynamicCastObject() noexcept : m_most_derived(nullptr)
     {}
 
     virtual ~DynamicCastObject() = default;
@@ -24,8 +26,8 @@ public:
     template<class T>
     T const *fast_cast() const
     {
-        auto it = m_derived_hash_map.find(std::type_index(typeid(T)));
-        if (it == m_derived_hash_map.end())
+        if (auto it = m_derived_hash_map.find(std::type_index(typeid(T)));
+                it == m_derived_hash_map.end())
         {
             return nullptr;
         } else
@@ -37,14 +39,29 @@ public:
     template<class T>
     T *fast_cast()
     {
-        DynamicCastObject const &this_const = *this;
-        return const_cast<T *>(this_const.fast_cast<T>());
+        return const_cast<T *>((reinterpret_cast<DynamicCastObject const &>(*this)).fast_cast<T>());
     }
 
-    void *fast_cast()
+    //__________________________________________________________________________________________________________________
+    void *fast_cast() noexcept
     {
         return m_most_derived;
     }
+//______________________________________________________________________________________________________________________
+public:
+    template<class T>
+    friend T *fast_cast(DynamicCastObject *object);
+
+    template<class T>
+    friend T const *fast_cast(DynamicCastObject const *object);
+
+    template<class T>
+    friend T &fast_cast(DynamicCastObject &object);
+
+    template<class T>
+    friend T const &fast_cast(DynamicCastObject const &object);
+
+    friend bool operator==(DynamicCastObject const& lhs, DynamicCastObject const& rhs);
 //______________________________________________________________________________________________________________________
 protected:
     template<class T>
@@ -71,5 +88,46 @@ void *DynamicCastObject::fast_cast<void>()
     return m_most_derived;
 }
 
+template<>
+void const *DynamicCastObject::fast_cast<void>() const
+{
+    return m_most_derived;
+}
+
+//Friend_Wrappers:______________________________________________________________________________________________________
+template<class T>
+T *fast_cast(DynamicCastObject *object)
+{ return object ? object->fast_cast<T>() : nullptr; }
+
+template<>
+void *fast_cast<void>(DynamicCastObject *object)
+{ return object ? object->m_most_derived : nullptr; }
+
+template<class T>
+T const *fast_cast(DynamicCastObject const *object)
+{ return object ? object->fast_cast<T>() : nullptr; }
+
+template<class T>
+T &fast_cast(DynamicCastObject &object)
+{
+    if (T *t = object.fast_cast<T>())
+    { return *t; }
+    else
+    { throw std::bad_cast(); }
+}
+
+template<class T>
+T const &fast_cast(DynamicCastObject const &object)
+{
+    if (T const *t = object.fast_cast<T>())
+    { return *t; }
+    else
+    { throw std::bad_cast(); }
+}
+//Operators:____________________________________________________________________________________________________________
+bool operator==(DynamicCastObject const& lhs, DynamicCastObject const& rhs)
+{
+    return lhs.m_derived_hash_map == rhs.m_derived_hash_map;
+}
 
 #endif //GRAPHICS_DYNAMICCASTOBJECT_H

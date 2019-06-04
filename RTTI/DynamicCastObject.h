@@ -61,7 +61,7 @@ public:
     template<class T>
     friend T const &fast_cast(DynamicCastObject const &object);
 
-    friend bool operator==(DynamicCastObject const& lhs, DynamicCastObject const& rhs);
+    friend bool operator==(DynamicCastObject const &lhs, DynamicCastObject const &rhs);
 //______________________________________________________________________________________________________________________
 protected:
     template<class T>
@@ -124,8 +124,9 @@ T const &fast_cast(DynamicCastObject const &object)
     else
     { throw std::bad_cast(); }
 }
+
 //Operators:____________________________________________________________________________________________________________
-bool operator==(DynamicCastObject const& lhs, DynamicCastObject const& rhs)
+bool operator==(DynamicCastObject const &lhs, DynamicCastObject const &rhs)
 {
     return lhs.m_derived_hash_map == rhs.m_derived_hash_map;
 }

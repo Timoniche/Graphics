@@ -1,5 +1,8 @@
 #include "glwidget.h"
 #include <GL/glu.h>
+#include <qgl.h>
+#include <cstdlib>
+#include <random>
 
 GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 {
@@ -8,34 +11,50 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent)
 
 void GLWidget::initializeGL()
 {
-    glClearColor(0, 0, 0, 1);
+    initializeOpenGLFunctions();
+    glClearColor(0, 0, 0, 0);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHTING);
-    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
+    glShadeModel(GL_FLAT);
+    glEnable(GL_CULL_FACE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void GLWidget::resizeGL(int w, int h)
 {
-    glViewport(0,0,w,h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45, static_cast<float>(w / h), 0.01, 100.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, 0, 5, 0, 0, 0, 0, 1, 0);
+    glViewport(0, 0, w, h);
+}
+
+void GLWidget::random_points()
+{
+    makeCurrent();
+    glEnable(GL_POINT_SMOOTH);
+    glPointSize(3);
+    glBegin(GL_POINTS);
+    for (int i = 0; i < 1; i++)
+    {
+        double x = -1 + double(rand()) / (RAND_MAX / 2);
+        double y = -1 + double(rand()) / (RAND_MAX / 2);
+        glVertex2d(x, y);
+    }
+    glEnd();
 }
 
 void GLWidget::paintGL()
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glBegin(GL_TRIANGLES);
-        glColor3f(1.0, 0.0, 0.0);
-        glVertex3f(-0.5, -0.5, 0);
-        glColor3f(0.0, 1.0, 0.0);
-        glVertex3f( 0.5, -0.5, 0);
-        glColor3f(0.0, 0.0, 1.0);
-        glVertex3f( 0.0,  0.5, 0);
-    glEnd();
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

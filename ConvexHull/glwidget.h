@@ -4,8 +4,9 @@
 #include <QObject>
 #include <QWidget>
 #include <QOpenGLWidget>
+#include <QOpenGLFunctions>
 
-class GLWidget : public QOpenGLWidget
+class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
 public:
@@ -18,6 +19,9 @@ protected:
 signals:
 
 public slots:
+    void random_points();
+private:
+
 };
 
 #endif // GLWIDGET_H

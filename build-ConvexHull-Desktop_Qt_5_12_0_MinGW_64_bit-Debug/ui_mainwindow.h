@@ -14,6 +14,8 @@
 #include <QtWidgets/QGridLayout>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QToolBar>
 #include <QtWidgets/QWidget>
@@ -26,6 +28,13 @@ class Ui_MainWindow
 public:
     QWidget *centralWidget;
     QGridLayout *gridLayout;
+    QSplitter *splitter;
+    QWidget *widget;
+    QGridLayout *gridLayout_3;
+    QGridLayout *gridLayout_2;
+    QPushButton *genButton;
+    QPushButton *hullButton;
+    QPushButton *squareButton;
     GLWidget *openGLWidget;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -35,22 +44,54 @@ public:
     {
         if (MainWindow->objectName().isEmpty())
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
-        MainWindow->resize(321, 288);
+        MainWindow->resize(801, 558);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         gridLayout = new QGridLayout(centralWidget);
         gridLayout->setSpacing(6);
         gridLayout->setContentsMargins(11, 11, 11, 11);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        openGLWidget = new GLWidget(centralWidget);
-        openGLWidget->setObjectName(QString::fromUtf8("openGLWidget"));
+        splitter = new QSplitter(centralWidget);
+        splitter->setObjectName(QString::fromUtf8("splitter"));
+        splitter->setOrientation(Qt::Horizontal);
+        widget = new QWidget(splitter);
+        widget->setObjectName(QString::fromUtf8("widget"));
+        gridLayout_3 = new QGridLayout(widget);
+        gridLayout_3->setSpacing(6);
+        gridLayout_3->setContentsMargins(11, 11, 11, 11);
+        gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
+        gridLayout_2 = new QGridLayout();
+        gridLayout_2->setSpacing(6);
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
+        genButton = new QPushButton(widget);
+        genButton->setObjectName(QString::fromUtf8("genButton"));
 
-        gridLayout->addWidget(openGLWidget, 0, 0, 1, 1);
+        gridLayout_2->addWidget(genButton, 0, 0, 1, 1);
+
+        hullButton = new QPushButton(widget);
+        hullButton->setObjectName(QString::fromUtf8("hullButton"));
+
+        gridLayout_2->addWidget(hullButton, 1, 0, 1, 1);
+
+        squareButton = new QPushButton(widget);
+        squareButton->setObjectName(QString::fromUtf8("squareButton"));
+
+        gridLayout_2->addWidget(squareButton, 2, 0, 1, 1);
+
+
+        gridLayout_3->addLayout(gridLayout_2, 0, 0, 1, 1);
+
+        splitter->addWidget(widget);
+        openGLWidget = new GLWidget(splitter);
+        openGLWidget->setObjectName(QString::fromUtf8("openGLWidget"));
+        splitter->addWidget(openGLWidget);
+
+        gridLayout->addWidget(splitter, 0, 0, 1, 1);
 
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
-        menuBar->setGeometry(QRect(0, 0, 321, 17));
+        menuBar->setGeometry(QRect(0, 0, 801, 17));
         MainWindow->setMenuBar(menuBar);
         mainToolBar = new QToolBar(MainWindow);
         mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
@@ -67,6 +108,9 @@ public:
     void retranslateUi(QMainWindow *MainWindow)
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "MainWindow", nullptr));
+        genButton->setText(QApplication::translate("MainWindow", "gen", nullptr));
+        hullButton->setText(QApplication::translate("MainWindow", "hull", nullptr));
+        squareButton->setText(QApplication::translate("MainWindow", "square", nullptr));
     } // retranslateUi
 
 };

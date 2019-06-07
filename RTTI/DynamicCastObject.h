@@ -23,10 +23,19 @@ public:
     virtual ~DynamicCastObject() = default;
 
     //__________________________________________________________________________________________________________________
-    template<class T>
+    template<typename T>
+    struct Type
+    {
+        static size_t id()
+        {
+            return reinterpret_cast<size_t>(&Type<T>::id);
+        }
+    };
+    //__________________________________________________________________________________________________________________
+    template<typename T>
     T const *fast_cast() const
     {
-        if (auto it = m_derived_hash_map.find(std::type_index(typeid(T)));
+        if (auto it = m_derived_hash_map.find(Type<T>::id());
                 it == m_derived_hash_map.end())
         {
             return nullptr;
@@ -36,7 +45,7 @@ public:
         }
     }
 
-    template<class T>
+    template<typename T>
     T *fast_cast()
     {
         return const_cast<T *>((reinterpret_cast<DynamicCastObject const &>(*this)).fast_cast<T>());
@@ -49,26 +58,26 @@ public:
     }
 //______________________________________________________________________________________________________________________
 public:
-    template<class T>
+    template<typename T>
     friend T *fast_cast(DynamicCastObject *object);
 
-    template<class T>
+    template<typename T>
     friend T const *fast_cast(DynamicCastObject const *object);
 
-    template<class T>
+    template<typename T>
     friend T &fast_cast(DynamicCastObject &object);
 
-    template<class T>
+    template<typename T>
     friend T const &fast_cast(DynamicCastObject const &object);
 
     friend bool operator==(DynamicCastObject const &lhs, DynamicCastObject const &rhs);
 //______________________________________________________________________________________________________________________
 protected:
-    template<class T>
+    template<typename T>
     void tie(T *t)
     {
         void *address = t;
-        m_derived_hash_map[std::type_index(typeid(t))] = address;
+        m_derived_hash_map[Type<T>::id()] = address;
         if (m_most_derived == nullptr ||
             m_most_derived > address)
         {
@@ -77,7 +86,7 @@ protected:
     }
 //______________________________________________________________________________________________________________________
 private:
-    typedef std::unordered_map<std::type_index, void *> derived_t;
+    typedef std::unordered_map<size_t, void *> derived_t;
     derived_t m_derived_hash_map;
     void *m_most_derived;
 };
@@ -95,7 +104,7 @@ void const *DynamicCastObject::fast_cast<void>() const
 }
 
 //Friend_Wrappers:______________________________________________________________________________________________________
-template<class T>
+template<typename T>
 T *fast_cast(DynamicCastObject *object)
 { return object ? object->fast_cast<T>() : nullptr; }
 
@@ -103,11 +112,11 @@ template<>
 void *fast_cast<void>(DynamicCastObject *object)
 { return object ? object->m_most_derived : nullptr; }
 
-template<class T>
+template<typename T>
 T const *fast_cast(DynamicCastObject const *object)
 { return object ? object->fast_cast<T>() : nullptr; }
 
-template<class T>
+template<typename T>
 T &fast_cast(DynamicCastObject &object)
 {
     if (T *t = object.fast_cast<T>())
@@ -116,7 +125,7 @@ T &fast_cast(DynamicCastObject &object)
     { throw std::bad_cast(); }
 }
 
-template<class T>
+template<typename T>
 T const &fast_cast(DynamicCastObject const &object)
 {
     if (T const *t = object.fast_cast<T>())

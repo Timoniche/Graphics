@@ -4,6 +4,7 @@
 #include <QList>
 #include <QtGlobal>
 #include <QMetaType>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -37,6 +38,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::hull_button_clicked()
 {
+    std::sort(_counter_clock_wise_hull.begin(),
+              _counter_clock_wise_hull.end(),
+              [](const std::pair<double, double> &a,
+              const std::pair<double, double> &b)
+    {
+        return a.second < b.second;
+    });
     emit operate_hull(_counter_clock_wise_hull);
 }
 

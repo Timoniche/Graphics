@@ -3,6 +3,10 @@
 
 #include <QMainWindow>
 #include <memory>
+#include <QThread>
+#include <utility>
+
+#include "glworker.h"
 
 namespace Ui {
 class MainWindow;
@@ -15,9 +19,17 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-
+    typedef std::vector<std::pair<double, double>> data_t;
+public slots:
+    void hull_button_clicked();
+    void emplace_points(double, double);
+signals:
+    void operate_hull(data_t const&);
 private:
     std::unique_ptr<Ui::MainWindow> ui;
+    QThread _thread;
+    GLWorker* _worker = nullptr;
+    data_t _counter_clock_wise_hull;
 };
 
 #endif // MAINWINDOW_H

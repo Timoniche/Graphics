@@ -12,9 +12,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6f14ff4b-ed5b-4f6d-9910-e1926f7b728a" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/DynamicCastObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/DynamicCastObject.h" afterDir="false" />
-    </list>
+    <list default="true" id="6f14ff4b-ed5b-4f6d-9910-e1926f7b728a" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -40,14 +38,25 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DynamicCastObject.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1131">
-              <caret line="76" column="21" lean-forward="true" selection-start-line="76" selection-start-column="21" selection-end-line="76" selection-end-column="21" />
+            <state relative-caret-position="1584">
+              <caret line="88" selection-start-line="88" selection-end-line="88" />
               <folding>
                 <element signature="e#75#99#0" expanded="true" />
                 <element signature="e#895#907#0" expanded="true" />
-                <element signature="e#1692#1701#0" expanded="true" />
-                <element signature="e#1767#1776#0" expanded="true" />
+                <element signature="e#1172#1184#0" expanded="true" />
+                <element signature="e#1561#1573#0" expanded="true" />
+                <element signature="e#2043#2055#0" expanded="true" />
+                <element signature="e#2121#2133#0" expanded="true" />
+                <element signature="e#2211#2215#0" expanded="true" />
+                <element signature="e#2289#2301#0" expanded="true" />
+                <element signature="e#2599#2611#0" expanded="true" />
+                <element signature="e#2776#2778#0" expanded="true" />
                 <element signature="e#2862#2864#0" expanded="true" />
+                <element signature="e#3562#3574#0" expanded="true" />
+                <element signature="e#3194#3196#0" expanded="true" />
+                <element signature="e#3309#3318#0" expanded="true" />
+                <element signature="e#3434#3443#0" expanded="true" />
+                <element signature="e#3594#3603#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -94,6 +103,7 @@
       <find>add</find>
       <find>dynamiccast</find>
       <find>o</find>
+      <find>class</find>
     </findStrings>
     <replaceStrings>
       <replace>DynamicCast</replace>
@@ -119,7 +129,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="948" />
     <option name="width" value="981" />
     <option name="height" value="1032" />
@@ -199,7 +209,7 @@
       <workItem from="1559504656337" duration="9318000" />
       <workItem from="1559557515123" duration="643000" />
       <workItem from="1559675059485" duration="20000" />
-      <workItem from="1559890145169" duration="890000" />
+      <workItem from="1559890145169" duration="1664000" />
     </task>
     <task id="LOCAL-00001" summary="T&amp; added">
       <created>1559515314922</created>
@@ -212,10 +222,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="25822000" />
+    <option name="totallyTimeSpent" value="26596000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19595142" />
@@ -284,14 +294,25 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DynamicCastObject.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1131">
-          <caret line="76" column="21" lean-forward="true" selection-start-line="76" selection-start-column="21" selection-end-line="76" selection-end-column="21" />
+        <state relative-caret-position="1584">
+          <caret line="88" selection-start-line="88" selection-end-line="88" />
           <folding>
             <element signature="e#75#99#0" expanded="true" />
             <element signature="e#895#907#0" expanded="true" />
-            <element signature="e#1692#1701#0" expanded="true" />
-            <element signature="e#1767#1776#0" expanded="true" />
+            <element signature="e#1172#1184#0" expanded="true" />
+            <element signature="e#1561#1573#0" expanded="true" />
+            <element signature="e#2043#2055#0" expanded="true" />
+            <element signature="e#2121#2133#0" expanded="true" />
+            <element signature="e#2211#2215#0" expanded="true" />
+            <element signature="e#2289#2301#0" expanded="true" />
+            <element signature="e#2599#2611#0" expanded="true" />
+            <element signature="e#2776#2778#0" expanded="true" />
             <element signature="e#2862#2864#0" expanded="true" />
+            <element signature="e#3562#3574#0" expanded="true" />
+            <element signature="e#3194#3196#0" expanded="true" />
+            <element signature="e#3309#3318#0" expanded="true" />
+            <element signature="e#3434#3443#0" expanded="true" />
+            <element signature="e#3594#3603#0" expanded="true" />
           </folding>
         </state>
       </provider>

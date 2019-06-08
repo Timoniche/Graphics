@@ -4,10 +4,10 @@
 #include <cstdlib>
 #include <random>
 
-GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent)
-{
+GLWidget::GLWidget(QWidget *parent) :
+    QOpenGLWidget(parent) {}
 
-}
+GLWidget::~GLWidget() = default;
 
 void GLWidget::initializeGL()
 {
@@ -35,6 +35,7 @@ void GLWidget::random_points()
         double x = -1 + double(rand()) / (RAND_MAX / 2);
         double y = -1 + double(rand()) / (RAND_MAX / 2);
         glVertex2d(x, y);
+        emit add_points(x, y);
     }
     glEnd();
 }
@@ -46,7 +47,15 @@ void GLWidget::paintGL()
     glLoadIdentity();
 }
 
-
+void GLWidget::draw_line(double x1, double y1,
+                         double x2, double y2)
+{
+    makeCurrent();
+    glBegin(GL_LINES);
+        glVertex2d(x1, y1);
+        glVertex2d(x2, y2);
+    glEnd();
+}
 
 
 

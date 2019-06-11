@@ -19,10 +19,10 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    typedef std::vector<std::pair<double, double>> data_t;
+    typedef std::vector<std::pair<float, float>> data_t;
 public slots:
     void hull_button_clicked();
-    void emplace_points(double, double);
+    void emplace_points(float, float);
 signals:
     void operate_hull(data_t const&);
 private:

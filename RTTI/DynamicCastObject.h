@@ -17,7 +17,7 @@
 class DynamicCastObject
 {
 public:
-    DynamicCastObject() noexcept : m_most_derived(nullptr)
+    DynamicCastObject() noexcept : m_most_derived(this)
     {}
 
     virtual ~DynamicCastObject() = default;
@@ -31,6 +31,7 @@ public:
             return reinterpret_cast<size_t>(&Type<T>::id);
         }
     };
+
     //__________________________________________________________________________________________________________________
     template<typename T>
     T const *fast_cast() const
@@ -78,8 +79,7 @@ protected:
     {
         void *address = t;
         m_derived_hash_map[Type<T>::id()] = address;
-        if (m_most_derived == nullptr ||
-            m_most_derived > address)
+        if (m_most_derived > address)
         {
             m_most_derived = address;
         }

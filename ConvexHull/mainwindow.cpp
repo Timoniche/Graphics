@@ -11,6 +11,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle("Convex Hull");
     qRegisterMetaType<data_t>("data_t");
     ui->splitter->setSizes(QList<int>() << 100 << 200);
     bool ok1 = connect(ui->genButton, &QPushButton::clicked,
@@ -24,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
                        this, &MainWindow::hull_button_clicked);
     Q_ASSERT(ok3);
     bool ok4 = connect(this, &MainWindow::operate_hull,
-                       _worker, &GLWorker::build_hull);
+                       _worker, &GLWorker::gift_wrapping);
     Q_ASSERT(ok4);
     bool ok5 = connect(_worker, &GLWorker::send_line,
                        ui->openGLWidget, &GLWidget::draw_line);
@@ -40,15 +41,15 @@ void MainWindow::hull_button_clicked()
 {
     std::sort(_counter_clock_wise_hull.begin(),
               _counter_clock_wise_hull.end(),
-              [](const std::pair<double, double> &a,
-              const std::pair<double, double> &b)
+              [](const std::pair<float, float> &a,
+              const std::pair<float, float> &b)
     {
         return a.second < b.second;
     });
     emit operate_hull(_counter_clock_wise_hull);
 }
 
-void MainWindow::emplace_points(double x, double y)
+void MainWindow::emplace_points(float x, float y)
 {
     _counter_clock_wise_hull.emplace_back(x, y);
 }

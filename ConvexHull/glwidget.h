@@ -18,11 +18,13 @@ protected:
     void resizeGL(int, int) override;
     void paintGL() override;
 signals:
-    void add_points(double x, double y);
+    void add_points(float x, float y);
 public slots:
     void random_points();
-    void draw_line(double, double, double, double);
+    void draw_line(float, float, float, float);
 private:
+    int m_points = 10;
+    float m_radius = 0.5;
 };
 
 #endif // GLWIDGET_H

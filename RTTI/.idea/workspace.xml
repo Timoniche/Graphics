@@ -12,7 +12,12 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6f14ff4b-ed5b-4f6d-9910-e1926f7b728a" name="Default Changelist" comment="" />
+    <list default="true" id="6f14ff4b-ed5b-4f6d-9910-e1926f7b728a" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../RTTI_BITS/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DynamicCastObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/DynamicCastObject.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/../readme.md" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -26,8 +31,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="108">
-              <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+            <state relative-caret-position="54">
+              <caret line="3" selection-start-line="3" selection-end-line="3" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
               </folding>
@@ -38,25 +43,10 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DynamicCastObject.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1584">
-              <caret line="88" selection-start-line="88" selection-end-line="88" />
+            <state relative-caret-position="1527">
+              <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
               <folding>
                 <element signature="e#75#99#0" expanded="true" />
-                <element signature="e#895#907#0" expanded="true" />
-                <element signature="e#1172#1184#0" expanded="true" />
-                <element signature="e#1561#1573#0" expanded="true" />
-                <element signature="e#2043#2055#0" expanded="true" />
-                <element signature="e#2121#2133#0" expanded="true" />
-                <element signature="e#2211#2215#0" expanded="true" />
-                <element signature="e#2289#2301#0" expanded="true" />
-                <element signature="e#2599#2611#0" expanded="true" />
-                <element signature="e#2776#2778#0" expanded="true" />
-                <element signature="e#2862#2864#0" expanded="true" />
-                <element signature="e#3562#3574#0" expanded="true" />
-                <element signature="e#3194#3196#0" expanded="true" />
-                <element signature="e#3309#3318#0" expanded="true" />
-                <element signature="e#3434#3443#0" expanded="true" />
-                <element signature="e#3594#3603#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -78,7 +68,7 @@
         <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="198">
-              <caret line="11" column="28" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
+              <caret line="11" column="28" lean-forward="true" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
             </state>
           </provider>
         </entry>
@@ -142,6 +132,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -153,7 +144,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -162,7 +152,7 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.C/C++" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -210,6 +200,7 @@
       <workItem from="1559557515123" duration="643000" />
       <workItem from="1559675059485" duration="20000" />
       <workItem from="1559890145169" duration="1664000" />
+      <workItem from="1560246384851" duration="1179000" />
     </task>
     <task id="LOCAL-00001" summary="T&amp; added">
       <created>1559515314922</created>
@@ -222,17 +213,17 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="26596000" />
+    <option name="totallyTimeSpent" value="27775000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.19595142" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.30607286" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3285968" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.54706925" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39964476" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -260,11 +251,25 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="108">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
+        <state relative-caret-position="54">
+          <caret line="3" selection-start-line="3" selection-end-line="3" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/gtest/gtest-all.cc">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="684">
+          <caret line="38" selection-start-line="38" selection-end-line="38" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="198">
+          <caret line="11" column="28" lean-forward="true" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
         </state>
       </provider>
     </entry>
@@ -278,41 +283,12 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMakeLists.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="11" column="28" selection-start-line="11" selection-start-column="28" selection-end-line="11" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/gtest/gtest-all.cc">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="684">
-          <caret line="38" selection-start-line="38" selection-end-line="38" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/DynamicCastObject.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1584">
-          <caret line="88" selection-start-line="88" selection-end-line="88" />
+        <state relative-caret-position="1527">
+          <caret line="98" lean-forward="true" selection-start-line="98" selection-end-line="98" />
           <folding>
             <element signature="e#75#99#0" expanded="true" />
-            <element signature="e#895#907#0" expanded="true" />
-            <element signature="e#1172#1184#0" expanded="true" />
-            <element signature="e#1561#1573#0" expanded="true" />
-            <element signature="e#2043#2055#0" expanded="true" />
-            <element signature="e#2121#2133#0" expanded="true" />
-            <element signature="e#2211#2215#0" expanded="true" />
-            <element signature="e#2289#2301#0" expanded="true" />
-            <element signature="e#2599#2611#0" expanded="true" />
-            <element signature="e#2776#2778#0" expanded="true" />
-            <element signature="e#2862#2864#0" expanded="true" />
-            <element signature="e#3562#3574#0" expanded="true" />
-            <element signature="e#3194#3196#0" expanded="true" />
-            <element signature="e#3309#3318#0" expanded="true" />
-            <element signature="e#3434#3443#0" expanded="true" />
-            <element signature="e#3594#3603#0" expanded="true" />
           </folding>
         </state>
       </provider>

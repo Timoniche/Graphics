@@ -11,17 +11,17 @@ class GLWorker : public QObject
     Q_OBJECT
 public:
     GLWorker();
-    typedef std::vector<std::pair<double, double>> data_t;
+    typedef std::vector<std::pair<float, float>> data_t;
 public slots:
-    void build_hull(data_t const&);
+    void gift_wrapping(data_t const&);
 signals:
-    void send_line(double, double, double, double);
+    void send_line(float, float, float, float);
 private:
-    double distance_pow2(double, double, double, double);
-    bool equal(double, double, double, double);
-    double a_tan2(double, double, bool);
+    float distance_pow2(float, float, float, float);
+    bool equal(float, float, float, float);
+    float a_tan2(float, float, bool);
     std::vector<bool> used_points;
-    constexpr static double eps = 0.0001;
+    constexpr static float eps = 0.0001;
 };
 
 #endif // GLWORKER_H

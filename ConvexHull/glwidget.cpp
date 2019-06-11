@@ -3,6 +3,7 @@
 #include <qgl.h>
 #include <cstdlib>
 #include <random>
+#include <cmath>
 
 GLWidget::GLWidget(QWidget *parent) :
     QOpenGLWidget(parent) {}
@@ -30,11 +31,16 @@ void GLWidget::random_points()
     glEnable(GL_POINT_SMOOTH);
     glPointSize(3);
     glBegin(GL_POINTS);
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < m_points; i++)
     {
-        double x = -1 + double(rand()) / (RAND_MAX / 2);
-        double y = -1 + double(rand()) / (RAND_MAX / 2);
-        glVertex2d(x, y);
+        /*
+         * x2 + y2 <= r2
+         * y belongs sqrt|r2 - x2|
+         */
+        float x = -m_radius + (float(rand()) * m_radius) / (RAND_MAX / 2);
+        float border = sqrt(m_radius * m_radius - x * x);
+        float y = -border + (float(rand()) * border) / (RAND_MAX / 2);
+        glVertex2f(x, y);
         emit add_points(x, y);
     }
     glEnd();
@@ -47,13 +53,13 @@ void GLWidget::paintGL()
     glLoadIdentity();
 }
 
-void GLWidget::draw_line(double x1, double y1,
-                         double x2, double y2)
+void GLWidget::draw_line(float x1, float y1,
+                         float x2, float y2)
 {
     makeCurrent();
     glBegin(GL_LINES);
-        glVertex2d(x1, y1);
-        glVertex2d(x2, y2);
+    glVertex2f(x1, y1);
+    glVertex2f(x2, y2);
     glEnd();
 }
 

@@ -12,7 +12,7 @@ GLWorker::GLWorker()
 /**
  * Pre: points sorted ascending by y
  */
-void GLWorker::build_hull(data_t const& points)
+void GLWorker::gift_wrapping(data_t const& points)
 {
     if (points.empty())
     {
@@ -20,26 +20,26 @@ void GLWorker::build_hull(data_t const& points)
     }
     used_points.assign(points.size(), false);
     used_points[0] = true;
-    double x0 = points[0].first;
-    double y0 = points[0].second;
-    double x_next = x0;
-    double y_next = y0;
+    float x0 = points[0].first;
+    float y0 = points[0].second;
+    float x_next = x0;
+    float y_next = y0;
     do
     {
-        double x = x_next;
-        double y = y_next;
+        float x = x_next;
+        float y = y_next;
         x_next = x0;
         y_next = y0;
-        double min_angle = std::numeric_limits<double>::max();
+        float min_angle = std::numeric_limits<float>::max();
         size_t index_used = 0;
 
         for (size_t j = 0; j < points.size(); j++)
         {
             if (!used_points[j] || j == 0) {
-                double x1 = points[j].first;
-                double y1 = points[j].second;
+                float x1 = points[j].first;
+                float y1 = points[j].second;
                 if (!equal(x1, y1, x, y)) {
-                    double angle = a_tan2(y1 - y, x1 - x, used_points[points.size() - 1]);
+                    float angle = a_tan2(y1 - y, x1 - x, used_points[points.size() - 1]);
                     if (angle < min_angle)
                     {
                         min_angle = angle;
@@ -65,49 +65,49 @@ void GLWorker::build_hull(data_t const& points)
     while (!equal(x0, y0, x_next, y_next));
 }
 
-bool GLWorker::equal(double x1, double y1, double x2, double y2)
+bool GLWorker::equal(float x1, float y1, float x2, float y2)
 {
     return std::abs(x1 - x2) < eps && std::abs(y1 - y2) < eps;
 }
 
-double GLWorker::a_tan2(double y, double x, bool descending)
+float GLWorker::a_tan2(float y, float x, bool descending)
 {
 
-        double tmp = atan2(y, x);
-        if (std::abs(x) < eps)
+    float tmp = atan2(y, x);
+    if (std::abs(x) < eps)
+    {
+        if (y > 0)
         {
-            if (y > 0)
-            {
-                tmp = M_PI_2;
-            } else if (y < 0)
-            {
-                tmp = -M_PI_2;
-            } else {
-                tmp = 0;
-            }
-        }
-        if (tmp < 0)
+            tmp = float(M_PI_2);
+        } else if (y < 0)
         {
-            tmp += M_PI * 2;
-        }
-
-        if (!descending) {
-            return tmp;
+            tmp = -float(M_PI_2);
         } else {
-            if (tmp >= M_PI)
-            {
-                tmp -= M_PI;
-                return tmp;
-            } else
-            {
-                tmp += M_PI;
-                return tmp;
-            }
+            tmp = 0;
         }
+    }
+    if (tmp < 0)
+    {
+        tmp += float(M_PI) * 2;
+    }
+
+    if (!descending) {
+        return tmp;
+    } else {
+        if (tmp >= float(M_PI))
+        {
+            tmp -= float(M_PI);
+            return tmp;
+        } else
+        {
+            tmp += float(M_PI);
+            return tmp;
+        }
+    }
 
 }
 
-double GLWorker::distance_pow2(double x1, double y1, double x2, double y2)
+float GLWorker::distance_pow2(float x1, float y1, float x2, float y2)
 {
     return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2);
 }

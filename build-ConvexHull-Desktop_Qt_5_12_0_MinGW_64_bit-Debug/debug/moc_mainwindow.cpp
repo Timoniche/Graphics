@@ -69,7 +69,7 @@ static const uint qt_meta_data_MainWindow[] = {
 
  // slots: parameters
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Double, QMetaType::Double,    2,    2,
+    QMetaType::Void, QMetaType::Float, QMetaType::Float,    2,    2,
 
        0        // eod
 };
@@ -82,7 +82,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         switch (_id) {
         case 0: _t->operate_hull((*reinterpret_cast< const data_t(*)>(_a[1]))); break;
         case 1: _t->hull_button_clicked(); break;
-        case 2: _t->emplace_points((*reinterpret_cast< double(*)>(_a[1])),(*reinterpret_cast< double(*)>(_a[2]))); break;
+        case 2: _t->emplace_points((*reinterpret_cast< float(*)>(_a[1])),(*reinterpret_cast< float(*)>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {

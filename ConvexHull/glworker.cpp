@@ -20,6 +20,11 @@ void GLWorker::gift_wrapping(data_t const& points)
     }
     used_points.assign(points.size(), false);
     used_points[0] = true;
+    /*
+     * ': i |- i+1
+     * 2S = sum(0, n - 1): (xi + xi')*(yi' - yi)
+     */
+    float square = 0;
     float x0 = points[0].first;
     float y0 = points[0].second;
     float x_next = x0;
@@ -61,8 +66,10 @@ void GLWorker::gift_wrapping(data_t const& points)
         }
         used_points[index_used] = true;
         emit send_line(x, y, x_next, y_next);
+        square += (x + x_next) * (y_next - y);
     }
     while (!equal(x0, y0, x_next, y_next));
+    emit send_square(square /  2);
 }
 
 bool GLWorker::equal(float x1, float y1, float x2, float y2)

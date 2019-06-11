@@ -10,6 +10,16 @@ GLWidget::GLWidget(QWidget *parent) :
 
 GLWidget::~GLWidget() = default;
 
+float GLWidget::get_square()
+{
+    return m_square;
+}
+
+void GLWidget::get_square_from(float sq)
+{
+    m_square = sq;
+}
+
 void GLWidget::initializeGL()
 {
     initializeOpenGLFunctions();
@@ -23,6 +33,16 @@ void GLWidget::initializeGL()
 void GLWidget::resizeGL(int w, int h)
 {
     glViewport(0, 0, w, h);
+}
+
+void GLWidget::set_radius(float r)
+{
+    m_radius = r;
+}
+
+void GLWidget::set_points(int p)
+{
+    m_points = p;
 }
 
 void GLWidget::random_points()

@@ -13,7 +13,7 @@ CC            = gcc
 CXX           = g++
 DEFINES       = -DUNICODE -D_UNICODE -DWIN32 -DMINGW_HAS_SECURE_API=1 -DQT_DEPRECATED_WARNINGS -DQT_QML_DEBUG -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB -DQT_NEEDS_QMAIN
 CFLAGS        = -fno-keep-inline-dllexport -O2 -Wall -W -Wextra $(DEFINES)
-CXXFLAGS      = -fno-keep-inline-dllexport -O2 -std=gnu++11 -Wall -W -Wextra -fexceptions -mthreads $(DEFINES)
+CXXFLAGS      = -fno-keep-inline-dllexport -O2 -std=gnu++1z -Wall -W -Wextra -fexceptions -mthreads $(DEFINES)
 INCPATH       = -I..\ConvexHull -I. -IC:\Qt\5.12.0\mingw73_64\include -IC:\Qt\5.12.0\mingw73_64\include\QtOpenGL -IC:\Qt\5.12.0\mingw73_64\include\QtWidgets -IC:\Qt\5.12.0\mingw73_64\include\QtGui -IC:\Qt\5.12.0\mingw73_64\include\QtANGLE -IC:\Qt\5.12.0\mingw73_64\include\QtCore -Irelease -I. -I\include -IC:\Qt\5.12.0\mingw73_64\mkspecs\win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-s -Wl,-subsystem,windows -mthreads
@@ -110,7 +110,7 @@ compiler_moc_predefs_make_all: release/moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) release\moc_predefs.h
 release/moc_predefs.h: C:/Qt/5.12.0/mingw73_64/mkspecs/features/data/dummy.cpp
-	g++ -fno-keep-inline-dllexport -O2 -std=gnu++11 -Wall -W -Wextra -dM -E -o release\moc_predefs.h C:\Qt\5.12.0\mingw73_64\mkspecs\features\data\dummy.cpp
+	g++ -fno-keep-inline-dllexport -O2 -std=gnu++1z -Wall -W -Wextra -dM -E -o release\moc_predefs.h C:\Qt\5.12.0\mingw73_64\mkspecs\features\data\dummy.cpp
 
 compiler_moc_header_make_all: release/moc_mainwindow.cpp release/moc_glwidget.cpp release/moc_glworker.cpp
 compiler_moc_header_clean:
@@ -221,6 +221,10 @@ release/moc_mainwindow.cpp: C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QMainWindo
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qtouchdevice.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qtabwidget.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qicon.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QThread \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qthread.h \
+		../ConvexHull/glworker.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QObject \
 		../ConvexHull/mainwindow.h \
 		release/moc_predefs.h \
 		C:/Qt/5.12.0/mingw73_64/bin/moc.exe
@@ -348,6 +352,8 @@ release/moc_glwidget.cpp: C:/Qt/5.12.0/mingw73_64/include/QtCore/QObject \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglcontext.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QScopedPointer \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglversionfunctions.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QThread \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qthread.h \
 		../ConvexHull/glwidget.h \
 		release/moc_predefs.h \
 		C:/Qt/5.12.0/mingw73_64/bin/moc.exe
@@ -539,7 +545,9 @@ ui_mainwindow.h: ../ConvexHull/mainwindow.ui \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglfunctions.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglcontext.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QScopedPointer \
-		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglversionfunctions.h
+		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglversionfunctions.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QThread \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qthread.h
 	C:\Qt\5.12.0\mingw73_64\bin\uic.exe ..\ConvexHull\mainwindow.ui -o ui_mainwindow.h
 
 compiler_yacc_decl_make_all:
@@ -661,6 +669,10 @@ release/main.o: ../ConvexHull/main.cpp ../ConvexHull/mainwindow.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qtouchdevice.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qtabwidget.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qicon.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QThread \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qthread.h \
+		../ConvexHull/glworker.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QObject \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QApplication \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qapplication.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/qcoreapplication.h \
@@ -777,6 +789,10 @@ release/mainwindow.o: ../ConvexHull/mainwindow.cpp ../ConvexHull/mainwindow.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qtouchdevice.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qtabwidget.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qicon.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QThread \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qthread.h \
+		../ConvexHull/glworker.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QObject \
 		ui_mainwindow.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QVariant \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QApplication \
@@ -791,6 +807,16 @@ release/mainwindow.o: ../ConvexHull/mainwindow.cpp ../ConvexHull/mainwindow.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qlayout.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qlayoutitem.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qboxlayout.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QHBoxLayout \
+		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QLabel \
+		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qlabel.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qframe.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QLineEdit \
+		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qlineedit.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtGui/qtextcursor.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtGui/qtextformat.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtGui/qpen.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtGui/qtextoption.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QMenuBar \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qmenubar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qmenu.h \
@@ -801,14 +827,12 @@ release/mainwindow.o: ../ConvexHull/mainwindow.cpp ../ConvexHull/mainwindow.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qabstractbutton.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QSplitter \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qsplitter.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qframe.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QStatusBar \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qstatusbar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QToolBar \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qtoolbar.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QWidget \
 		../ConvexHull/glwidget.h \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QObject \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/QOpenGLWidget \
 		C:/Qt/5.12.0/mingw73_64/include/QtWidgets/qopenglwidget.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/QSurfaceFormat \
@@ -828,7 +852,9 @@ release/mainwindow.o: ../ConvexHull/mainwindow.cpp ../ConvexHull/mainwindow.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QScopedPointer \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglversionfunctions.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/QList \
-		C:/Qt/5.12.0/mingw73_64/include/QtCore/QtGlobal
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QtGlobal \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QMetaType \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QString
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\ConvexHull\mainwindow.cpp
 
 release/glwidget.o: ../ConvexHull/glwidget.cpp ../ConvexHull/glwidget.h \
@@ -954,6 +980,8 @@ release/glwidget.o: ../ConvexHull/glwidget.cpp ../ConvexHull/glwidget.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglcontext.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtCore/QScopedPointer \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qopenglversionfunctions.h \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/QThread \
+		C:/Qt/5.12.0/mingw73_64/include/QtCore/qthread.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtOpenGL/qgl.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qpaintengine.h \
 		C:/Qt/5.12.0/mingw73_64/include/QtGui/qpainter.h \

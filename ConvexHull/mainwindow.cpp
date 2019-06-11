@@ -5,6 +5,9 @@
 #include <QtGlobal>
 #include <QMetaType>
 #include <algorithm>
+#include <QString>
+#include <QDebug>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -35,6 +38,18 @@ MainWindow::MainWindow(QWidget *parent) :
     bool ok6 = connect(ui->openGLWidget, &GLWidget::add_points,
                        this, &MainWindow::emplace_points);
     Q_ASSERT(ok6);
+    bool ok7 = connect(ui->pointsAmount, &QLineEdit::textChanged,
+                       this, &MainWindow::pointsChanged);
+    Q_ASSERT(ok7);
+    bool ok8 = connect(ui->radiusCircle, &QLineEdit::textChanged,
+                       this, &MainWindow::radiusChanged);
+    Q_ASSERT(ok8);
+    bool ok9 = connect(ui->squareButton, &QPushButton::clicked,
+                       this, &MainWindow::square_button_clicked);
+    Q_ASSERT(ok9);
+    bool ok10 = connect(_worker, &GLWorker::send_square,
+                        ui->openGLWidget, &GLWidget::get_square_from);
+    Q_ASSERT(ok10);
 }
 
 void MainWindow::hull_button_clicked()
@@ -47,6 +62,45 @@ void MainWindow::hull_button_clicked()
         return a.second < b.second;
     });
     emit operate_hull(_counter_clock_wise_hull);
+}
+
+void MainWindow::square_button_clicked()
+{
+    _counter_clock_wise_hull.clear();
+    float sq = ui->openGLWidget->get_square();
+    QMessageBox msgBox;
+    msgBox.setWindowTitle("Square");
+    msgBox.setText("Square is: " + QString::number(sq));
+    msgBox.exec();
+}
+
+void MainWindow::pointsChanged(const QString &text)
+{
+    bool ok;
+    int val = text.toInt(&ok);
+    if (ok)
+    {
+        ui->openGLWidget->set_points(val);
+    } else
+    {
+        qDebug() << "wrong points value";
+    }
+}
+
+void MainWindow::radiusChanged(const QString &text)
+{
+    bool ok;
+    float val = text.toFloat(&ok);
+    if (ok)
+    {
+        if (val >= 0 && val <= 1)
+        {
+            ui->openGLWidget->set_radius(val);
+        }
+    } else
+    {
+        qDebug() << "wrong radius, it should be float between 0 & 1";
+    }
 }
 
 void MainWindow::emplace_points(float x, float y)

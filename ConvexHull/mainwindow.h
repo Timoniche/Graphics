@@ -22,7 +22,10 @@ public:
     typedef std::vector<std::pair<float, float>> data_t;
 public slots:
     void hull_button_clicked();
+    void square_button_clicked();
     void emplace_points(float, float);
+    void pointsChanged(const QString &);
+    void radiusChanged(const QString &);
 signals:
     void operate_hull(data_t const&);
 private:

@@ -16,6 +16,7 @@ public slots:
     void gift_wrapping(data_t const&);
 signals:
     void send_line(float, float, float, float);
+    void send_square(float);
 private:
     float distance_pow2(float, float, float, float);
     bool equal(float, float, float, float);

@@ -33,11 +33,11 @@ GLWorker::GLWorker()
 }
 
 /**
- * inplace algorithm
  * O(n*logn)
  */
 void GLWorker::graham(data_t const &points)
 {
+    emit send_bar_value(0);
     switch (points.size())
     {
     case 0:
@@ -94,7 +94,12 @@ void GLWorker::graham(data_t const &points)
         auto& p_prev = data_counter_clock_from_p0[_stack._data[i - 1]];
         auto& p_last = data_counter_clock_from_p0[_stack._data[i]];
         emit send_line(p_prev.first, p_prev.second, p_last.first, p_last.second);
-        square += (p_prev.first + p_last.first) * (p_last.second - p_prev.second);
+        float left = (p_prev.first + p_last.first);
+        float right = (p_last.second - p_prev.second);
+        if (std::abs(left) > eps && std::abs(right) > eps)
+        {
+            square += (p_prev.first + p_last.first) * (p_last.second - p_prev.second);
+        }
         qDebug() << square << '\n';
     }
     auto& p_prev = data_counter_clock_from_p0[_stack._data[0]];
@@ -193,57 +198,60 @@ bool GLWorker::equal(float x1, float y1, float x2, float y2) const
 
 float GLWorker::a_tan2_from_0_to_pi(float y, float x) const
 {
-    float tmp = atan2(y, x);
+    float F_PI_2 = static_cast<float>(M_PI_2);
+    float F_PI = static_cast<float>(M_PI);
+    float tmp = static_cast<float>(atan2(static_cast<double>(y), static_cast<double>(x)));
     if (std::abs(x) < eps)
     {
         if (y > 0)
         {
-            tmp = float(M_PI_2);
+            tmp = F_PI_2;
         } else if (y < 0)
         {
-            tmp = -float(M_PI_2);
+            tmp = -F_PI_2;
         } else {
             tmp = 0;
         }
     }
     if (tmp < 0)
     {
-        tmp += float(M_PI) * 2;
+        tmp += F_PI * 2;
     }
     return tmp;
 }
 
 float GLWorker::a_tan2(float y, float x, bool descending) const
 {
-
-    float tmp = atan2(y, x);
+    float F_PI_2 = static_cast<float>(M_PI_2);
+    float F_PI = static_cast<float>(M_PI);
+    float tmp = static_cast<float>(atan2(static_cast<double>(y), static_cast<double>(x)));
     if (std::abs(x) < eps)
     {
         if (y > 0)
         {
-            tmp = float(M_PI_2);
+            tmp = F_PI_2;
         } else if (y < 0)
         {
-            tmp = -float(M_PI_2);
+            tmp = -F_PI_2;
         } else {
             tmp = 0;
         }
     }
     if (tmp < 0)
     {
-        tmp += float(M_PI) * 2;
+        tmp += F_PI * 2;
     }
 
     if (!descending) {
         return tmp;
     } else {
-        if (tmp >= float(M_PI))
+        if (tmp >= F_PI)
         {
-            tmp -= float(M_PI);
+            tmp -= F_PI;
             return tmp;
         } else
         {
-            tmp += float(M_PI);
+            tmp += F_PI;
             return tmp;
         }
     }

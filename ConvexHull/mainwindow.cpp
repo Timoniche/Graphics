@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     setWindowTitle("Convex Hull");
     qRegisterMetaType<data_t>("data_t");
+    qRegisterMetaType<size_t>("size_t");
     ui->splitter->setSizes(QList<int>() << 100 << 200);
     bool ok1 = connect(ui->genButton, &QPushButton::clicked,
                        ui->openGLWidget, &GLWidget::random_points);
@@ -29,7 +30,6 @@ MainWindow::MainWindow(QWidget *parent) :
     bool ok5 = connect(_worker, &GLWorker::send_line,
                        ui->openGLWidget, &GLWidget::draw_line);
     _thread.start();
-
     bool ok6 = connect(ui->openGLWidget, &GLWidget::add_points,
                        this, &MainWindow::emplace_points);
     bool ok7 = connect(ui->pointsAmount, &QLineEdit::textChanged,
@@ -48,9 +48,16 @@ MainWindow::MainWindow(QWidget *parent) :
                         this, &MainWindow::set_max_index_bar);
     bool ok14 = connect(_worker, &GLWorker::increase_bar,
                         this, &MainWindow::update_bar);
+    bool ok15 = connect(_worker, &GLWorker::send_bar_value,
+                        this, &MainWindow::get_bar_value);
     Q_ASSERT(ok1 && ok2 && ok3 && ok4 && ok5 && ok6 &&
              ok7 && ok8 && ok9 && ok10 && ok11 && ok12 &&
-             ok13 && ok14);
+             ok13 && ok14 && ok15);
+}
+
+void MainWindow::get_bar_value(size_t val)
+{
+    ui->progressBar->setValue(static_cast<int>(val));
 }
 
 void MainWindow::graham_button_clicked()
@@ -65,12 +72,12 @@ void MainWindow::graham_button_clicked()
     emit operate_graham(_counter_clock_wise_hull);
 }
 
-void MainWindow::update_bar(int val) {
-    ui->progressBar->setValue(ui->progressBar->value() + val);
+void MainWindow::update_bar(size_t val) {
+    ui->progressBar->setValue(ui->progressBar->value() + static_cast<int>(val));
 }
 
-void MainWindow::set_max_index_bar(int val) {
-    ui->progressBar->setMaximum(val);
+void MainWindow::set_max_index_bar(size_t val) {
+    ui->progressBar->setMaximum(static_cast<int>(val));
 }
 
 void MainWindow::hull_button_clicked()
@@ -91,7 +98,7 @@ void MainWindow::square_button_clicked()
     float sq = ui->openGLWidget->get_square();
     QMessageBox msgBox;
     msgBox.setWindowTitle("Square");
-    msgBox.setText("Square is: " + QString::number(sq));
+    msgBox.setText("Square is: " + QString::number(static_cast<double>(sq)));
     msgBox.exec();
 }
 

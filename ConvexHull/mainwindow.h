@@ -27,8 +27,9 @@ public slots:
     void emplace_points(float, float);
     void pointsChanged(const QString &);
     void radiusChanged(const QString &);
-    void update_bar(int);
-    void set_max_index_bar(int);
+    void update_bar(size_t);
+    void set_max_index_bar(size_t);
+    void get_bar_value(size_t);
 
 signals:
     void operate_hull(data_t const&);

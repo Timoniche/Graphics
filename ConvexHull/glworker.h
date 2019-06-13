@@ -29,8 +29,9 @@ public slots:
 signals:
     void send_line(float, float, float, float);
     void send_square(float);
-    void send_max_bar(int);
-    void increase_bar(int);
+    void send_max_bar(size_t);
+    void send_bar_value(size_t);
+    void increase_bar(size_t);
 private:
     constexpr static float eps = float(0.00000001);
     float distance_pow2(float, float, float, float) const;

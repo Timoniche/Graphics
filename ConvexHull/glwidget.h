@@ -23,13 +23,13 @@ signals:
 public slots:
     void set_radius(float);
     void set_points(int);
-    void get_square_from(float sq);
+    void get_square_from(float);
     void random_points();
     void draw_line(float, float, float, float);
 private:
     int m_points = 10;
     float m_radius = 0.5;
-    float m_square = 0; 
+    float m_square = 0;
 };
 
 #endif // GLWIDGET_H

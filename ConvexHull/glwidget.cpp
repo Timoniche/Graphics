@@ -59,7 +59,7 @@ void GLWidget::random_points()
          * y belongs sqrt|r2 - x2|
          */
         float x = -m_radius + (float(rand()) * m_radius) / (RAND_MAX / 2);
-        float border = sqrt(m_radius * m_radius - x * x);
+        float border = static_cast<float>(sqrt(static_cast<double>(m_radius * m_radius - x * x)));
         float y = -border + (float(rand()) * border) / (RAND_MAX / 2);
         glVertex2f(x, y);
         emit add_points(x, y);

@@ -27,6 +27,9 @@ public slots:
     void emplace_points(float, float);
     void pointsChanged(const QString &);
     void radiusChanged(const QString &);
+    void update_bar(int);
+    void set_max_index_bar(int);
+
 signals:
     void operate_hull(data_t const&);
     void operate_graham(data_t const&);

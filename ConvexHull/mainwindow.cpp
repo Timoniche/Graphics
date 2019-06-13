@@ -44,8 +44,13 @@ MainWindow::MainWindow(QWidget *parent) :
                         this, &MainWindow::graham_button_clicked);
     bool ok12 = connect(this, &MainWindow::operate_graham,
                         _worker, &GLWorker::graham);
+    bool ok13 = connect(_worker, &GLWorker::send_max_bar,
+                        this, &MainWindow::set_max_index_bar);
+    bool ok14 = connect(_worker, &GLWorker::increase_bar,
+                        this, &MainWindow::update_bar);
     Q_ASSERT(ok1 && ok2 && ok3 && ok4 && ok5 && ok6 &&
-             ok7 && ok8 && ok9 && ok10 && ok11 && ok12);
+             ok7 && ok8 && ok9 && ok10 && ok11 && ok12 &&
+             ok13 && ok14);
 }
 
 void MainWindow::graham_button_clicked()
@@ -59,6 +64,15 @@ void MainWindow::graham_button_clicked()
     });
     emit operate_graham(_counter_clock_wise_hull);
 }
+
+void MainWindow::update_bar(int val) {
+    ui->progressBar->setValue(ui->progressBar->value() + val);
+}
+
+void MainWindow::set_max_index_bar(int val) {
+    ui->progressBar->setMaximum(val);
+}
+
 void MainWindow::hull_button_clicked()
 {
     std::sort(_counter_clock_wise_hull.begin(),

@@ -51,6 +51,7 @@ void GLWidget::random_points()
     glEnable(GL_POINT_SMOOTH);
     glPointSize(3);
     glBegin(GL_POINTS);
+    glColor3f(1, 1, 1);
     for (int i = 0; i < m_points; i++)
     {
         /*
@@ -77,7 +78,9 @@ void GLWidget::draw_line(float x1, float y1,
                          float x2, float y2)
 {
     makeCurrent();
+    glLineWidth(20);
     glBegin(GL_LINES);
+    glColor3f(1, 0, 0);
     glVertex2f(x1, y1);
     glVertex2f(x2, y2);
     glEnd();

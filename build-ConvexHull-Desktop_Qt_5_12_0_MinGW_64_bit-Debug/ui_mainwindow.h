@@ -17,6 +17,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
+#include <QtWidgets/QProgressBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSplitter>
 #include <QtWidgets/QStatusBar>
@@ -39,11 +40,12 @@ public:
     QHBoxLayout *horizontalLayout;
     QLineEdit *pointsAmount;
     QLineEdit *radiusCircle;
+    QProgressBar *progressBar;
     QGridLayout *gridLayout_2;
-    QPushButton *hullButton;
     QPushButton *genButton;
-    QPushButton *squareButton;
     QPushButton *grahamButton;
+    QPushButton *hullButton;
+    QPushButton *squareButton;
     GLWidget *openGLWidget;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -80,7 +82,7 @@ public:
         sizePolicy.setHeightForWidth(label->sizePolicy().hasHeightForWidth());
         label->setSizePolicy(sizePolicy);
 
-        gridLayout_3->addWidget(label, 0, 0, 1, 1);
+        gridLayout_3->addWidget(label, 1, 0, 1, 1);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
@@ -96,7 +98,13 @@ public:
         horizontalLayout->addWidget(radiusCircle);
 
 
-        gridLayout_3->addLayout(horizontalLayout, 1, 0, 1, 1);
+        gridLayout_3->addLayout(horizontalLayout, 3, 0, 1, 1);
+
+        progressBar = new QProgressBar(widget);
+        progressBar->setObjectName(QString::fromUtf8("progressBar"));
+        progressBar->setValue(0);
+
+        gridLayout_3->addWidget(progressBar, 0, 0, 1, 1);
 
 
         gridLayout_4->addLayout(gridLayout_3, 0, 0, 1, 1);
@@ -104,28 +112,28 @@ public:
         gridLayout_2 = new QGridLayout();
         gridLayout_2->setSpacing(6);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
-        hullButton = new QPushButton(widget);
-        hullButton->setObjectName(QString::fromUtf8("hullButton"));
-
-        gridLayout_2->addWidget(hullButton, 3, 1, 1, 1);
-
         genButton = new QPushButton(widget);
         genButton->setObjectName(QString::fromUtf8("genButton"));
 
         gridLayout_2->addWidget(genButton, 2, 1, 1, 1);
-
-        squareButton = new QPushButton(widget);
-        squareButton->setObjectName(QString::fromUtf8("squareButton"));
-
-        gridLayout_2->addWidget(squareButton, 5, 1, 1, 1);
 
         grahamButton = new QPushButton(widget);
         grahamButton->setObjectName(QString::fromUtf8("grahamButton"));
 
         gridLayout_2->addWidget(grahamButton, 4, 1, 1, 1);
 
+        hullButton = new QPushButton(widget);
+        hullButton->setObjectName(QString::fromUtf8("hullButton"));
 
-        gridLayout_4->addLayout(gridLayout_2, 1, 0, 1, 1);
+        gridLayout_2->addWidget(hullButton, 3, 1, 1, 1);
+
+        squareButton = new QPushButton(widget);
+        squareButton->setObjectName(QString::fromUtf8("squareButton"));
+
+        gridLayout_2->addWidget(squareButton, 5, 1, 1, 1);
+
+
+        gridLayout_4->addLayout(gridLayout_2, 2, 0, 1, 1);
 
         splitter->addWidget(widget);
         openGLWidget = new GLWidget(splitter);
@@ -157,10 +165,10 @@ public:
         label->setText(QApplication::translate("MainWindow", "Amount of points & radius of the circle [0, 1]:", nullptr));
         pointsAmount->setText(QApplication::translate("MainWindow", "10", nullptr));
         radiusCircle->setText(QApplication::translate("MainWindow", "0.5", nullptr));
-        hullButton->setText(QApplication::translate("MainWindow", "gift", nullptr));
         genButton->setText(QApplication::translate("MainWindow", "gen", nullptr));
-        squareButton->setText(QApplication::translate("MainWindow", "square", nullptr));
         grahamButton->setText(QApplication::translate("MainWindow", "graham", nullptr));
+        hullButton->setText(QApplication::translate("MainWindow", "gift", nullptr));
+        squareButton->setText(QApplication::translate("MainWindow", "square", nullptr));
     } // retranslateUi
 
 };

@@ -2,6 +2,7 @@
 #include <limits>
 #include <valarray>
 #include <cmath>
+#include <QDebug>
 
 void StackExtended::push(size_t x)
 {
@@ -66,8 +67,10 @@ void GLWorker::graham(data_t const &points)
             return a_angle_p0 < b_angle_p0;
         }
     });
+    emit send_max_bar(data_counter_clock_from_p0.size());
     _stack.push(0);
     _stack.push(1);
+    emit increase_bar(2);
     for (size_t pi = 2; pi < data_counter_clock_from_p0.size(); pi++)
     {
         int _next_to_top = _stack.top_next();
@@ -83,6 +86,7 @@ void GLWorker::graham(data_t const &points)
             Q_ASSERT(_top != -1);
         }
         _stack.push(pi);
+        emit increase_bar(1);
     }
     float square = 0;
     for (size_t i = 1; i < _stack._data.size(); i++)
@@ -91,6 +95,7 @@ void GLWorker::graham(data_t const &points)
         auto& p_last = data_counter_clock_from_p0[_stack._data[i]];
         emit send_line(p_prev.first, p_prev.second, p_last.first, p_last.second);
         square += (p_prev.first + p_last.first) * (p_last.second - p_prev.second);
+        qDebug() << square << '\n';
     }
     auto& p_prev = data_counter_clock_from_p0[_stack._data[0]];
     auto& p_last = data_counter_clock_from_p0[_stack._data[_stack._data.size() - 1]];

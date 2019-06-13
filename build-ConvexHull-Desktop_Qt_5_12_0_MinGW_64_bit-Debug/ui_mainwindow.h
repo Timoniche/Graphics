@@ -41,8 +41,9 @@ public:
     QLineEdit *radiusCircle;
     QGridLayout *gridLayout_2;
     QPushButton *hullButton;
-    QPushButton *squareButton;
     QPushButton *genButton;
+    QPushButton *squareButton;
+    QPushButton *grahamButton;
     GLWidget *openGLWidget;
     QMenuBar *menuBar;
     QToolBar *mainToolBar;
@@ -108,15 +109,20 @@ public:
 
         gridLayout_2->addWidget(hullButton, 3, 1, 1, 1);
 
-        squareButton = new QPushButton(widget);
-        squareButton->setObjectName(QString::fromUtf8("squareButton"));
-
-        gridLayout_2->addWidget(squareButton, 4, 1, 1, 1);
-
         genButton = new QPushButton(widget);
         genButton->setObjectName(QString::fromUtf8("genButton"));
 
         gridLayout_2->addWidget(genButton, 2, 1, 1, 1);
+
+        squareButton = new QPushButton(widget);
+        squareButton->setObjectName(QString::fromUtf8("squareButton"));
+
+        gridLayout_2->addWidget(squareButton, 5, 1, 1, 1);
+
+        grahamButton = new QPushButton(widget);
+        grahamButton->setObjectName(QString::fromUtf8("grahamButton"));
+
+        gridLayout_2->addWidget(grahamButton, 4, 1, 1, 1);
 
 
         gridLayout_4->addLayout(gridLayout_2, 1, 0, 1, 1);
@@ -151,9 +157,10 @@ public:
         label->setText(QApplication::translate("MainWindow", "Amount of points & radius of the circle [0, 1]:", nullptr));
         pointsAmount->setText(QApplication::translate("MainWindow", "10", nullptr));
         radiusCircle->setText(QApplication::translate("MainWindow", "0.5", nullptr));
-        hullButton->setText(QApplication::translate("MainWindow", "hull", nullptr));
-        squareButton->setText(QApplication::translate("MainWindow", "square", nullptr));
+        hullButton->setText(QApplication::translate("MainWindow", "gift", nullptr));
         genButton->setText(QApplication::translate("MainWindow", "gen", nullptr));
+        squareButton->setText(QApplication::translate("MainWindow", "square", nullptr));
+        grahamButton->setText(QApplication::translate("MainWindow", "graham", nullptr));
     } // retranslateUi
 
 };

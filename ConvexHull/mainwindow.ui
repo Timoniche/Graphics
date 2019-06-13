@@ -62,14 +62,7 @@
           <item row="3" column="1">
            <widget class="QPushButton" name="hullButton">
             <property name="text">
-             <string>hull</string>
-            </property>
-           </widget>
-          </item>
-          <item row="4" column="1">
-           <widget class="QPushButton" name="squareButton">
-            <property name="text">
-             <string>square</string>
+             <string>gift</string>
             </property>
            </widget>
           </item>
@@ -77,6 +70,20 @@
            <widget class="QPushButton" name="genButton">
             <property name="text">
              <string>gen</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="1">
+           <widget class="QPushButton" name="squareButton">
+            <property name="text">
+             <string>square</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="grahamButton">
+            <property name="text">
+             <string>graham</string>
             </property>
            </widget>
           </item>

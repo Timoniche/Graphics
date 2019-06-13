@@ -29,7 +29,7 @@ public slots:
 private:
     int m_points = 10;
     float m_radius = 0.5;
-    float m_square = 0;
+    float m_square = 0; 
 };
 
 #endif // GLWIDGET_H

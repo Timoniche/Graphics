@@ -19,39 +19,46 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->splitter->setSizes(QList<int>() << 100 << 200);
     bool ok1 = connect(ui->genButton, &QPushButton::clicked,
                        ui->openGLWidget, &GLWidget::random_points);
-    Q_ASSERT(ok1);
     _worker = new GLWorker();
     _worker->moveToThread(&_thread);
     bool ok2 = connect(&_thread, &QThread::finished, _worker, &QObject::deleteLater);
-    Q_ASSERT(ok2);
     bool ok3 = connect(ui->hullButton, &QPushButton::clicked,
                        this, &MainWindow::hull_button_clicked);
-    Q_ASSERT(ok3);
     bool ok4 = connect(this, &MainWindow::operate_hull,
                        _worker, &GLWorker::gift_wrapping);
-    Q_ASSERT(ok4);
     bool ok5 = connect(_worker, &GLWorker::send_line,
                        ui->openGLWidget, &GLWidget::draw_line);
-    Q_ASSERT(ok5);
     _thread.start();
 
     bool ok6 = connect(ui->openGLWidget, &GLWidget::add_points,
                        this, &MainWindow::emplace_points);
-    Q_ASSERT(ok6);
     bool ok7 = connect(ui->pointsAmount, &QLineEdit::textChanged,
                        this, &MainWindow::pointsChanged);
-    Q_ASSERT(ok7);
     bool ok8 = connect(ui->radiusCircle, &QLineEdit::textChanged,
                        this, &MainWindow::radiusChanged);
-    Q_ASSERT(ok8);
     bool ok9 = connect(ui->squareButton, &QPushButton::clicked,
                        this, &MainWindow::square_button_clicked);
-    Q_ASSERT(ok9);
     bool ok10 = connect(_worker, &GLWorker::send_square,
                         ui->openGLWidget, &GLWidget::get_square_from);
-    Q_ASSERT(ok10);
+    bool ok11 = connect(ui->grahamButton, &QPushButton::clicked,
+                        this, &MainWindow::graham_button_clicked);
+    bool ok12 = connect(this, &MainWindow::operate_graham,
+                        _worker, &GLWorker::graham);
+    Q_ASSERT(ok1 && ok2 && ok3 && ok4 && ok5 && ok6 &&
+             ok7 && ok8 && ok9 && ok10 && ok11 && ok12);
 }
 
+void MainWindow::graham_button_clicked()
+{
+    std::sort(_counter_clock_wise_hull.begin(),
+              _counter_clock_wise_hull.end(),
+              [](const std::pair<float, float> &a,
+              const std::pair<float, float> &b)
+    {
+        return a.second < b.second;
+    });
+    emit operate_graham(_counter_clock_wise_hull);
+}
 void MainWindow::hull_button_clicked()
 {
     std::sort(_counter_clock_wise_hull.begin(),

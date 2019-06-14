@@ -1,25 +1,9 @@
 #include <gtest/gtest.h>
-#include "DynamicCastObject.h"
+#include "DCOBits.h"
 
 namespace
 {
-    /*
-    struct A
-    {
-        A() = default;
-        virtual ~A() = default;
-        char a = 'a';
-    };
-
-    struct B : A
-    {
-        B() = default;
-        ~B() override = default;
-        char b = 'b';
-    };
-     */
-
-    class Base : public DynamicCastObject
+    class Base : public DCOBits
     {
     public:
         Base()
@@ -32,7 +16,7 @@ TEST(correctness, pointer_test) // NOLINT
 {
     try
     {
-        DynamicCastObject b;
+        DCOBits b;
         Base *a1 = b.fast_cast<Base>();
         Base *a2 = fast_cast<Base>(&b);
         Base *a3 = dynamic_cast<Base *>(&b);
@@ -46,7 +30,7 @@ TEST(correctness, pointer_test) // NOLINT
 
 TEST(correctness, const_pointer_test) // NOLINT
 {
-    DynamicCastObject const b;
+    DCOBits const b;
     try
     {
         Base const *a1 = b.fast_cast<Base>();
@@ -94,7 +78,7 @@ TEST(correctness, const_void_test) //NOLINT
 //______________________________________________________________________________________________________________________
 TEST(correctness, ref_test_bad_cast) //NOLINT
 {
-    DynamicCastObject b;
+    DCOBits b;
     try
     {
         Base a1 = fast_cast<Base>(b);
@@ -111,8 +95,8 @@ TEST(correctness, ref_test) //NOLINT
     Base b;
     try
     {
-        DynamicCastObject a1 = fast_cast<DynamicCastObject>(b);
-        DynamicCastObject a2 = dynamic_cast<DynamicCastObject &>(b);
+        DCOBits a1 = fast_cast<DCOBits>(b);
+        DCOBits a2 = dynamic_cast<DCOBits &>(b);
         EXPECT_EQ(a2, a1);
     } catch (std::bad_cast &e)
     {
@@ -125,8 +109,8 @@ TEST(correctness, test_self) //NOLINT
     Base b;
     try
     {
-        DynamicCastObject* a1 = fast_cast<DynamicCastObject>(&b);
-        DynamicCastObject* a2 = dynamic_cast<DynamicCastObject *>(&b);
+        DCOBits* a1 = fast_cast<DCOBits>(&b);
+        DCOBits* a2 = dynamic_cast<DCOBits *>(&b);
         EXPECT_EQ(a2, a1);
     } catch (std::bad_cast &e)
     {
@@ -134,3 +118,5 @@ TEST(correctness, test_self) //NOLINT
     }
 }
 //______________________________________________________________________________________________________________________
+
+

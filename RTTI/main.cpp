@@ -3,36 +3,30 @@
 
 #include "DynamicCastObject.h"
 
-struct Base1 : virtual DynamicCastObject
-{
-    Base1()
-    {
-        this->tie(this);
-    }
-};
+using std::cout;
 
-struct Base2 : virtual DynamicCastObject
+struct Test
 {
-    Base2()
+    static size_t gen_id()
     {
-        this->tie(this);
+        cout << "was here\n";
+        static size_t _id = 0;
+        return ++_id;
     }
-};
 
-struct MD : Base1, Base2
-{
-    MD()
+    template<typename T>
+    struct Type
     {
-        this->tie(this);
-    }
+        static size_t id()
+        {
+            static const size_t type_id = gen_id();
+            return type_id;
+        }
+    };
 };
-
 int main()
 {
-    auto md = new MD();
-    auto base2 = dynamic_cast<Base2*>(md);
-    std::cerr << md << std::endl;
-    std::cerr << base2 << std::endl;
-
+    Test::Type<int>::id();
+    Test::Type<int>::id();
     return 0;
 }

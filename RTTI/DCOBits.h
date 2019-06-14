@@ -1,35 +1,38 @@
-#ifndef GRAPHICS_DYNAMICCASTOBJECT_H
-#define GRAPHICS_DYNAMICCASTOBJECT_H
+#ifndef GRAPHICS_DCOBITS_H
+#define GRAPHICS_DCOBITS_H
 
 #include <unordered_map>
+#include <cassert>
 
 /**
- * returns null if base is not an instance of Derived:
- * base.fast_cast<Derived>() OR fast_cast<Derived>(&base)
- * throws std::bad_cast in this case:
- * fast_cast<Derived>(base)
- * returns the address of the most derived class:
- * base.fast_cast<void>() OR fast_cast<void>(&base)
- * NB: respect the access specifications (public/protected/private inheritance)
+ * for simple inheritance (<=32 classes)
  */
 //______________________________________________________________________________________________________________________
-class DynamicCastObject
+class DCOBits
 {
 public:
-    DynamicCastObject() noexcept : m_most_derived(this)
+    DCOBits() noexcept : m_most_derived(this)
     {
-        tie(this);
+        size_t id = Type<DCOBits>::id();
+        _mask |= (1 << id);
     }
 
-    virtual ~DynamicCastObject() = default;
+    virtual ~DCOBits() = default;
 
     //__________________________________________________________________________________________________________________
+    static size_t gen_id()
+    {
+        static size_t _id = 0;
+        return ++_id;
+    }
+
     template<typename T>
     struct Type
     {
         static size_t id()
         {
-            return reinterpret_cast<size_t>(&Type<T>::id);
+            static const size_t type_id = gen_id();
+            return type_id;
         }
     };
 
@@ -37,20 +40,20 @@ public:
     template<typename T>
     T const *fast_cast() const
     {
-        if (auto it = m_derived_hash_map.find(Type<T>::id());
-                it == m_derived_hash_map.end())
+        size_t id = Type<T>::id();
+        if (!(1 << id & _mask))
         {
             return nullptr;
         } else
         {
-            return reinterpret_cast<T const *>(it->second);
+            return reinterpret_cast<T const *>(m_most_derived);
         }
     }
 
     template<typename T>
     T *fast_cast()
     {
-        return const_cast<T *>((reinterpret_cast<DynamicCastObject const &>(*this)).fast_cast<T>());
+        return const_cast<T *>((reinterpret_cast<DCOBits const &>(*this)).fast_cast<T>());
     }
 
     //__________________________________________________________________________________________________________________
@@ -61,64 +64,60 @@ public:
 //______________________________________________________________________________________________________________________
 public:
     template<typename T>
-    friend T *fast_cast(DynamicCastObject *object);
+    friend T *fast_cast(DCOBits *object);
 
     template<typename T>
-    friend T const *fast_cast(DynamicCastObject const *object);
+    friend T const *fast_cast(DCOBits const *object);
 
     template<typename T>
-    friend T &fast_cast(DynamicCastObject &object);
+    friend T &fast_cast(DCOBits &object);
 
     template<typename T>
-    friend T const &fast_cast(DynamicCastObject const &object);
+    friend T const &fast_cast(DCOBits const &object);
 
-    friend bool operator==(DynamicCastObject const &lhs, DynamicCastObject const &rhs);
+    friend bool operator==(DCOBits const &lhs, DCOBits const &rhs);
 //______________________________________________________________________________________________________________________
 protected:
     template<typename T>
     void tie(T *t)
     {
-        void *address = t;
-        m_derived_hash_map[Type<T>::id()] = address;
-        if (m_most_derived > address)
-        {
-            m_most_derived = address;
-        }
+        size_t id = Type<T>::id();
+        assert(id <= 32 && "id is more than 32");
+        _mask |= (1 << id);
     }
 //______________________________________________________________________________________________________________________
 private:
-    typedef std::unordered_map<size_t, void *> derived_t;
-    derived_t m_derived_hash_map;
+    uint32_t _mask = 0;
     void *m_most_derived;
 };
 
 template<>
-void *DynamicCastObject::fast_cast<void>()
+void *DCOBits::fast_cast<void>()
 {
     return m_most_derived;
 }
 
 template<>
-void const *DynamicCastObject::fast_cast<void>() const
+void const *DCOBits::fast_cast<void>() const
 {
     return m_most_derived;
 }
 
 //Friend_Wrappers:______________________________________________________________________________________________________
 template<typename T>
-T *fast_cast(DynamicCastObject *object)
+T *fast_cast(DCOBits *object)
 { return object ? object->fast_cast<T>() : nullptr; }
 
 template<>
-void *fast_cast<void>(DynamicCastObject *object)
+void *fast_cast<void>(DCOBits *object)
 { return object ? object->m_most_derived : nullptr; }
 
 template<typename T>
-T const *fast_cast(DynamicCastObject const *object)
+T const *fast_cast(DCOBits const *object)
 { return object ? object->fast_cast<T>() : nullptr; }
 
 template<typename T>
-T &fast_cast(DynamicCastObject &object)
+T &fast_cast(DCOBits &object)
 {
     if (T *t = object.fast_cast<T>())
     { return *t; }
@@ -127,7 +126,7 @@ T &fast_cast(DynamicCastObject &object)
 }
 
 template<typename T>
-T const &fast_cast(DynamicCastObject const &object)
+T const &fast_cast(DCOBits const &object)
 {
     if (T const *t = object.fast_cast<T>())
     { return *t; }
@@ -136,9 +135,9 @@ T const &fast_cast(DynamicCastObject const &object)
 }
 
 //Operators:____________________________________________________________________________________________________________
-bool operator==(DynamicCastObject const &lhs, DynamicCastObject const &rhs)
+bool operator==(DCOBits const &lhs, DCOBits const &rhs)
 {
-    return lhs.m_derived_hash_map == rhs.m_derived_hash_map;
+    return lhs._mask == rhs._mask && lhs.m_most_derived == rhs.m_most_derived;
 }
 
-#endif //GRAPHICS_DYNAMICCASTOBJECT_H
+#endif //GRAPHICS_DCOBITS_H

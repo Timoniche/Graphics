@@ -13,25 +13,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6f14ff4b-ed5b-4f6d-9910-e1926f7b728a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/DCOBits.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DCOBitsTest.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ConvexHull/ConvexHull.pro.user" beforeDir="false" afterPath="$PROJECT_DIR$/../ConvexHull/ConvexHull.pro.user" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DynamicCastObject.h" beforeDir="false" afterPath="$PROJECT_DIR$/DynamicCastObject.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DynamicCastTest.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/DynamicCastTest.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RTTI_BITS/.idea/RTTI_BITS.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RTTI_BITS/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RTTI_BITS/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RTTI_BITS/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RTTI_BITS/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RTTI_BITS/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RTTI_BITS/CMakeLists.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../RTTI_BITS/main.cpp" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../readme.md" beforeDir="false" afterPath="$PROJECT_DIR$/../readme.md" afterDir="false" />
-    </list>
+    <list default="true" id="6f14ff4b-ed5b-4f6d-9910-e1926f7b728a" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -58,8 +40,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DCOBits.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="175">
-              <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
+            <state relative-caret-position="-969">
+              <caret line="24" column="30" lean-forward="true" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
               <folding>
                 <element signature="e#55#79#0" expanded="true" />
                 <element signature="e#888#900#0" expanded="true" />
@@ -158,7 +140,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="948" />
     <option name="width" value="981" />
     <option name="height" value="1032" />
@@ -248,7 +230,7 @@
       <workItem from="1560246384851" duration="1534000" />
       <workItem from="1560327323206" duration="388000" />
       <workItem from="1560378750914" duration="19000" />
-      <workItem from="1560518024705" duration="3926000" />
+      <workItem from="1560518024705" duration="4383000" />
     </task>
     <task id="LOCAL-00001" summary="T&amp; added">
       <created>1559515314922</created>
@@ -261,10 +243,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="32463000" />
+    <option name="totallyTimeSpent" value="32920000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.14944357" />
@@ -351,8 +333,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DCOBits.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="175">
-          <caret line="15" column="32" selection-start-line="15" selection-start-column="32" selection-end-line="15" selection-end-column="32" />
+        <state relative-caret-position="-969">
+          <caret line="24" column="30" lean-forward="true" selection-start-line="24" selection-start-column="30" selection-end-line="24" selection-end-column="30" />
           <folding>
             <element signature="e#55#79#0" expanded="true" />
             <element signature="e#888#900#0" expanded="true" />

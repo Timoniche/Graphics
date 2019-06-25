@@ -74,11 +74,24 @@ void GLWidget::paintGL()
     glLoadIdentity();
 }
 
+void GLWidget::draw_vector_lines(vector_of_points const& data)
+{
+    makeCurrent();
+    glLineWidth(40);
+    glColor3f(1, 0, 0);
+    glBegin(GL_LINE_LOOP);
+    for (auto& p : data)
+    {
+        glVertex2f(p.x, p.y);
+    }
+    glEnd();
+}
+
 void GLWidget::draw_line(float x1, float y1,
                          float x2, float y2)
 {
     makeCurrent();
-    glLineWidth(20);
+    glLineWidth(5);
     glBegin(GL_LINES);
     glColor3f(1, 0, 0);
     glVertex2f(x1, y1);

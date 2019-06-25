@@ -26,6 +26,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 CONFIG += c++17
 
+LIBS += ""C:\Users\Timoniche\Desktop\Graphics\build-ConvexHull-Desktop_Qt_5_12_0_MinGW_64_bit-Debug\debug\HullLib.dll""
+
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
@@ -35,7 +37,9 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     glwidget.h \
-    glworker.h
+    glworker.h \
+    hulllib.h \
+    hulllib_global.h
 
 FORMS += \
         mainwindow.ui
@@ -43,3 +47,10 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../../../Documents/build-HullLib-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/release/ -lHullLib
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../../../Documents/build-HullLib-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/debug/ -lHullLib
+else:unix: LIBS += -L$$PWD/../../../Documents/build-HullLib-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/ -lHullLib
+
+INCLUDEPATH += $$PWD/../../../Documents/build-HullLib-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/debug
+DEPENDPATH += $$PWD/../../../Documents/build-HullLib-Desktop_Qt_5_12_0_MinGW_64_bit-Debug/debug

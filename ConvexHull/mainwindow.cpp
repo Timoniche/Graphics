@@ -15,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     setWindowTitle("Convex Hull");
-    qRegisterMetaType<data_t>("data_t");
+    qRegisterMetaType<vector_of_points>("vector_of_points");
     qRegisterMetaType<size_t>("size_t");
     ui->splitter->setSizes(QList<int>() << 100 << 200);
     bool ok1 = connect(ui->genButton, &QPushButton::clicked,
@@ -25,8 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
     bool ok2 = connect(&_thread, &QThread::finished, _worker, &QObject::deleteLater);
     bool ok3 = connect(ui->hullButton, &QPushButton::clicked,
                        this, &MainWindow::hull_button_clicked);
-    bool ok4 = connect(this, &MainWindow::operate_hull,
-                       _worker, &GLWorker::gift_wrapping);
+//    bool ok4 = connect(this, &MainWindow::operate_hull,
+//                       _worker, &GLWorker::gift_wrapping);
     bool ok5 = connect(_worker, &GLWorker::send_line,
                        ui->openGLWidget, &GLWidget::draw_line);
     _thread.start();
@@ -50,9 +50,11 @@ MainWindow::MainWindow(QWidget *parent) :
                         this, &MainWindow::update_bar);
     bool ok15 = connect(_worker, &GLWorker::send_bar_value,
                         this, &MainWindow::get_bar_value);
-    Q_ASSERT(ok1 && ok2 && ok3 && ok4 && ok5 && ok6 &&
+    bool ok16 = connect(_worker, &GLWorker::send_vector_lines,
+                        ui->openGLWidget, &GLWidget::draw_vector_lines);
+    Q_ASSERT(ok1 && ok2 && ok3 /**&& ok4**/ && ok5 && ok6 &&
              ok7 && ok8 && ok9 && ok10 && ok11 && ok12 &&
-             ok13 && ok14 && ok15);
+             ok13 && ok14 && ok15 && ok16);
 }
 
 void MainWindow::get_bar_value(size_t val)
@@ -62,13 +64,13 @@ void MainWindow::get_bar_value(size_t val)
 
 void MainWindow::graham_button_clicked()
 {
-    std::sort(_counter_clock_wise_hull.begin(),
-              _counter_clock_wise_hull.end(),
-              [](const std::pair<float, float> &a,
-              const std::pair<float, float> &b)
-    {
-        return a.second < b.second;
-    });
+//    std::sort(_counter_clock_wise_hull.begin(),
+//              _counter_clock_wise_hull.end(),
+//              [](const Point &a,
+//              const Point &b)
+//    {
+//        return a.y < b.y;
+//    });
     emit operate_graham(_counter_clock_wise_hull);
 }
 
@@ -82,14 +84,14 @@ void MainWindow::set_max_index_bar(size_t val) {
 
 void MainWindow::hull_button_clicked()
 {
-    std::sort(_counter_clock_wise_hull.begin(),
-              _counter_clock_wise_hull.end(),
-              [](const std::pair<float, float> &a,
-              const std::pair<float, float> &b)
-    {
-        return a.second < b.second;
-    });
-    emit operate_hull(_counter_clock_wise_hull);
+//    std::sort(_counter_clock_wise_hull.begin(),
+//              _counter_clock_wise_hull.end(),
+//              [](const Point &a,
+//              const Point &b)
+//    {
+//        return a.y < b.y;
+//    });
+//    emit operate_hull(_counter_clock_wise_hull);
 }
 
 void MainWindow::square_button_clicked()

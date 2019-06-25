@@ -7,6 +7,10 @@
 #include <QOpenGLFunctions>
 #include <QThread>
 
+#include "hulllib.h"
+
+typedef std::vector<Point> vector_of_points;
+
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
     Q_OBJECT
@@ -26,6 +30,7 @@ public slots:
     void get_square_from(float);
     void random_points();
     void draw_line(float, float, float, float);
+    void draw_vector_lines(vector_of_points const&);
 private:
     int m_points = 10;
     float m_radius = 0.5;

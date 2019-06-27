@@ -20,10 +20,16 @@ public:
 
 struct HULLLIBSHARED_EXPORT Point
 {
-    float x;
-    float y;
+    float x = -1;
+    float y = -1;
 
+    Point();
     Point(float x, float y);
+    Point(Point const &p);
+    Point(Point &&p);
+    Point &operator=(Point const &p);
+    Point &operator=(Point &&p);
+    void swap(Point& p);
 };
 
 typedef std::vector<Point> vector_of_points;

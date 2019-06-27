@@ -32,7 +32,7 @@ public slots:
     void get_bar_value(size_t);
 
 signals:
-    //void operate_hull(vector_of_points const&);
+    void operate_hull(vector_of_points const&);
     void operate_graham(vector_of_points const&);
 private:
     std::unique_ptr<Ui::MainWindow> ui;

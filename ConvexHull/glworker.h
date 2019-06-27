@@ -15,7 +15,7 @@ public:
     GLWorker();
     typedef std::vector<Point> vector_of_points;
 public slots:
-//    void gift_wrapping(vector_of_points const &);
+    void gift_wrapping(vector_of_points const &);
     void graham(vector_of_points const &);
 signals:
     void send_line(float, float, float, float);

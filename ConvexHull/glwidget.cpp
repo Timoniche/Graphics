@@ -77,7 +77,7 @@ void GLWidget::paintGL()
 void GLWidget::draw_vector_lines(vector_of_points const& data)
 {
     makeCurrent();
-    glLineWidth(40);
+    glLineWidth(5);
     glColor3f(1, 0, 0);
     glBegin(GL_LINE_LOOP);
     for (auto& p : data)

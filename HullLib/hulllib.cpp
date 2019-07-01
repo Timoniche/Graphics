@@ -223,18 +223,6 @@ bool HullLib::equal(float x1, float y1, float x2, float y2) const
 float HullLib::a_tan2_from_0_to_2pi(float y, float x) const
 {
     float tmp = atan2f(y, x);
-    if (std::abs(x) < eps)
-    {
-        if (y > 0)
-        {
-            tmp = PI_F_2;
-        } else if (y < 0)
-        {
-            tmp = -PI_F_2;
-        } else {
-            tmp = 0;
-        }
-    }
     if (tmp < 0)
     {
         tmp += PI_F * 2;

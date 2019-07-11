@@ -31,13 +31,13 @@ void clearWindow(void);
 void setColor(double red, double green, double blue);
 
 // graphic object primatives
-void drawTriangle(int x1, int y1,int x2,int y2,int x3,int y3);
+void drawTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
 void drawLine(int x1, int y1, int x2, int y2);
 void drawBox(int x1, int y1, int x2, int y2);
 void drawCircle(int x1, int y1, int radius);
 
 // filled graphics primatives
-void drawFilledTriangle(int x1, int y1,int x2,int y2,int x3,int y3);
+void drawFilledTriangle(int x1, int y1, int x2, int y2, int x3, int y3);
 void drawFilledBox(int x1, int y1, int x2, int y2);
 void drawFilledCircle(int x1, int y1, int radius);
 

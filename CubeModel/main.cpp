@@ -7,7 +7,7 @@
 
 #include "Graphics.h"
 
-void drawScene(void) {
+void drawScene() {
     clearWindow();
     setColor(YELLOW);
     drawFilledTriangle(200,125,100,375,200,375);

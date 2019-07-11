@@ -18,5 +18,7 @@ link_directories(${OPENGL_gl_LIBRARY})
 include_directories(${FREEGLUT_INCLUDE_DIRS})
 link_directories(${FREEGLUT_LIBRARY_DIRS})
 
+add_executable(cube RotatingCube.cpp Graphics.h Graphics.cpp)
 add_executable(demo ${SOURCE_FILES})
 target_link_libraries(demo libfreeglut.a libfreeglut_static.a ${FREEGLUT_LIBRARIES} ${OpenGL_LIBRARIES})
+target_link_libraries(cube libfreeglut.a libfreeglut_static.a ${FREEGLUT_LIBRARIES} ${OpenGL_LIBRARIES})

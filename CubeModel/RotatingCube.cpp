@@ -1,6 +1,6 @@
 #include <GL/glut.h>
-//#include <GL/glaux.h>
 #include <stdio.h>
+#include "Graphics.h"
 
 bool fullscreen = false;
 bool mouseDown = false;
@@ -18,11 +18,11 @@ GLuint LoadTexture(const char *filename)
     unsigned char *data;
     FILE *file;
     file = fopen(filename, "rb");
-    if (file == NULL) return 0;
+    if (file == nullptr) return 0;
     width = 256;
     height = 256;
-    data = (unsigned char *) malloc(width * height * 3);
-    fread(data, width * height * 3, 1, file);
+    data = (unsigned char *) malloc(static_cast<size_t>(width * height * 3));
+    fread(data, static_cast<size_t>(width * height * 3), 1, file);
     fclose(file);
 
     for (int i = 0; i < width * height; ++i)
@@ -115,10 +115,26 @@ void drawBox()
 
 bool init()
 {
-    texture[0] = LoadTexture("C:/Users/Timoniche/Desktop/Graphics/CubeModel/TallGreenGrass.bmp");
-    glEnable(GL_TEXTURE_2D);
+    //
+    static float amb[] =  {0.5, 0.5, 0.5, 1};
+    static float dif[] =  {1.0, 1.0, 0.0, 1.0};
 
-    glClearColor(0.93f, 0.93f, 0.93f, 0.0f);
+    float light_diffuse[] = {100.0, 0.0, 100.0, 100.0};
+    float light_position[] = {-100.0f, 100.0, 1.0, 0.0};
+
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glEnable(GL_LIGHT0);
+    glEnable(GL_LIGHT1);
+    glEnable(GL_LIGHTING);
+    glMaterialfv(GL_FRONT, GL_AMBIENT, amb);
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, dif);
+    //
+
+    texture[0] = LoadTexture("./TallGreenGrass.bmp");
+
+    glEnable(GL_TEXTURE_2D);
+    glClearColor(BLACK, 0.0f);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);

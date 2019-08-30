@@ -25,7 +25,8 @@ public slots:
     void draw_line(int x0, int y0, int x1, int y1, QRgb color);
     void draw_line(vec2i t0, vec2i t1, QRgb color);
     void triangle(vec2i t0, vec2i t1, vec2i t2, QRgb color);
-    void triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color, QRgb fill);
+    void triangle_filled(vec3i t0, vec3i t1, vec3i t2, QRgb color);
+    void triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color);
 protected:
     void paintEvent(QPaintEvent* event);
 
@@ -33,6 +34,7 @@ private:
     int m_width = 1 << 10;
     int m_height = 1 << 9;
     std::unique_ptr<QImage> m_image;
+    int* zbuffer;
 };
 
 #endif // DGLWIDGET_H

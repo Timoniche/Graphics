@@ -27,8 +27,13 @@ public:
     vec2() : x(0), y(0) {}
     vec2(T x, T y) : x(x), y(y) {}
 public:
-    T getX() const { return x; }
-    T getY() const { return y; }
+    T get_x() const { return x; }
+    T get_y() const { return y; }
+    T& operator[](const int i)
+    {
+        if (i == 0) return x;
+        return y;
+    }
 
     vec2<T> operator +(const vec2<T> &rhs) const
     {
@@ -55,10 +60,20 @@ private:
 public:
     vec3() : x(0), y(0), z(0) {}
     vec3(T x, T y, T z) : x(x), y(y), z(z) {}
+    template<typename U> vec3<T>(vec3<U> const &v);
 public:
-    T getX() const { return x; }
-    T getY() const { return y; }
-    T getZ() const { return z; }
+    T get_x() const { return x; }
+    T get_y() const { return y; }
+    T get_z() const { return z; }
+    T& operator[](const int i)
+    {
+        switch (i)
+        {
+            case 0: return x;
+            case 1: return y;
+        }
+        return z;
+    }
 
     vec3<T> operator +(const vec3<T> &rhs) const
     {
@@ -90,7 +105,10 @@ public:
     {
         return *this = (*this) * (1.f / norm());
     }
+
 };
+template<> template<> vec3<int>::vec3(vec3<float> const &v);
+template<> template<> vec3<float>::vec3(vec3<int> const &v);
 //_______________________________________________________________________
 
 }

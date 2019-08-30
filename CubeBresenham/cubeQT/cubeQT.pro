@@ -27,7 +27,8 @@ CONFIG += c++17
 SOURCES += \
         main.cpp \
         mainwindow.cpp \
-    dglwidget.cpp
+    dglwidget.cpp \
+    dglgeometry.cpp
 
 HEADERS += \
         mainwindow.h \

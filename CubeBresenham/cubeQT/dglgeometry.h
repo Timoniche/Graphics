@@ -109,6 +109,9 @@ public:
 };
 template<> template<> vec3<int>::vec3(vec3<float> const &v);
 template<> template<> vec3<float>::vec3(vec3<int> const &v);
+
+void sort_vec2i_y(vec2i& t0, vec2i& t1, vec2i& t2);
+void sort_vec3i_y(vec3i& t0, vec3i& t1, vec3i& t2);
 //_______________________________________________________________________
 
 }

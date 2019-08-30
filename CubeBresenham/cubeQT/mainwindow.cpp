@@ -6,7 +6,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    resize(ui->widget->width(), ui->widget->height());
+    resize(ui->widget->width() + 20, ui->widget->height() + 20);
     setWindowTitle("DGL");
 }
 

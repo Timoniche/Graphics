@@ -9,38 +9,30 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
 {
     resize(m_width, m_height);
     m_image = std::make_unique<QImage>(m_width, m_height, QImage::Format_RGB32);
-    m_image->setColorCount(1);
-    m_image->setColor(0, qRgba(0, 0, 0, 255));
-    m_image->fill(0);
-
+    m_image->fill(qRgba(0, 0, 0, 255));
+    zbuffer = new int[size_t(m_width * m_height)];
+    std::fill(zbuffer, zbuffer + m_width * m_height,
+              std::numeric_limits<int>::min());
 
     //paint sth_____________________________________________________________________
-    draw_line(0, 0, m_width, m_height, qRgba(255, 255, 255, 255));
+    draw_line(0, 0, m_width - 1, m_height - 1, qRgba(255, 255, 255, 255));
     vec2i t0[3] = {vec2i(10, 70),   vec2i(50, 160),  vec2i(70, 80)};
     vec2i t1[3] = {vec2i(180, 50),  vec2i(150, 1),   vec2i(70, 180)};
     vec2i t2[3] = {vec2i(180, 150), vec2i(120, 160), vec2i(130, 180)};
     triangle_filled(t0[0], t0[1], t0[2], qRgba(0, 255, 255, 255));
     triangle(t1[0], t1[1], t1[2], qRgba(255, 0, 255, 255));
     triangle(t2[0], t2[1], t2[2], qRgba(255, 255, 0, 255));
-
-    zbuffer = new int[size_t(m_width * m_height)];
-    std::fill(zbuffer, zbuffer + m_width * m_height,
-              std::numeric_limits<int>::min());
     vec3i delta =  {vec3i(200, 200, 0)};
     vec3i z0[3] = {vec3i(10, 70, 0) + delta,   vec3i(50, 160, 0) + delta,  vec3i(70, 80, 0) + delta};
-    vec3i z1[3] = {vec3i(180, 50, 5) + delta,  vec3i(150, 1, 5) + delta,   vec3i(70, 180, 0) + delta};
-    vec3i z2[3] = {vec3i(180, 150, 0) + delta, vec3i(120, 160, 0) + delta, vec3i(130, 180, 0) + delta};
     vec3i p0[3] = {vec3i(10, 70, 1) + delta,   vec3i(50, 160, -1) + delta,  vec3i(70, 80, 1) + delta};
-    vec3i p1[3] = {vec3i(180, 50, -1) + delta,  vec3i(150, 1, 1) + delta,   vec3i(70, 180, -1) + delta};
-    vec3i p2[3] = {vec3i(180, 150, 1) + delta, vec3i(120, 160, -1) + delta, vec3i(130, 180, 1) + delta};
-    triangle_filled(z0[0], z1[1], z2[2], qRgba(255, 0, 0, 255));
-    triangle_filled(p0[0], p1[1], p2[2], qRgba(0, 255, 0, 255));
+    triangle_filled(z0[0], z0[1], z0[2], qRgba(255, 0, 0, 255));
+    triangle_filled(p0[0], p0[1], p0[2], qRgba(0, 255, 0, 255));
     //____________________________________________________________________________
 }
 
 dglWidget::~dglWidget()
 {
-    delete [] zbuffer;
+    delete[] zbuffer;
 }
 
 void dglWidget::paintEvent(QPaintEvent* event)
@@ -99,33 +91,23 @@ void dglWidget::triangle(vec2i t0, vec2i t1, vec2i t2, QRgb color)
 void dglWidget::triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color)
 {
     using std::swap;
-    if (t0.get_y() > t1.get_y()) { swap(t0, t1); }
-    if (t0.get_y() > t2.get_y()) { swap(t0, t2); }
-    if (t1.get_y() > t2.get_y()) { swap(t1, t2); }
+    sort_vec2i_y(t0, t1, t2);
     int low = t0.get_y();
     int mid = t1.get_y();
     int high = t2.get_y();
     int whole_height = high - low;
-    for (int y = low; y <= mid; y++) {
-        int segment_height = mid - low + 1;
+    for (int y = low; y <= high; y++) {
+        bool second_half = y > mid;
+        int segment_height = second_half ? high - mid + 1 :
+                                           mid - low + 1;
         float alpha = static_cast<float>(y - low) / whole_height;
-        float beta  = static_cast<float>(y - low) / segment_height;
+        float beta  = second_half ? static_cast<float>(y - mid) / segment_height :
+                                    static_cast<float>(y - low) / segment_height;
         vec2i A = t0 + (t2 - t0) * alpha;
-        vec2i B = t0 + (t1 - t0) * beta;
+        vec2i B = second_half ? t1 + (t2 - t1) * beta :
+                                t0 + (t1 - t0) * beta;
         if (A.get_x() > B.get_x()) { swap(A, B); }
         for (int j= A.get_x(); j <= B.get_x(); j++)
-        {
-            set_pixel(j, y, color);
-        }
-    }
-    for (int y = mid; y <= high; y++) {
-        int segment_height = high - mid + 1;
-        float alpha = static_cast<float>(y - low) / whole_height;
-        float beta  = static_cast<float>(y - mid) / segment_height;
-        vec2i A = t0 + (t2 - t0) * alpha;
-        vec2i B = t1 + (t2 - t1) * beta;
-        if (A.get_x() > B.get_x()) { swap(A, B); }
-        for (int j = A.get_x(); j <= B.get_x(); j++)
         {
             set_pixel(j, y, color);
         }
@@ -135,20 +117,19 @@ void dglWidget::triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color)
 void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2, QRgb color) {
     using std::swap;
     if (t0.get_y() == t1.get_y() && t0.get_y() == t2.get_y()) { return; }
-    if (t0.get_y() > t1.get_y()) { swap(t0, t1); }
-    if (t0.get_y() > t2.get_y()) { swap(t0, t2); }
-    if (t1.get_y() > t2.get_y()) { swap(t1, t2); }
+    sort_vec3i_y(t0, t1, t2);
     int total_height = t2.get_y() - t0.get_y();
-    for (int i = 0; i < total_height; i++) {
-        bool second_half = i > t1.get_y() - t0.get_y() || t1.get_y() == t0.get_y();
+    for (int y = 0; y < total_height; y++) {
+        bool second_half = y >= t1.get_y() - t0.get_y();
         int segment_height = second_half ? t2.get_y() - t1.get_y() : t1.get_y() - t0.get_y();
-        float alpha = static_cast<float>(i) / total_height;
-        float beta  = static_cast<float>(i - (second_half ? t1.get_y()-t0.get_y() : 0)) / segment_height;
+        float alpha = static_cast<float>(y) / total_height;
+        float beta  = static_cast<float>(y - (second_half ? t1.get_y()-t0.get_y() : 0)) / segment_height;
         vec3i A = t0 + vec3f(t2 - t0) * alpha;
         vec3i B = second_half ? t1 + vec3f(t2 - t1) * beta : t0 + vec3f(t1 - t0) * beta;
         if (A.get_x() > B.get_x()) { swap(A, B); }
         for (int j = A.get_x(); j <= B.get_x(); j++) {
-            float phi = B.get_x() == A.get_x() ? 1.0f : static_cast<float>(j - A.get_x()) / static_cast<float>(B.get_x() - A.get_x());
+            float phi = B.get_x() == A.get_x() ? 1.0f : static_cast<float>(j - A.get_x()) /
+                                                 static_cast<float>(B.get_x() - A.get_x());
             vec3i P = vec3f(A) + vec3f(B - A) * phi;
             int idx = P.get_x() + P.get_y() * m_width;
             if (zbuffer[idx] < P.get_z()) {

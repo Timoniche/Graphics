@@ -27,6 +27,7 @@ public slots:
     void triangle(vec2i t0, vec2i t1, vec2i t2, QRgb color);
     void triangle_filled(vec3i t0, vec3i t1, vec3i t2, QRgb color);
     void triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color);
+
 protected:
     void paintEvent(QPaintEvent* event);
 

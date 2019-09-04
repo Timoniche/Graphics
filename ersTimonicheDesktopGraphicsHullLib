@@ -1,0 +1,161 @@
+[33mcommit 82857e9a136ed5c52cdb392c5b5cb3c7bd6db4a4[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Thu Aug 29 14:04:13 2019 +0300
+
+    basic geometry
+
+[33mcommit e87deff5ae07babd0f294fe23b19fc93249d6bca[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Mon Aug 19 02:57:19 2019 +0300
+
+    texture added
+
+[33mcommit fb430e9c1f0007f746470fb5a97809edf969ef6a[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Fri Jul 12 00:41:04 2019 +0300
+
+    cube added
+
+[33mcommit 3c29b89bc80aee2054e4b38d23834c56a5eca125[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Wed Jul 10 19:14:50 2019 +0300
+
+    cube init
+
+[33mcommit 48d1df113b734c589530fd4cf4e28d13c590e20e[m
+Author: Dmitrii Dulaev <37038612+Timoniche@users.noreply.github.com>
+Date:   Mon Jul 1 23:49:51 2019 +0300
+
+    Update hulllib.cpp
+
+[33mcommit fe67385d7a71175bd8f10a68c08788b4354d0737[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Thu Jun 27 05:47:46 2019 +0300
+
+    readme
+
+[33mcommit 4826b0b5b87ecca7c55bbc2cafd822674022489c[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Thu Jun 27 05:46:43 2019 +0300
+
+    reformat
+
+[33mcommit 7a3133c7ae4a59f6737c2c23b27ce3a066520339[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Thu Jun 27 05:36:50 2019 +0300
+
+    rearranged
+
+[33mcommit 35c0f24d6fe109aa658503582d201a6eec83050d[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Thu Jun 27 05:35:19 2019 +0300
+
+    rearranged
+
+[33mcommit 81f8a8f110d73f9797e3106ae0ad88f177c33ca4[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Tue Jun 25 04:24:38 2019 +0300
+
+    dll lib
+
+[33mcommit e7353db0244087863850fdb5be4683ab7c805c22[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Fri Jun 14 17:20:36 2019 +0300
+
+    bit mask
+
+[33mcommit 276b926aee007a2afa7de9e9bd4d472ff46597b0[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Fri Jun 14 02:49:59 2019 +0300
+
+    further Square fix
+
+[33mcommit d5f5e96372c68b66b571bcaae42b5b52ed679a55[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Fri Jun 14 02:06:05 2019 +0300
+
+    progressBar
+
+[33mcommit 387f2ccfc1b1230085fd740d26a452bbc8c73f55[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Thu Jun 13 23:08:08 2019 +0300
+
+    graham
+
+[33mcommit 4ad193d5b0d14c27cd52833b6ca085f537f97128[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Tue Jun 11 16:16:52 2019 +0300
+
+    square added
+
+[33mcommit 8600305e209f5abac769cfb36b6bf55c5f09d51d[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Tue Jun 11 14:48:48 2019 +0300
+
+    circle area, bits init, double to float
+
+[33mcommit 9fe8af098ce7593fc67a69ed58875fa61fc2f797[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Sat Jun 8 11:21:17 2019 +0300
+
+    brute-force
+
+[33mcommit 6838e999c6c14c1c12985f8d1fe985d1674dffb0[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Sat Jun 8 07:15:35 2019 +0300
+
+    visualization
+
+[33mcommit 2cc585649d179288e3e186ab7184a8c65206fc9b[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Fri Jun 7 11:39:41 2019 +0300
+
+    own typeid
+
+[33mcommit 3c6f77ab87e2d7a35a2001f5cd85e5c73509619e[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Thu Jun 6 20:12:35 2019 +0300
+
+    random points
+
+[33mcommit edb7a928312673323b413693fb8907623609d76c[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Wed Jun 5 00:48:57 2019 +0300
+
+    opengl qt
+
+[33mcommit 98354c629cc4955b2f7b4015b3af505bbed64408[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Tue Jun 4 22:27:05 2019 +0300
+
+    convexhull init
+
+[33mcommit 5fe59313e88e762965f8875f78ea4f0fb318b8a4[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Tue Jun 4 22:23:15 2019 +0300
+
+    convex_hull init
+
+[33mcommit c216278122588b5677dc3227c29122db8a80fd97[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Mon Jun 3 01:41:54 2019 +0300
+
+    T& added
+
+[33mcommit b01375bafd5e1c8402b4104ba29b833e20b2f9fd[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Sat Jun 1 20:29:24 2019 +0300
+
+    void add
+
+[33mcommit 25abf57bbba9e1f9a534e4b1ded9b51f7bb48c7a[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Sat Jun 1 02:35:02 2019 +0300
+
+    map impl rtti
+
+[33mcommit 13141f879e37156009bfc8c0b204b085afd22e15[m
+Author: Dmitrii Dulaev <dmitriidulaev@gmail.com>
+Date:   Sat Jun 1 01:12:40 2019 +0300
+
+    init

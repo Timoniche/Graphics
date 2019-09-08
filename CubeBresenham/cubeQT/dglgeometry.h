@@ -2,6 +2,7 @@
 #define DGLGEOMETRY_H
 
 #include <cmath>
+#include <iostream>
 
 namespace DGL {
 
@@ -29,7 +30,7 @@ public:
 public:
     T get_x() const { return x; }
     T get_y() const { return y; }
-    T& operator[](const int i)
+    T& operator[](const size_t i)
     {
         if (i == 0) return x;
         return y;
@@ -65,7 +66,7 @@ public:
     T get_x() const { return x; }
     T get_y() const { return y; }
     T get_z() const { return z; }
-    T& operator[](const int i)
+    T& operator[](const size_t i)
     {
         switch (i)
         {
@@ -106,12 +107,23 @@ public:
         return *this = (*this) * (1.f / norm());
     }
 
+    template<typename U>
+    friend std::ostream& operator<<(std::ostream& s, vec3<U>& v);
+
 };
 template<> template<> vec3<int>::vec3(vec3<float> const &v);
 template<> template<> vec3<float>::vec3(vec3<int> const &v);
 
+template <typename T>
+std::ostream& operator<<(std::ostream& s, vec3<T>& v)
+{
+    s << "(" << v.x << ", " << v.y << ", " << v.z << ")\n";
+    return s;
+}
+
 void sort_vec2i_y(vec2i& t0, vec2i& t1, vec2i& t2);
 void sort_vec3i_y(vec3i& t0, vec3i& t1, vec3i& t2);
+
 //_______________________________________________________________________
 
 }

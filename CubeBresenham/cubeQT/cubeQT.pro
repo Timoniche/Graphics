@@ -33,7 +33,8 @@ SOURCES += \
 HEADERS += \
         mainwindow.h \
     dglwidget.h \
-    dglgeometry.h
+    dglgeometry.h \
+    matrix.h
 
 FORMS += \
         mainwindow.ui

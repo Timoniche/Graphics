@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "Graphics.h"
 
+#include <iostream>
 bool fullscreen = false;
 bool mouseDown = false;
 
@@ -148,8 +149,8 @@ void display()
     glLoadIdentity();
 
     gluLookAt(
-            0.0f, 0.0f, 3.0f,
-            0.0f, 0.0f, 0.0f,
+            5.0f, 5.0f, 20.0f, //eyeX eyeY eyeZ
+            3.0f, 3.0f, 0.0f,
             0.0f, 1.0f, 0.0f);
 
     glRotatef(xrot, 1.0f, 0.0f, 0.0f);
@@ -166,11 +167,23 @@ void resize(int w, int h)
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
+
     glViewport(0, 0, w, h);
 
-    gluPerspective(45.0f, 1.0f * w / h, 1.0f, 100.0f);
+    gluPerspective(45.0f, 4.0f / 3.0f, 1.0f, 100.0f);
 
+    int proj[16];
+    glGetIntegerv(GL_VIEWPORT, proj);
+
+    std::cout << "w:" << w << " h:" << h << std::endl;
+    for (int i = 0; i < 16; ++i)
+    {
+        std::cout << proj[i] << " ";
+    }
+    std::cout << std::endl << std::endl;
     glMatrixMode(GL_MODELVIEW);
+
+
     glLoadIdentity();
 }
 
@@ -227,7 +240,7 @@ void mouseMotion(int x, int y)
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
-
+    resize(1 << 10, 1 << 9);
     glutInitWindowPosition(50, 50);
     glutInitWindowSize(500, 500);
 

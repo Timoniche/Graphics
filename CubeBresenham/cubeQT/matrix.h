@@ -1,3 +1,8 @@
+/**
+ * Timoniche vec<T> extend
+ */
+
+
 /*****************************************************************************/
 /* Name: matrix.h                                                            */
 /* Uses: Class for matrix math functions.                                    */
@@ -52,7 +57,8 @@
 #include "dglgeometry.h"
 
 // Class forward for identity matrix.
-template< class TYPE > class IdentityMatrix;
+template<class TYPE>
+class IdentityMatrix;
 
 //=============================================================================
 // Matrix template class
@@ -60,7 +66,7 @@ template< class TYPE > class IdentityMatrix;
 // so that the values of the matrix can be of any type that allows basic
 // arithmetic.
 //=============================================================================
-template< class TYPE = int >
+template<class TYPE = int>
 class Matrix
 {
 protected:
@@ -69,24 +75,24 @@ protected:
     unsigned columns;
 
     // Storage for matrix data.
-    std::vector< std::vector< TYPE > > matrix;
+    std::vector<std::vector<TYPE> > matrix;
 
     // Order sub-index for rows.
     //   Use: matrix[ order[ row ] ][ column ].
-    unsigned * order;
+    unsigned *order;
 
     //-------------------------------------------------------------
     // Return the number of leading zeros in the given row.
     //-------------------------------------------------------------
     unsigned getLeadingZeros
-    (
-            // Row to count
-            unsigned row
+            (
+                    // Row to count
+                    unsigned row
             ) const
     {
         TYPE const ZERO = static_cast< TYPE >( 0 );
         unsigned column = 0;
-        while ( ZERO == matrix[ row ][ column ] )
+        while (ZERO == matrix[row][column])
             ++column;
 
         return column;
@@ -101,45 +107,45 @@ protected:
     //------------------------------------------------------------
     void reorder()
     {
-        unsigned * zeros = new unsigned[ rows ];
+        unsigned *zeros = new unsigned[rows];
 
-        for ( unsigned row = 0; row < rows; ++row )
+        for (unsigned row = 0; row < rows; ++row)
         {
-            order[ row ] = row;
-            zeros[ row ] = getLeadingZeros( row );
+            order[row] = row;
+            zeros[row] = getLeadingZeros(row);
         }
 
-        for ( unsigned row = 0; row < (rows-1); ++row )
+        for (unsigned row = 0; row < (rows - 1); ++row)
         {
             unsigned swapRow = row;
-            for ( unsigned subRow = row + 1; subRow < rows; ++subRow )
+            for (unsigned subRow = row + 1; subRow < rows; ++subRow)
             {
-                if ( zeros[ order[ subRow ] ] < zeros[ order[ swapRow ] ] )
+                if (zeros[order[subRow]] < zeros[order[swapRow]])
                     swapRow = subRow;
             }
 
-            unsigned hold    = order[ row ];
-            order[ row ]     = order[ swapRow ];
-            order[ swapRow ] = hold;
+            unsigned hold = order[row];
+            order[row] = order[swapRow];
+            order[swapRow] = hold;
         }
 
-        delete zeros;
+        delete[] zeros;
     }
 
     //-------------------------------------------------------------
     // Divide a row by given value.  An elementary row operation.
     //-------------------------------------------------------------
     void divideRow
-    (
-            // Row to divide.
-            unsigned row,
+            (
+                    // Row to divide.
+                    unsigned row,
 
-            // Divisor.
-            TYPE const & divisor
+                    // Divisor.
+                    TYPE const &divisor
             )
     {
-        for ( unsigned column = 0; column < columns; ++column )
-            matrix[ row ][ column ] /= divisor;
+        for (unsigned column = 0; column < columns; ++column)
+            matrix[row][column] /= divisor;
     }
 
     //-------------------------------------------------------------
@@ -147,45 +153,45 @@ protected:
     // operation.
     //-------------------------------------------------------------
     void rowOperation
-    (
-            unsigned row,
-            unsigned addRow,
-            TYPE const & scale
+            (
+                    unsigned row,
+                    unsigned addRow,
+                    TYPE const &scale
             )
     {
-        for ( unsigned column = 0; column < columns; ++column )
-            matrix[ row ][ column ] += matrix[ addRow ][ column ] * scale;
+        for (unsigned column = 0; column < columns; ++column)
+            matrix[row][column] += matrix[addRow][column] * scale;
     }
 
     //-------------------------------------------------------------
     // Allocate memory for matrix data.
     //-------------------------------------------------------------
     void allocate
-    (
-            unsigned rowNumber,
-            unsigned columnNumber
+            (
+                    unsigned rowNumber,
+                    unsigned columnNumber
             )
     {
         // Allocate order integers.
-        order = new unsigned[ rowNumber ];
+        order = new unsigned[rowNumber];
 
         // Setup matrix sizes.
-        matrix.resize( rowNumber );
-        for ( unsigned row = 0; row < rowNumber; ++row )
-            matrix[ row ].resize( columnNumber );
+        matrix.resize(rowNumber);
+        for (unsigned row = 0; row < rowNumber; ++row)
+            matrix[row].resize(columnNumber);
     }
 
     //-------------------------------------------------------------
     // Free memory used for matrix data.
     //-------------------------------------------------------------
     void deallocate
-    (
-            unsigned rowNumber,
-            unsigned columnNumber
+            (
+                    unsigned rowNumber,
+                    unsigned columnNumber
             )
     {
         // Free memory used for storing order (if there is any).
-        if ( 0 != rowNumber )
+        if (0 != rowNumber)
             delete[] order;
     }
 
@@ -199,7 +205,7 @@ public:
         assert(rows == 4 && "should be 4 x 1");
         assert(columns == 1 && "should be 4 x 1");
         assert(matrix[3][0] != 0 && "not a point");
-        return DGL::vec3f(matrix[0][0], matrix[1][0], matrix[2][0]) *(1 / matrix[3][0]);
+        return DGL::vec3f(matrix[0][0], matrix[1][0], matrix[2][0]) * (1 / matrix[3][0]);
     }
 
     // Used for matrix concatenation.
@@ -229,15 +235,15 @@ public:
     // Get an element of the matrix.
     //-------------------------------------------------------------
     TYPE get
-    (
-            unsigned row,   // Which row.
-            unsigned column // Which column.
+            (
+                    unsigned row,   // Which row.
+                    unsigned column // Which column.
             ) const
     {
-        assert( row < rows );
-        assert( column < columns );
+        assert(row < rows);
+        assert(column < columns);
 
-        return matrix[ row ][ column ];
+        return matrix[row][column];
     }
 
     //-------------------------------------------------------------
@@ -245,36 +251,36 @@ public:
     // This will create matrices L and U such that A=LxU
     //-------------------------------------------------------------
     void LU_Decomposition
-    (
-            Matrix & upper,
-            Matrix & lower
+            (
+                    Matrix &upper,
+                    Matrix &lower
             ) const
     {
-        assert( rows == columns );
+        assert(rows == columns);
 
         TYPE const ZERO = static_cast< TYPE >( 0 );
 
         upper = *this;
         lower = *this;
 
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
-                lower.matrix[ row ][ column ] = ZERO;
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
+                lower.matrix[row][column] = ZERO;
 
-        for ( unsigned row = 0; row < rows; ++row )
+        for (unsigned row = 0; row < rows; ++row)
         {
-            TYPE value = upper.matrix[ row ][ row ];
-            if ( ZERO != value )
+            TYPE value = upper.matrix[row][row];
+            if (ZERO != value)
             {
-                upper.divideRow( row, value );
-                lower.matrix[ row ][ row ] = value;
+                upper.divideRow(row, value);
+                lower.matrix[row][row] = value;
             }
 
-            for ( unsigned subRow = row + 1; subRow < rows; ++subRow )
+            for (unsigned subRow = row + 1; subRow < rows; ++subRow)
             {
-                TYPE value = upper.matrix[ subRow ][ row ];
-                upper.rowOperation( subRow, row, -value );
-                lower.matrix[ subRow ][ row ] = value;
+                TYPE value = upper.matrix[subRow][row];
+                upper.rowOperation(subRow, row, -value);
+                lower.matrix[subRow][row] = value;
             }
         }
     }
@@ -283,22 +289,22 @@ public:
     // Set an element in the matrix.
     //-------------------------------------------------------------
     void put
-    (
-            unsigned row,
-            unsigned column,
-            TYPE const & value
+            (
+                    unsigned row,
+                    unsigned column,
+                    TYPE const &value
             )
     {
-        assert( row < rows );
-        assert( column < columns );
+        assert(row < rows);
+        assert(column < columns);
 
-        matrix[ row ][ column ] = value;
+        matrix[row][column] = value;
     }
 
     //
     // Extend
     //
-    std::vector<TYPE>& operator[](const size_t x)
+    std::vector<TYPE> &operator[](const size_t x)
     {
         return matrix[x];
     }
@@ -311,27 +317,27 @@ public:
     // ( 0, rows - 1, 0, columns - 1 ).
     //-------------------------------------------------------------
     Matrix getSubMatrix
-    (
-            unsigned startRow,
-            unsigned endRow,
-            unsigned startColumn,
-            unsigned endColumn,
-            unsigned const * newOrder = NULL
+            (
+                    unsigned startRow,
+                    unsigned endRow,
+                    unsigned startColumn,
+                    unsigned endColumn,
+                    unsigned const *newOrder = NULL
             )
     {
-        Matrix subMatrix( endRow - startRow + 1, endColumn - startColumn + 1 );
+        Matrix subMatrix(endRow - startRow + 1, endColumn - startColumn + 1);
 
-        for ( unsigned row = startRow; row <= endRow; ++row )
+        for (unsigned row = startRow; row <= endRow; ++row)
         {
             unsigned subRow;
-            if ( NULL == newOrder )
+            if (NULL == newOrder)
                 subRow = row;
             else
-                subRow = newOrder[ row ];
+                subRow = newOrder[row];
 
-            for ( unsigned column = startColumn; column <= endColumn; ++column )
-                subMatrix.matrix[ row - startRow ][ column - startColumn ] =
-                        matrix[ subRow ][ column ];
+            for (unsigned column = startColumn; column <= endColumn; ++column)
+                subMatrix.matrix[row - startRow][column - startColumn] =
+                        matrix[subRow][column];
         }
 
         return subMatrix;
@@ -341,22 +347,22 @@ public:
     // Return a single column from the matrix.
     //-------------------------------------------------------------
     Matrix getColumn
-    (
-            unsigned column
+            (
+                    unsigned column
             )
     {
-        return getSubMatrix( 0, rows - 1, column, column );
+        return getSubMatrix(0, rows - 1, column, column);
     }
 
     //-------------------------------------------------------------
     // Return a single row from the matrix.
     //-------------------------------------------------------------
     Matrix getRow
-    (
-            unsigned row
+            (
+                    unsigned row
             )
     {
-        return getSubMatrix( row, row, 0, columns - 1 );
+        return getSubMatrix(row, row, 0, columns - 1);
     }
 
     //-------------------------------------------------------------
@@ -367,50 +373,50 @@ public:
         TYPE const ZERO = static_cast< TYPE >( 0 );
 
         // For each row...
-        for ( unsigned rowIndex = 0; rowIndex < rows; ++rowIndex )
+        for (unsigned rowIndex = 0; rowIndex < rows; ++rowIndex)
         {
             // Reorder the rows.
             reorder();
 
-            unsigned row = order[ rowIndex ];
+            unsigned row = order[rowIndex];
 
             // Divide row down so first term is 1.
-            unsigned column = getLeadingZeros( row );
-            TYPE divisor = matrix[ row ][ column ];
-            if ( ZERO != divisor )
+            unsigned column = getLeadingZeros(row);
+            TYPE divisor = matrix[row][column];
+            if (ZERO != divisor)
             {
-                divideRow( row, divisor );
+                divideRow(row, divisor);
 
                 // Subtract this row from all subsequent rows.
-                for ( unsigned subRowIndex = ( rowIndex + 1 ); subRowIndex < rows; ++subRowIndex )
+                for (unsigned subRowIndex = (rowIndex + 1); subRowIndex < rows; ++subRowIndex)
                 {
-                    unsigned subRow = order[ subRowIndex ];
-                    if ( ZERO != matrix[ subRow ][ column ] )
+                    unsigned subRow = order[subRowIndex];
+                    if (ZERO != matrix[subRow][column])
                         rowOperation
                                 (
-                                    subRow,
-                                    row,
-                                    -matrix[ subRow ][ column ]
-                                    );
+                                        subRow,
+                                        row,
+                                        -matrix[subRow][column]
+                                );
                 }
             }
 
         }
 
         // Back substitute all lower rows.
-        for ( unsigned rowIndex = ( rows - 1 ); rowIndex > 0; --rowIndex )
+        for (unsigned rowIndex = (rows - 1); rowIndex > 0; --rowIndex)
         {
-            unsigned row = order[ rowIndex ];
-            unsigned column = getLeadingZeros( row );
-            for ( unsigned subRowIndex = 0; subRowIndex < rowIndex; ++subRowIndex )
+            unsigned row = order[rowIndex];
+            unsigned column = getLeadingZeros(row);
+            for (unsigned subRowIndex = 0; subRowIndex < rowIndex; ++subRowIndex)
             {
-                unsigned subRow = order[ subRowIndex ];
+                unsigned subRow = order[subRowIndex];
                 rowOperation
                         (
-                            subRow,
-                            row,
-                            -matrix[ subRow ][ column ]
-                            );
+                                subRow,
+                                row,
+                                -matrix[subRow][column]
+                        );
             }
         }
 
@@ -425,32 +431,31 @@ public:
         TYPE result = static_cast< TYPE >( 0 );
 
         // Must have a square matrix to even bother.
-        assert( rows == columns );
+        assert(rows == columns);
 
-        if ( rows > 2 )
+        if (rows > 2)
         {
             int sign = 1;
-            for ( unsigned column = 0; column < columns; ++column )
+            for (unsigned column = 0; column < columns; ++column)
             {
                 TYPE subDeterminant;
 
-                Matrix subMatrix = Matrix( *this, 0, column );
+                Matrix subMatrix = Matrix(*this, 0, column);
 
-                subDeterminant  = subMatrix.determinant();
-                subDeterminant *= matrix[ 0 ][ column ];
+                subDeterminant = subMatrix.determinant();
+                subDeterminant *= matrix[0][column];
 
-                if ( sign > 0 )
+                if (sign > 0)
                     result += subDeterminant;
                 else
                     result -= subDeterminant;
 
                 sign = -sign;
             }
-        }
-        else
+        } else
         {
-            result = ( matrix[ 0 ][ 0 ] * matrix[ 1 ][ 1 ] )
-                    - ( matrix[ 0 ][ 1 ] * matrix[ 1 ][ 0 ] );
+            result = (matrix[0][0] * matrix[1][1])
+                     - (matrix[0][1] * matrix[1][0]);
         }
 
         return result;
@@ -461,21 +466,21 @@ public:
     // Calculate a dot product between this and an other matrix.
     //-------------------------------------------------------------
     TYPE dotProduct
-    (
-            Matrix const & otherMatrix
+            (
+                    Matrix const &otherMatrix
             ) const
     {
         // Dimentions of each matrix must be the same.
-        assert( rows == otherMatrix.rows );
-        assert( columns == otherMatrix.columns );
+        assert(rows == otherMatrix.rows);
+        assert(columns == otherMatrix.columns);
 
         TYPE result = static_cast< TYPE >( 0 );
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
             {
                 result +=
-                        matrix[ row ][ column ]
-                        * otherMatrix.matrix[ row ][ column ];
+                        matrix[row][column]
+                        * otherMatrix.matrix[row][column];
             }
 
         return result;
@@ -487,13 +492,13 @@ public:
     //-------------------------------------------------------------
     Matrix const getTranspose() const
     {
-        Matrix result( columns, rows );
+        Matrix result(columns, rows);
 
         // Transpose the matrix by filling the result's rows will
         // these columns, and vica versa.
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
-                result.matrix[ column ][ row ] = matrix[ row ][ column ];
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
+                result.matrix[column][row] = matrix[row][column];
 
         return result;
 
@@ -515,10 +520,10 @@ public:
         // Concatenate the identity matrix onto this matrix.
         Matrix inverseMatrix
                 (
-                    *this,
-                    IdentityMatrix< TYPE >( rows, columns ),
-                    TO_RIGHT
-                    );
+                        *this,
+                        IdentityMatrix<TYPE>(rows, columns),
+                        TO_RIGHT
+                );
 
         // Row reduce this matrix.  This will result in the identity
         // matrix on the left, and the inverse matrix on the right.
@@ -527,15 +532,15 @@ public:
         // Copy the inverse matrix data back to this matrix.
         Matrix result
                 (
-                    inverseMatrix.getSubMatrix
-                    (
-                        0,
-                        rows - 1,
-                        columns,
-                        columns + columns - 1,
-                        inverseMatrix.order
-                        )
-                    );
+                        inverseMatrix.getSubMatrix
+                                (
+                                        0,
+                                        rows - 1,
+                                        columns,
+                                        columns + columns - 1,
+                                        inverseMatrix.order
+                                )
+                );
 
         return result;
 
@@ -558,21 +563,21 @@ public:
     //-------------------------------------------------------------
     // Add by an other matrix.
     //-------------------------------------------------------------
-    Matrix const operator +
-    (
-            Matrix const & otherMatrix
+    Matrix const operator+
+            (
+                    Matrix const &otherMatrix
             ) const
     {
-        assert( otherMatrix.rows == rows );
-        assert( otherMatrix.columns == columns );
+        assert(otherMatrix.rows == rows);
+        assert(otherMatrix.columns == columns);
 
-        Matrix result( rows, columns );
+        Matrix result(rows, columns);
 
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
-                result.matrix[ row ][ column ] =
-                        matrix[ row ][ column ]
-                        + otherMatrix.matrix[ row ][ column ];
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
+                result.matrix[row][column] =
+                        matrix[row][column]
+                        + otherMatrix.matrix[row][column];
 
         return result;
     }
@@ -580,9 +585,9 @@ public:
     //-------------------------------------------------------------
     // Add self by an other matrix.
     //-------------------------------------------------------------
-    Matrix const & operator +=
-    (
-            Matrix const & otherMatrix
+    Matrix const &operator+=
+            (
+                    Matrix const &otherMatrix
             )
     {
         *this = *this + otherMatrix;
@@ -592,21 +597,21 @@ public:
     //-------------------------------------------------------------
     // Subtract by an other matrix.
     //-------------------------------------------------------------
-    Matrix const operator -
-    (
-            Matrix const & otherMatrix
+    Matrix const operator-
+            (
+                    Matrix const &otherMatrix
             ) const
     {
-        assert( otherMatrix.rows == rows );
-        assert( otherMatrix.columns == columns );
+        assert(otherMatrix.rows == rows);
+        assert(otherMatrix.columns == columns);
 
-        Matrix result( rows, columns );
+        Matrix result(rows, columns);
 
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
-                result.matrix[ row ][ column ] =
-                        matrix[ row ][ column ]
-                        - otherMatrix.matrix[ row ][ column ];
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
+                result.matrix[row][column] =
+                        matrix[row][column]
+                        - otherMatrix.matrix[row][column];
 
         return result;
     }
@@ -614,9 +619,9 @@ public:
     //-------------------------------------------------------------
     // Subtract self by an other matrix.
     //-------------------------------------------------------------
-    Matrix const & operator -=
-    (
-            Matrix const & otherMatrix
+    Matrix const &operator-=
+            (
+                    Matrix const &otherMatrix
             )
     {
         *this = *this - otherMatrix;
@@ -626,26 +631,26 @@ public:
     //-------------------------------------------------------------
     // Matrix multiplication.
     //-------------------------------------------------------------
-    Matrix const operator *
-    (
-            Matrix const & otherMatrix
+    Matrix const operator*
+            (
+                    Matrix const &otherMatrix
             ) const
     {
         TYPE const ZERO = static_cast< TYPE >( 0 );
 
-        assert( otherMatrix.rows == columns );
+        assert(otherMatrix.rows == columns);
 
-        Matrix result( rows, otherMatrix.columns );
+        Matrix result(rows, otherMatrix.columns);
 
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < otherMatrix.columns; ++column )
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < otherMatrix.columns; ++column)
             {
-                result.matrix[ row ][ column ] = ZERO;
+                result.matrix[row][column] = ZERO;
 
-                for ( unsigned index = 0; index < columns; ++index )
-                    result.matrix[ row ][ column ] +=
-                            matrix[ row ][ index ]
-                            * otherMatrix.matrix[ index ][ column ];
+                for (unsigned index = 0; index < columns; ++index)
+                    result.matrix[row][column] +=
+                            matrix[row][index]
+                            * otherMatrix.matrix[index][column];
             }
 
         return result;
@@ -654,9 +659,9 @@ public:
     //-------------------------------------------------------------
     // Multiply self by matrix.
     //-------------------------------------------------------------
-    Matrix const & operator *=
-    (
-            Matrix const & otherMatrix
+    Matrix const &operator*=
+            (
+                    Matrix const &otherMatrix
             )
     {
         *this = *this * otherMatrix;
@@ -666,16 +671,16 @@ public:
     //-------------------------------------------------------------
     // Multiply by scalar constant.
     //-------------------------------------------------------------
-    Matrix const operator *
-    (
-            TYPE const & scalar
+    Matrix const operator*
+            (
+                    TYPE const &scalar
             ) const
     {
-        Matrix result( rows, columns );
+        Matrix result(rows, columns);
 
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
-                result.matrix[ row ][ column ] = matrix[ row ][ column ] * scalar;
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
+                result.matrix[row][column] = matrix[row][column] * scalar;
 
         return result;
     }
@@ -683,9 +688,9 @@ public:
     //-------------------------------------------------------------
     // Multiply self by scalar constant.
     //-------------------------------------------------------------
-    Matrix const & operator *=
-    (
-            TYPE const & scalar
+    Matrix const &operator*=
+            (
+                    TYPE const &scalar
             )
     {
         *this = *this * scalar;
@@ -695,25 +700,25 @@ public:
     //-------------------------------------------------------------
     // Copy matrix.
     //-------------------------------------------------------------
-    Matrix & operator =
-    (
-            Matrix const & otherMatrix
+    Matrix &operator=
+            (
+                    Matrix const &otherMatrix
             )
     {
-        if ( this == &otherMatrix )
+        if (this == &otherMatrix)
             return *this;
 
         // Release memory currently in use.
-        deallocate( rows, columns );
+        deallocate(rows, columns);
 
-        rows    = otherMatrix.rows;
+        rows = otherMatrix.rows;
         columns = otherMatrix.columns;
-        allocate( rows, columns );
+        allocate(rows, columns);
 
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
-                matrix[ row ][ column ] =
-                        otherMatrix.matrix[ row ][ column ];
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
+                matrix[row][column] =
+                        otherMatrix.matrix[row][column];
 
         return *this;
     }
@@ -733,16 +738,16 @@ public:
     //    Matrix< int > matrix( 3, 2 );
     //    matrix = data;
     //-------------------------------------------------------------
-    Matrix & operator =
-    (
-            TYPE const * data
+    Matrix &operator=
+            (
+                    TYPE const *data
             )
     {
         unsigned index = 0;
 
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
-                matrix[ row ][ column ] = data[ index++ ];
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
+                matrix[row][column] = data[index++];
 
         return *this;
     }
@@ -750,15 +755,15 @@ public:
     //-----------------------------------------------------------------------
     // Return true if this matrix is the same of parameter.
     //-----------------------------------------------------------------------
-    bool operator ==
-    (
-            Matrix const & value
+    bool operator==
+            (
+                    Matrix const &value
             ) const
     {
         bool isEqual = true;
-        for ( unsigned row = 0; row < rows; ++row )
-            for ( unsigned column = 0; column < columns; ++column )
-                if ( matrix[ row ][ column ] != value.matrix[ row ][ column ] )
+        for (unsigned row = 0; row < rows; ++row)
+            for (unsigned column = 0; column < columns; ++column)
+                if (matrix[row][column] != value.matrix[row][column])
                     isEqual = false;
 
         return isEqual;
@@ -767,12 +772,12 @@ public:
     //-----------------------------------------------------------------------
     // Return true if this matrix is NOT the same of parameter.
     //-----------------------------------------------------------------------
-    bool operator !=
-    (
-            Matrix const & value
+    bool operator!=
+            (
+                    Matrix const &value
             ) const
     {
-        return !( *this == value );
+        return !(*this == value);
     }
 
     //-------------------------------------------------------------
@@ -781,11 +786,11 @@ public:
     // somewhere else sometime after construction.
     //-------------------------------------------------------------
     Matrix()
-        :
-          rows( 0 ),
-          columns( 0 )
+            :
+            rows(0),
+            columns(0)
     {
-        allocate( 0, 0 );
+        allocate(0, 0);
     }
 
     //-------------------------------------------------------------
@@ -804,26 +809,26 @@ public:
     // Constructor using rows and columns.
     //-------------------------------------------------------------
     Matrix
-    (
-            unsigned rowsParameter,
-            unsigned columnsParameter
+            (
+                    unsigned rowsParameter,
+                    unsigned columnsParameter
             )
-        :
-          rows( rowsParameter ),
-          columns( columnsParameter )
+            :
+            rows(rowsParameter),
+            columns(columnsParameter)
     {
         TYPE const ZERO = static_cast< TYPE >( 0 );
 
         // Allocate memory for new matrix.
-        allocate( rows, columns );
+        allocate(rows, columns);
 
         // Fill matrix with zero.
-        for ( unsigned row = 0; row < rows; ++row )
+        for (unsigned row = 0; row < rows; ++row)
         {
-            order[ row ] = row;
+            order[row] = row;
 
-            for ( unsigned column = 0; column < columns; ++column )
-                matrix[ row ][ column ] = ZERO;
+            for (unsigned column = 0; column < columns; ++column)
+                matrix[row][column] = ZERO;
         }
     }
 
@@ -833,45 +838,45 @@ public:
     // row/column.
     //-------------------------------------------------------------
     Matrix
-    (
-            Matrix const & copyMatrix,
-            unsigned omittedRow    = INT_MAX,
-            unsigned omittedColumn = INT_MAX
+            (
+                    Matrix const &copyMatrix,
+                    unsigned omittedRow = INT_MAX,
+                    unsigned omittedColumn = INT_MAX
             )
     {
         // Start with the number of rows/columns from matrix to be copied.
-        rows    = copyMatrix.getRows();
+        rows = copyMatrix.getRows();
         columns = copyMatrix.getColumns();
 
         // If a row is omitted, then there is one less row.
-        if ( INT_MAX != omittedRow  )
+        if (INT_MAX != omittedRow)
             rows--;
 
         // If a column is omitted, then there is one less column.
-        if ( INT_MAX != omittedColumn )
+        if (INT_MAX != omittedColumn)
             columns--;
 
         // Allocate memory for new matrix.
-        allocate( rows, columns );
+        allocate(rows, columns);
 
         unsigned rowIndex = 0;
-        for ( unsigned row = 0; row < rows; ++row )
+        for (unsigned row = 0; row < rows; ++row)
         {
             // If this row is to be skipped...
-            if ( rowIndex == omittedRow )
+            if (rowIndex == omittedRow)
                 rowIndex++;
 
             // Set default order.
-            order[ row ] = row;
+            order[row] = row;
 
             unsigned columnIndex = 0;
-            for ( unsigned column = 0; column < columns; ++column )
+            for (unsigned column = 0; column < columns; ++column)
             {
                 // If this column is to be skipped...
-                if ( columnIndex == omittedColumn )
+                if (columnIndex == omittedColumn)
                     columnIndex++;
 
-                matrix[ row ][ column ] = copyMatrix.matrix[ rowIndex ][ columnIndex ];
+                matrix[row][column] = copyMatrix.matrix[rowIndex][columnIndex];
 
                 columnIndex++;
             }
@@ -887,34 +892,34 @@ public:
     //   A = [B | C]
     //-------------------------------------------------------------
     Matrix
-    (
-            Matrix const & copyMatrixA,
-            Matrix const & copyMatrixB,
-            Position position = TO_RIGHT
+            (
+                    Matrix const &copyMatrixA,
+                    Matrix const &copyMatrixB,
+                    Position position = TO_RIGHT
             )
     {
-        unsigned rowOffset    = 0;
+        unsigned rowOffset = 0;
         unsigned columnOffset = 0;
 
-        if ( TO_RIGHT == position )
+        if (TO_RIGHT == position)
             columnOffset = copyMatrixA.columns;
         else
             rowOffset = copyMatrixA.rows;
 
-        rows    = copyMatrixA.rows    + rowOffset;
+        rows = copyMatrixA.rows + rowOffset;
         columns = copyMatrixA.columns + columnOffset;
 
         // Allocate memory for new matrix.
-        allocate( rows, columns );
+        allocate(rows, columns);
 
-        for ( unsigned row = 0; row < copyMatrixA.rows; ++row )
-            for ( unsigned column = 0; column < copyMatrixA.columns; ++column )
-                matrix[ row ][ column ] = copyMatrixA.matrix[ row ][ column ];
+        for (unsigned row = 0; row < copyMatrixA.rows; ++row)
+            for (unsigned column = 0; column < copyMatrixA.columns; ++column)
+                matrix[row][column] = copyMatrixA.matrix[row][column];
 
-        for ( unsigned row = 0; row < copyMatrixB.rows; ++row )
-            for ( unsigned column = 0; column < copyMatrixB.columns; ++column )
-                matrix[ row + rowOffset ][ column + columnOffset ] =
-                        copyMatrixB.matrix[ row ][ column ];
+        for (unsigned row = 0; row < copyMatrixB.rows; ++row)
+            for (unsigned column = 0; column < copyMatrixB.columns; ++column)
+                matrix[row + rowOffset][column + columnOffset] =
+                        copyMatrixB.matrix[row][column];
     }
 
     //-------------------------------------------------------------
@@ -923,7 +928,7 @@ public:
     ~Matrix()
     {
         // Release memory.
-        deallocate( rows, columns );
+        deallocate(rows, columns);
     }
 
 };
@@ -931,28 +936,28 @@ public:
 //=============================================================================
 // Class for identity matrix.
 //=============================================================================
-template< class TYPE >
-class IdentityMatrix : public Matrix< TYPE >
+template<class TYPE>
+class IdentityMatrix : public Matrix<TYPE>
 {
 public:
     IdentityMatrix
-    (
-            unsigned rowsParameter,
-            unsigned columnsParameter
+            (
+                    unsigned rowsParameter,
+                    unsigned columnsParameter
             )
-        :
-          Matrix< TYPE >( rowsParameter, columnsParameter )
+            :
+            Matrix<TYPE>(rowsParameter, columnsParameter)
     {
         TYPE const ZERO = static_cast< TYPE >( 0 );
-        TYPE const ONE  = static_cast< TYPE >( 1 );
+        TYPE const ONE = static_cast< TYPE >( 1 );
 
-        for ( unsigned row = 0; row < Matrix< TYPE >::rows; ++row )
+        for (unsigned row = 0; row < Matrix<TYPE>::rows; ++row)
         {
-            for ( unsigned column = 0; column < Matrix< TYPE >::columns; ++column )
-                if ( row == column )
-                    Matrix< TYPE >::matrix[ row ][ column ] = ONE;
+            for (unsigned column = 0; column < Matrix<TYPE>::columns; ++column)
+                if (row == column)
+                    Matrix<TYPE>::matrix[row][column] = ONE;
                 else
-                    Matrix< TYPE >::matrix[ row ][ column ] = ZERO;
+                    Matrix<TYPE>::matrix[row][column] = ZERO;
         }
     }
 };
@@ -960,20 +965,20 @@ public:
 //-----------------------------------------------------------------------------
 // Stream operator used to convert matrix class to a string.
 //-----------------------------------------------------------------------------
-template< class TYPE >
-std::ostream & operator<<
-(
-        // Stream data to place string.
-        std::ostream & stream,
+template<class TYPE>
+std::ostream &operator<<
+        (
+                // Stream data to place string.
+                std::ostream &stream,
 
-        // A matrix.
-        Matrix< TYPE > const & matrix
+                // A matrix.
+                Matrix<TYPE> const &matrix
         )
 {
-    for ( unsigned row = 0; row < matrix.getRows(); ++row )
+    for (unsigned row = 0; row < matrix.getRows(); ++row)
     {
-        for ( unsigned column = 0; column < matrix.getColumns(); ++column )
-            stream << "\t" << matrix.get( row , column );
+        for (unsigned column = 0; column < matrix.getColumns(); ++column)
+            stream << "\t" << matrix.get(row, column);
 
         stream << std::endl;
     }

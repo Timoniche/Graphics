@@ -14,6 +14,10 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     zbuffer = new float[size_t(m_width * m_height)];
     std::fill(zbuffer, zbuffer + m_width * m_height,
               std::numeric_limits<int>::min());
+
+    perspective(90.0f, 1.f / 1.f, near, far);
+    dgl_viewport(0, 0, m_width, m_height);
+    VP = viewport * proj;
     paintEvent(nullptr);
 }
 
@@ -24,23 +28,29 @@ dglWidget::~dglWidget()
 
 void dglWidget::mouseMoveEvent(QMouseEvent *event)
 {
-    int dx = event->x() - lastPos.x();
-    int dy = event->y() - lastPos.y();
+    float dx = event->x() - last_pos.x();
+    float dy = event->y() - last_pos.y();
 
     if (event->buttons() & Qt::LeftButton)
     {
-        m_eye[0] += dx / 100.f;
-        m_eye[1] += dy / 100.f;
+        m_eye[0] += dx / 1000.f;
+        m_eye[1] += dy / 1000.f;
     }
-    lastPos = event->pos();
+    last_pos = event->pos();
     update();
 }
 
 void dglWidget::wheelEvent(QWheelEvent *event)
 {
-    m_eye[2] += event->delta() / 200.f;
+    m_eye[2] += float(event->delta()) / 200.f;
     update();
 }
+
+void dglWidget::test_draw1()
+{
+
+}
+
 
 void dglWidget::test_draw()
 {
@@ -103,17 +113,13 @@ void dglWidget::test_draw()
 void dglWidget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-    image = QImage(m_width, m_height, QImage::Format_RGB32);
-    image.fill(qRgba(0, 0, 0, 255)); //todo: speed up
+    //m_image->fill(qRgba(0, 0, 0, 255)); //todo: speed up
     using std::endl, std::cout;
     dgl_look_at(m_eye, m_center, m_up);
-    perspective(90.0f, near, far);
-    dgl_viewport(0, 0, m_width, m_height);
-    MVP = Matrix<float>(((viewport) * (proj) * (model_view)));
-
+    MVP = VP * model_view;
     test_draw();
+    //test_draw1();
     QPainter painter{this};
-    *m_image = image;
     painter.drawImage(0, 0, *m_image);
 }
 
@@ -126,7 +132,8 @@ void dglWidget::set_pixel(int x, int y, QRgb color)
     {
         return;
     }
-    image.setPixel(x, y, color);
+    auto *rowData = reinterpret_cast<QRgb*>(m_image->scanLine(y));
+    rowData[x] = color;
 }
 
 void dglWidget::draw_line(int x0, int y0, int x1, int y1, QRgb color)
@@ -310,15 +317,19 @@ void dglWidget::draw_quad(vec3f *v, int colorR, int colorG, int colorB, float al
     triangle_filled(v[0], v[1], v[3], colorR, colorB, colorG, alp);
 }
 
-void dglWidget::perspective(const float &angleOfView, const float &near, const float &far)
+void dglWidget::perspective(const float &fovy,
+                            const float &aspect,
+                            const float &zNear,
+                            const float &zFar)
 {
-    Matrix<float> M = Matrix<float>(4, 4);
-    auto scale = static_cast<float>(1 / tan(angleOfView * 0.5 * M_PI / 180));
-    M[0][0] = scale;
-    M[1][1] = scale;
-    M[2][2] = -far / (far - near);
-    M[3][2] = -far * near / (far - near);
-    M[2][3] = -1;
-    M[3][3] = 0;
-    proj = M;
+    float const rad = fovy;
+    float const tanHalfFovy = tanf(rad / 2.0f);
+    Matrix<float> Result(4, 4);
+    Result.put(0, 0, (1 / (aspect * tanHalfFovy)));
+    Result.put(1, 1, (1 / (tanHalfFovy)));
+    Result.put(2, 2, (-(zFar + zNear) / (zFar - zNear)));
+    Result.put(3, 2, (-1));
+    Result.put(2, 3, (-(2 * zFar * zNear) / (zFar - zNear)));
+    Result.transpose();
+    proj = Result;
 }

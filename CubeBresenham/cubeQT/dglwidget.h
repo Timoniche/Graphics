@@ -45,12 +45,14 @@ public slots:
 
     void dgl_viewport(int x, int y, int w, int h);
 
-    void perspective(const float &angleOfView, const float &near, const float &far);
+    void perspective(const float &angleOfView, const float &aspect, const float &near, const float &far);
 
     void draw_quad(vec3f *v, int colorR, int colorG, int colorB, float alp);
 
 public:
     void test_draw();
+
+    void test_draw1();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -63,20 +65,20 @@ private:
     const int m_width = 1 << 10;
     const int m_height = 1 << 10;
     std::unique_ptr<QImage> m_image;
-    QImage image;
     Matrix<float> model_view;
     Matrix<float> proj;
     Matrix<float> viewport;
     Matrix<float> MVP;
+    Matrix<float> VP;
     float *zbuffer;
-    vec3f m_eye{0.f, 0.0f, 10.f};
+    vec3f m_eye{0.f, 0.0f, 5.f};
     float near = 0.1f;
     float far = 100.f;
     vec3f m_center{0.f, 0.f, 0.f};
     vec3f m_up{0.0f, 1.0f, 0.0f};
     vec3f m_light_v{0.88f, -0.11f, 0.44f};
     float eps = 0.001f;
-    QPoint lastPos{};
+    QPoint last_pos{};
 };
 
 #endif // DGLWIDGET_H

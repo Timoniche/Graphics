@@ -9,8 +9,16 @@
 #include <QMoveEvent>
 #include <QPoint>
 #include <QWheelEvent>
+#include <QString>
+#include <QThread>
+#include <QTimer>
+//#include <future>
+//#include <condition_variable>
+#include <thread>
+
 #include "dglgeometry.h"
 #include "matrix.h"
+#include "worker.h"
 
 using namespace DGL;
 
@@ -47,12 +55,21 @@ public slots:
 
     void perspective(const float &angleOfView, const float &aspect, const float &near, const float &far);
 
-    void draw_quad(vec3f *v, int colorR, int colorG, int colorB, float alp);
+    void draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3, int colorR, int colorG, int colorB, float alp);
+
+public slots:
+
+    void onLineEditTextChanged(const QString& text);
+
+    void update_image();
+
+    void clean_image();
 
 public:
-    void test_draw();
 
-    void test_draw1();
+    void cout_matrices();
+
+    void test_cube();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -62,6 +79,7 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
+    const int FIVE_SECONDS = 5'000;
     const int m_width = 1 << 10;
     const int m_height = 1 << 10;
     std::unique_ptr<QImage> m_image;
@@ -71,14 +89,22 @@ private:
     Matrix<float> MVP;
     Matrix<float> VP;
     float *zbuffer;
-    vec3f m_eye{0.f, 0.0f, 5.f};
+    vec3f m_eye{2.0f, 3.0f, 5.0f};
     float near = 0.1f;
     float far = 100.f;
-    vec3f m_center{0.f, 0.f, 0.f};
+    vec3f m_center{.0f, .0f, .0f};
     vec3f m_up{0.0f, 1.0f, 0.0f};
-    vec3f m_light_v{0.88f, -0.11f, 0.44f};
+    vec3f m_light_v{-0.88f, -0.531f, 0.44f};
     float eps = 0.001f;
+    float x_VP = 0;
+    float y_VP = 0;
+    float xw_VP = m_width;
+    float yh_VP = m_height;
     QPoint last_pos{};
+    QTimer m_timer;
+public:
+    QThread *m_thread = nullptr;
+    Worker *m_worker = nullptr;
 };
 
 #endif // DGLWIDGET_H

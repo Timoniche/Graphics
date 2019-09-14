@@ -16,7 +16,40 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
-     <widget class="dglWidget" name="widget" native="true"/>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QWidget" name="widget_2" native="true">
+       <widget class="QLineEdit" name="lineEdit">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>131</width>
+          <height>41</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>0.0f 0.0f 5.0f</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>20</y>
+          <width>51</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>eye</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="dglWidget" name="widget" native="true"/>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -28,13 +28,19 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     dglwidget.cpp \
-    dglgeometry.cpp
+    dglgeometry.cpp \
+    dgl.cpp \
+    worker.cpp \
+    shader.cpp
 
 HEADERS += \
         mainwindow.h \
     dglwidget.h \
     dglgeometry.h \
-    matrix.h
+    matrix.h \
+    dgl.h \
+    worker.h \
+    shader.h
 
 FORMS += \
         mainwindow.ui

@@ -123,13 +123,13 @@ bool init()
     float light_diffuse[] = {100.0, 0.0, 100.0, 100.0};
     float light_position[] = {-100.0f, 100.0, 1.0, 0.0};
 
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_LIGHT1);
-    glEnable(GL_LIGHTING);
-    glMaterialfv(GL_FRONT, GL_AMBIENT, amb);
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, dif);
+//    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+//    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+//    glEnable(GL_LIGHT0);
+//    glEnable(GL_LIGHT1);
+//    glEnable(GL_LIGHTING);
+//    glMaterialfv(GL_FRONT, GL_AMBIENT, amb);
+//    glMaterialfv(GL_FRONT, GL_DIFFUSE, dif);
     //
 
     texture[0] = LoadTexture("./TallGreenGrass.bmp");
@@ -149,10 +149,18 @@ void display()
     glLoadIdentity();
 
     gluLookAt(
-            5.0f, 5.0f, 20.0f, //eyeX eyeY eyeZ
-            3.0f, 3.0f, 0.0f,
+            0.0f, 0.0f, 5.0f, //eyeX eyeY eyeZ
+            0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f);
+    float proj[16];
+    glGetFloatv(GL_MODELVIEW_MATRIX, proj);
 
+    //std::cout << "w:" << w << " h:" << h << std::endl;
+    std::cout << "ModelView\n";
+    for (int i = 0; i < 16; ++i)
+    {
+        std::cout << proj[i] << " ";
+    }
     glRotatef(xrot, 1.0f, 0.0f, 0.0f);
     glRotatef(yrot, 0.0f, 1.0f, 0.0f);
 
@@ -170,16 +178,8 @@ void resize(int w, int h)
 
     glViewport(0, 0, w, h);
 
-    gluPerspective(45.0f, 4.0f / 3.0f, 1.0f, 100.0f);
+    gluPerspective(80.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
-    int proj[16];
-    glGetIntegerv(GL_VIEWPORT, proj);
-
-    std::cout << "w:" << w << " h:" << h << std::endl;
-    for (int i = 0; i < 16; ++i)
-    {
-        std::cout << proj[i] << " ";
-    }
     std::cout << std::endl << std::endl;
     glMatrixMode(GL_MODELVIEW);
 

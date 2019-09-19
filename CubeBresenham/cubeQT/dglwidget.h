@@ -80,8 +80,10 @@ protected:
 
 private:
     const int FIVE_SECONDS = 5'000;
-    const int m_width = 1 << 10;
-    const int m_height = 1 << 10;
+//    const int m_width = 1 << 10;
+//    const int m_height = 1 << 10;
+    const int m_width = 500;
+    const int m_height = 500;
     std::unique_ptr<QImage> m_image;
     Matrix<float> model_view;
     Matrix<float> proj;
@@ -89,13 +91,13 @@ private:
     Matrix<float> MVP;
     Matrix<float> VP;
     float *zbuffer;
-    vec3f m_eye{2.0f, 3.0f, 5.0f};
+    vec3f m_eye{0.0f, 0.0f, 4.0f};
     float near = 0.1f;
     float far = 100.f;
     vec3f m_center{.0f, .0f, .0f};
     vec3f m_up{0.0f, 1.0f, 0.0f};
-    vec3f m_light_v{-0.88f, -0.531f, 0.44f};
-    float eps = 0.001f;
+    vec3f m_light_v{-0.88f, -0.531f, 0.44f}; //todo normalize;
+    float eps = 0.0001f;
     float x_VP = 0;
     float y_VP = 0;
     float xw_VP = m_width;

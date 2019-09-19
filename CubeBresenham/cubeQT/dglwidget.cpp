@@ -21,9 +21,9 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     m_image->fill(qRgba(0, 0, 0, 255));
     zbuffer = new float[size_t(m_width * m_height)];
     std::fill(zbuffer, zbuffer + m_width * m_height,
-              std::numeric_limits<int>::min());
+              std::numeric_limits<int>::max());
 
-    perspective(80.0f, 3.0f / 3.0f, near, far);
+    perspective(80.0f, 4.0f / 3.0f, near, far);
     dgl_viewport(0, 0, m_width, m_height);
     VP = viewport * proj;
 
@@ -41,15 +41,16 @@ dglWidget::~dglWidget()
     delete[] zbuffer;
 }
 
-void dglWidget::mouseMoveEvent(QMouseEvent *event)
+//todo: make dglRotate
+void dglWidget::mouseMoveEvent(QMouseEvent *event) /**NOT USE IT**/
 {
     float dx = event->x() - last_pos.x();
     float dy = event->y() - last_pos.y();
 
     if (event->buttons() & Qt::LeftButton)
     {
-        m_eye[0] += dx / 1000.f;
-        m_eye[1] += dy / 1000.f;
+        m_eye[0] += dx / 300.f;
+        m_eye[1] += dy / 300.f;
     }
     last_pos = event->pos();
     repaint();
@@ -63,7 +64,7 @@ void dglWidget::wheelEvent(QWheelEvent *event)
 
 void dglWidget::clean_image()
 {
-    m_image->fill(qRgba(0, 0, 0, 255));
+    //m_image->fill(qRgba(0, 0, 0, 255));
     //promise.set_value();
 }
 
@@ -117,13 +118,20 @@ void dglWidget::update_image()
 
 void dglWidget::paintEvent(QPaintEvent *event)
 {
+    std::fill(zbuffer, zbuffer + m_width * m_height,
+              std::numeric_limits<int>::max());
     Q_UNUSED(event);
+    QPainter pnt{this};
+//    pnt.begin(m_image.get());
+//    pnt.fillRect(0, 0, m_width, m_height, Qt::black);
+//    pnt.end();
+
     dgl_look_at(m_eye, m_center, m_up);
     cout_matrices();
-    //m_image->fill(qRgba(0, 0, 0, 255));
-    QPainter painter{this};
+    m_image->fill(qRgba(0, 0, 0, 255));
+    //QPainter painter{this};
     test_cube();
-    painter.drawImage(0, 0, *m_image);
+    pnt.drawImage(0, 0, *m_image);
 
 }
 
@@ -144,8 +152,15 @@ void dglWidget::set_pixel(int x, int y, QRgb color)
     {
         return;
     }
+
+//    QPainter pnt{this};
+//    pnt.begin(m_image.get());
+//    pnt.setPen(QPen(color));
+//    pnt.drawPoint(x, y);
+//    pnt.end();
     auto *rowData = reinterpret_cast<QRgb*>(m_image->scanLine(y));
     rowData[x] = color;
+
 }
 
 void dglWidget::draw_line(int x0, int y0, int x1, int y1, QRgb color)
@@ -223,25 +238,41 @@ void dglWidget::test_cube()
         }
     };
 
+    int a[6][3] { {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
+                  {255, 255, 0}, {255, 0, 255}, {0, 255, 255}};
     for (int i = 0; i < 6; i++)
     {
         vec3f tmp[4];
         for (int j = 0; j < 4; j++)
         {
-            //Matrix<float> m = proj * model_view * Matrix<float>(cube[i][j]);
-            Matrix<float> m = proj * model_view * Matrix<float>(cube[i][j]);
-            std::cout << "cube [-1, 1] matrix before shrink" << std::endl << m << std::endl;
-            //vec3f a = m.get_projection();
-            vec3f a(m[0][0], m[1][0], m[2][0]);
-            std::cout << "vertex: " << a << std::endl;
-            tmp[j] = vec3f((a[0] +1.f) * m_width / 2.f,
-                    (a[1]+1.f) * m_height / 2.f, a[2]);
-            std::cout << "final: " << tmp[j];
-            //tmp[j] = shader.count_coordinates(cube[i][j]);
+            Matrix<float> m = Matrix<float>(cube[i][j]);
+            m.transpose();
+            m = m * model_view * proj;
+            //std::cout « "m\n" « m « std::endl;
+            vec3f mr3 = m.get_projection();
+            //std::cout « "mr3\n" « mr3 « std::endl;
+            Matrix<float> g = Matrix<float>(mr3);
+            //g.transpose();
+            g = viewport * g;
+            tmp[j] = g.get_projection();
+            std::cout << "point\n" << tmp[j] << std::endl;
         }
         draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
-                0, 0, 255, 255);
+                a[i][0], a[i][1], a[i][2], 255);
     }
+
+//                vec3f aaa = {0.89f, 0.23f, 0.17f};
+//                Matrix<float> m = Matrix<float>(aaa);
+//                m.transpose();
+//                m = m * model_view * proj;
+//                //std::cout « "m\n" « m « std::endl;
+//                vec3f mr3 = m.get_projection();
+//                //std::cout « "mr3\n" « mr3 « std::endl;
+//                Matrix<float> g = Matrix<float>(mr3);
+//                //g.transpose();
+//                g = viewport * g;
+//                vec3f tmp = g.get_projection();
+//                std::cout << "point\n" << tmp << std::endl;
 }
 
 void dglWidget::draw_line(vec2i t0, vec2i t1, QRgb color)
@@ -290,7 +321,7 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2, int colorR, int co
     n.normalize();
     m_light_v.normalize();
     float intensity = n * m_light_v;
-    if (intensity <= 0) { return; }
+    intensity = std::max(0.1f, intensity);
     colorR = static_cast<int>(colorR * intensity);
     colorG = static_cast<int>(colorG * intensity);
     colorB = static_cast<int>(colorB * intensity);
@@ -321,7 +352,7 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2, int colorR, int co
                     P.get_x() < x_VP ||
                     P.get_y() < y_VP)
             { continue; }
-            if (zbuffer[idx] < P.get_z())
+            if (zbuffer[idx] > P.get_z())
             {
                 zbuffer[idx] = P.get_z();
                 set_pixel(int(P.get_x()), int(P.get_y()), qRgba(colorR, colorG, colorB,

@@ -1,8 +1,10 @@
 #include <GL/glut.h>
 #include <stdio.h>
 #include "Graphics.h"
+#include <GL/glu.h>
 
 #include <iostream>
+#include <array>
 bool fullscreen = false;
 bool mouseDown = false;
 
@@ -149,18 +151,56 @@ void display()
     glLoadIdentity();
 
     gluLookAt(
-            0.0f, 0.0f, 5.0f, //eyeX eyeY eyeZ
-            0.0f, 0.0f, 0.0f,
+            2.0f, 3.0f, 5.0f, //eyeX eyeY eyeZ
+            0.2f, 0.3f, 0.1f,
             0.0f, 1.0f, 0.0f);
-    float proj[16];
-    glGetFloatv(GL_MODELVIEW_MATRIX, proj);
+//    float proj[16];
+//    glGetFloatv(GL_MODELVIEW_MATRIX, proj);
+//
+//    //std::cout << "w:" << w << " h:" << h << std::endl;
+//    std::cout << "ModelView\n";
+//    for (int i = 0; i < 16; ++i)
+//    {
+//        std::cout << proj[i] << " ";
+//    }
 
-    //std::cout << "w:" << w << " h:" << h << std::endl;
-    std::cout << "ModelView\n";
+    GLdouble model_view[16];
+    glGetDoublev(GL_MODELVIEW_MATRIX, model_view);
+
+    GLdouble projection[16];
+    glGetDoublev(GL_PROJECTION_MATRIX, projection);
+
+    GLint viewport[4];
+    glGetIntegerv(GL_VIEWPORT, viewport);
+
+    GLdouble pos3D_x, pos3D_y, pos3D_z;
+    double winX, winY, winZ;
+    std::cout << "MODELVIEW" << std::endl;
     for (int i = 0; i < 16; ++i)
     {
-        std::cout << proj[i] << " ";
+        std::cout << model_view[i] << " ";
     }
+    std::cout << std::endl;
+
+    std::cout << "PROJ" << std::endl;
+    for (int i = 0; i < 16; ++i)
+    {
+        std::cout << projection[i] << " ";
+    }
+    std::cout << std::endl;
+
+    std::cout << "Viewport" << std::endl;
+    for (int i = 0; i < 4; ++i)
+    {
+        std::cout << viewport[i] << " ";
+    }
+    std::cout << std::endl;
+
+    gluProject(0.89f, 0.23f, 0.17f,
+               model_view, projection, viewport,
+               &winX, &winY, &winZ);
+    std::cout << winX << " " << winY << " " << winZ << std::endl;
+
     glRotatef(xrot, 1.0f, 0.0f, 0.0f);
     glRotatef(yrot, 0.0f, 1.0f, 0.0f);
 

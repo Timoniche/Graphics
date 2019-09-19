@@ -202,10 +202,14 @@ public:
     //-------------------------------------------------------------
     DGL::vec3f get_projection()
     {
-        assert(rows == 4 && "should be 4 x 1");
-        assert(columns == 1 && "should be 4 x 1");
-        assert(matrix[3][0] != 0 && "not a point");
-        return DGL::vec3f(matrix[0][0], matrix[1][0], matrix[2][0]) * (1 / matrix[3][0]);
+        if (rows == 4 && columns == 1)
+        {
+            assert(matrix[3][0] != 0 && "not a point");
+            return DGL::vec3f(matrix[0][0], matrix[1][0], matrix[2][0]) * (1 / matrix[3][0]);
+        } else {
+            assert(matrix[0][3] != 0 && "not a point");
+            return DGL::vec3f(matrix[0][0], matrix[0][1], matrix[0][2]) * (1 / matrix[0][3]);
+        }
     }
 
     // Used for matrix concatenation.

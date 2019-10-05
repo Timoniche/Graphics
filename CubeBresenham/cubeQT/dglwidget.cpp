@@ -22,7 +22,7 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     m_image->fill(qRgba(0, 0, 0, 255));
     zbuffer = new float[size_t(m_width * m_height)];
     std::fill(zbuffer, zbuffer + m_width * m_height,
-              std::numeric_limits<int>::max());
+              std::numeric_limits<float>::max());
 
     perspective(80.0f, 4.0f / 3.0f, near, far);
     dgl_viewport(0, 0, m_width, m_height);
@@ -120,12 +120,12 @@ void dglWidget::update_image()
 void dglWidget::paintEvent(QPaintEvent *event)
 {
     std::fill(zbuffer, zbuffer + m_width * m_height,
-              std::numeric_limits<int>::max());
+              std::numeric_limits<float>::max());
     Q_UNUSED(event);
     QPainter pnt{this};
-//    pnt.begin(m_image.get());
-//    pnt.fillRect(0, 0, m_width, m_height, Qt::black);
-//    pnt.end();
+    //    pnt.begin(m_image.get());
+    //    pnt.fillRect(0, 0, m_width, m_height, Qt::black);
+    //    pnt.end();
 
     dgl_look_at(m_eye, m_center, m_up);
     cout_matrices();
@@ -154,11 +154,11 @@ void dglWidget::set_pixel(int x, int y, QRgb color)
         return;
     }
 
-//    QPainter pnt{this};
-//    pnt.begin(m_image.get());
-//    pnt.setPen(QPen(color));
-//    pnt.drawPoint(x, y);
-//    pnt.end();
+    //    QPainter pnt{this};
+    //    pnt.begin(m_image.get());
+    //    pnt.setPen(QPen(color));
+    //    pnt.drawPoint(x, y);
+    //    pnt.end();
     auto *rowData = reinterpret_cast<QRgb*>(m_image->scanLine(y));
     rowData[x] = color;
 
@@ -198,79 +198,81 @@ void dglWidget::draw_line(int x0, int y0, int x1, int y1, QRgb color)
 
 void dglWidget::test_cube()
 {
-//    Shader shader(&model_view, &proj, &viewport);
-//    vec3f cube[6][4]
-//    {
-//        {
-//            vec3f{-0.5f, -0.5f, 0.5f},
-//            vec3f{0.5f, -0.5f, 0.5f},
-//            vec3f{0.5f, 0.5f, 0.5f},
-//            vec3f{-0.5f, 0.5f, 0.5f},
-//        },
-//        {
-//            vec3f{-0.5f, -0.5f, -0.5f},
-//            vec3f{-0.5f, 0.5f, -0.5f},
-//            vec3f{0.5f, 0.5f, -0.5f},
-//            vec3f{0.5f, -0.5f, -0.5f},
-//        },
-//        {
-//            vec3f{-0.5f, 0.5f, -0.5f},
-//            vec3f{-0.5f, 0.5f, 0.5f},
-//            vec3f{0.5f, 0.5f, 0.5f},
-//            vec3f{0.5f, 0.5f, -0.5f},
-//        },
-//        {
-//            vec3f{-0.5f, -0.5f, -0.5f},
-//            vec3f{0.5f, -0.5f, -0.5f},
-//            vec3f{0.5f, -0.5f, 0.5f},
-//            vec3f{-0.5f, -0.5f, 0.5f},
-//        },
-//        {
-//            vec3f{0.5f, -0.5f, -0.5f},
-//            vec3f{0.5f, 0.5f, -0.5f},
-//            vec3f{0.5f, 0.5f, 0.5f},
-//            vec3f{0.5f, -0.5f, 0.5f},
-//        },
-//        {
-//            vec3f{-0.5f, -0.5f, -0.5f},
-//            vec3f{-0.5f, -0.5f, 0.5f},
-//            vec3f{-0.5f, 0.5f, 0.5f},
-//            vec3f{-0.5f, 0.5f, -0.5f},
-//        }
-//    };
+    Shader shader(&model_view, &proj, &viewport);
+    vec3f cube[6][4]
+    {
+        {
+            vec3f{-0.5f, -0.5f, 0.5f},
+            vec3f{0.5f, -0.5f, 0.5f},
+            vec3f{0.5f, 0.5f, 0.5f},
+            vec3f{-0.5f, 0.5f, 0.5f},
+        },
+        {
+            vec3f{-0.5f, -0.5f, -0.5f},
+            vec3f{-0.5f, 0.5f, -0.5f},
+            vec3f{0.5f, 0.5f, -0.5f},
+            vec3f{0.5f, -0.5f, -0.5f},
+        },
+        {
+            vec3f{-0.5f, 0.5f, -0.5f},
+            vec3f{-0.5f, 0.5f, 0.5f},
+            vec3f{0.5f, 0.5f, 0.5f},
+            vec3f{0.5f, 0.5f, -0.5f},
+        },
+        {
+            vec3f{-0.5f, -0.5f, -0.5f},
+            vec3f{0.5f, -0.5f, -0.5f},
+            vec3f{0.5f, -0.5f, 0.5f},
+            vec3f{-0.5f, -0.5f, 0.5f},
+        },
+        {
+            vec3f{0.5f, -0.5f, -0.5f},
+            vec3f{0.5f, 0.5f, -0.5f},
+            vec3f{0.5f, 0.5f, 0.5f},
+            vec3f{0.5f, -0.5f, 0.5f},
+        },
+        {
+            vec3f{-0.5f, -0.5f, -0.5f},
+            vec3f{-0.5f, -0.5f, 0.5f},
+            vec3f{-0.5f, 0.5f, 0.5f},
+            vec3f{-0.5f, 0.5f, -0.5f},
+        }
+    };
 
-//    int a[6][3] { {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
-//                  {255, 255, 0}, {255, 0, 255}, {0, 255, 255}};
-//    for (int i = 0; i < 6; i++)
-//    {
-//        vec3f tmp[4];
-//        for (int j = 0; j < 4; j++)
-//        {
-//            Matrix<float> m = Matrix<float>(cube[i][j]);
-//            m.transpose();
-//            m = m * model_view * proj;
-//            //std::cout « "m\n" « m « std::endl;
-//            vec3f mr3 = m.get_projection();
-//            //std::cout « "mr3\n" « mr3 « std::endl;
-//            Matrix<float> g = Matrix<float>(mr3);
-//            g = viewport * g;
-//            tmp[j] = g.get_projection();
-//            //std::cout << "point\n" << tmp[j] << std::endl;
-//        }
-//        draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
-//                a[i][0], a[i][1], a[i][2], 255);
-//    }
+    int a[6][3] { {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
+                  {255, 255, 0}, {255, 0, 255}, {0, 255, 255}};
+    for (int i = 0; i < 6; i++)
+    {
+        vec3f tmp[4];
+        for (int j = 0; j < 4; j++)
+        {
+            vec3f aaa = cube[i][j];
+            Matrix<float> m = Matrix<float>(aaa);
+            m.transpose();
+            m = m * model_view;
+            m = m * proj;
+            vec3f p = m.get_projection();
+            vec3f ans = {0, 0, 0};
+            ans[0] = m_width * (p[0] + 1) / 2;
+            ans[1] = m_height * (p[1] + 1) / 2;
+            ans[2] = 10000 * (p[2] + 1) / 2;
+            tmp[j] = ans;
+            std::cout << aaa << ans << std::endl;
+        }
+        draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
+                a[i][0], a[i][1], a[i][2], 255);
+    }
 
-                vec3f aaa = {0.478f, 0.37f, 0.533f};
-                Matrix<float> m = Matrix<float>(aaa);
-                m.transpose();
-                m = m * model_view * proj;
-                vec3f p = m.get_projection();
-                vec3f ans = {0, 0, 0};
-                ans[0] = m_width * (p[0] + 1) / 2;
-                ans[1] = m_height * (p[1] + 1) / 2;
-                ans[2] = (p[2] + 1) / 2;
-                std::cout << std::setprecision(9) << "point\n" << ans << std::endl;
+    //                vec3f aaa = {0.478f, 0.37f, 0.533f};
+    //                Matrix<float> m = Matrix<float>(aaa);
+    //                m.transpose();
+    //                m = m * model_view * proj;
+    //                vec3f p = m.get_projection();
+    //                vec3f ans = {0, 0, 0};
+    //                ans[0] = m_width * (p[0] + 1) / 2;
+    //                ans[1] = m_height * (p[1] + 1) / 2;
+    //                ans[2] = (p[2] + 1) / 2;
+    //                std::cout << std::setprecision(9) << "point\n" << ans << std::endl;
 }
 
 void dglWidget::draw_line(vec2i t0, vec2i t1, QRgb color)
@@ -315,49 +317,40 @@ void dglWidget::triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color)
 
 void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2, int colorR, int colorG, int colorB, float alp)
 {
-//    vec3f n = (t2 - t0) ^ (t1 - t0);
-//    n.normalize();
-//    m_light_v.normalize();
-//    float intensity = n * m_light_v;
-//    intensity = std::max(0.1f, intensity);
-//    colorR = static_cast<int>(colorR * intensity);
-//    colorG = static_cast<int>(colorG * intensity);
-//    colorB = static_cast<int>(colorB * intensity);
-
-    using std::swap;
-    if (t0.get_y() == t1.get_y() && t0.get_y() == t2.get_y())
-    { return; }
-    sort_vec3i_y(t0, t1, t2);
-    int total_height = t2.get_y() - t0.get_y();
-    for (int y = 0; y < total_height; y++)
-    {
-        bool second_half = y >= t1.get_y() - t0.get_y();
-        int segment_height = second_half ? t2.get_y() - t1.get_y() : t1.get_y() - t0.get_y();
-        float alpha = static_cast<float>(y) / total_height;
-        float beta = static_cast<float>(y - (second_half ? t1.get_y() - t0.get_y() : 0)) / segment_height;
-        vec3f A = t0 + vec3f(t2 - t0) * alpha;
-        vec3f B = second_half ? t1 + vec3f(t2 - t1) * beta : t0 + vec3f(t1 - t0) * beta;
-        if (A.get_x() > B.get_x())
-        { swap(A, B); }
-        for (int j = int(A.get_x()); j <= B.get_x(); j++)
-        {
-            float phi = (B.get_x() - A.get_x() <= eps) ? 1.0f : (j - A.get_x()) /
-                                                         (B.get_x() - A.get_x());
-            vec3f P = vec3f(A) + vec3f(B - A) * phi;
-            int idx = int(P.get_x() + P.get_y() * m_width);
-            if (P.get_x() >= xw_VP ||
-                    P.get_y() >= yh_VP ||
-                    P.get_x() < x_VP ||
-                    P.get_y() < y_VP)
-            { continue; }
-            if (zbuffer[idx] > P.get_z())
-            {
-                zbuffer[idx] = P.get_z();
-                set_pixel(int(P.get_x()), int(P.get_y()), qRgba(colorR, colorG, colorB,
-                                                                static_cast<int>(alp)));
+    //    vec3f n = (t2 - t0) ^ (t1 - t0);
+    //    n.normalize();
+    //    m_light_v.normalize();
+    //    float intensity = n * m_light_v;
+    //    intensity = std::max(0.1f, intensity);
+    //    colorR = static_cast<int>(colorR * intensity);
+    //    colorG = static_cast<int>(colorG * intensity);
+    //    colorB = static_cast<int>(colorB * intensity);
+    if (t0.y==t1.y && t0.y==t2.y) return; // i dont care about degenerate triangles
+    if (t0.y>t1.y) std::swap(t0, t1);
+    if (t0.y>t2.y) std::swap(t0, t2);
+    if (t1.y>t2.y) std::swap(t1, t2);
+    int total_height = t2.y-t0.y;
+    for (int i=0; i<total_height; i++) {
+        bool second_half = i>t1.y-t0.y || t1.y==t0.y;
+        int segment_height = second_half ? t2.y-t1.y : t1.y-t0.y;
+        float alpha = (float)i/total_height;
+        float beta  = (float)(i-(second_half ? t1.y-t0.y : 0))/segment_height; // be careful: with above conditions no division by zero here
+        vec3i A =               t0 + (t2-t0)*alpha;
+        vec3i B = second_half ? t1 + (t2-t1)*beta : t0 + (t1-t0)*beta;
+        if (A.x>B.x) std::swap(A, B);
+        for (int j=A.x; j<=B.x; j++) {
+            float phi = B.x==A.x ? 1. : (float)(j-A.x)/(float)(B.x-A.x);
+            vec3i P = A + (B-A)*phi;
+            P.x = j; P.y = t0.y+i; // a hack to fill holes (due to int cast precision problems)
+            int idx = j+(t0.y+i)*m_width;
+            if (idx < 0 || idx >= m_width * m_height || P.z > 10000) continue;
+            if (zbuffer[idx] > P.z) {
+                zbuffer[idx] = P.z;
+                set_pixel(P.x, P.y, qRgba(colorR, colorG, colorB, alp)); // attention, due to int casts t0.y+i != A.y
             }
         }
     }
+
 }
 
 /***
@@ -418,14 +411,14 @@ void dglWidget::dgl_viewport(int x, int y, int w, int h)
     Viewport[2][2] = (far - near) / 2.f;
     viewport = Viewport;
 
-//        x_VP = x;
-//        y_VP = y;
-//        xw_VP = x + w;
-//        yh_VP = y + h;
-//        Matrix<float> Viewport = Matrix<float>(2, 2);
-//        Viewport[1][1] = w;
-//        Viewport[1][2] = h;
-//        viewport = Viewport;
+    //        x_VP = x;
+    //        y_VP = y;
+    //        xw_VP = x + w;
+    //        yh_VP = y + h;
+    //        Matrix<float> Viewport = Matrix<float>(2, 2);
+    //        Viewport[1][1] = w;
+    //        Viewport[1][2] = h;
+    //        viewport = Viewport;
 }
 
 void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3, int colorR, int colorG, int colorB, float alp)

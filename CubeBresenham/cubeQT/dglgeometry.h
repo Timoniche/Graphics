@@ -68,7 +68,7 @@ namespace DGL
     template<typename T>
     struct vec3
     {
-    private:
+    public:
         T x;
         T y;
         T z;
@@ -164,7 +164,17 @@ namespace DGL
 
     void sort_vec2i_y(vec2i &t0, vec2i &t1, vec2i &t2);
 
-    void sort_vec3i_y(vec3i &t0, vec3i &t1, vec3i &t2);
+    template<typename T>
+    void sort_vec3_y(vec3<T> &t0, vec3<T> &t1, vec3<T> &t2)
+    {
+        using std::swap;
+        if (t0.get_y() > t1.get_y())
+        { swap(t0, t1); }
+        if (t0.get_y() > t2.get_y())
+        { swap(t0, t2); }
+        if (t1.get_y() > t2.get_y())
+        { swap(t1, t2); }
+    }
 
 //______________________________________________________________________________________________________________________
 

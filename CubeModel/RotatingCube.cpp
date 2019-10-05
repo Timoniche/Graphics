@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include "Graphics.h"
 #include <GL/glu.h>
-
+#include <iomanip>
 #include <iostream>
 #include <array>
 bool fullscreen = false;
@@ -196,10 +196,10 @@ void display()
     }
     std::cout << std::endl;
 
-    gluProject(0.89f, 0.23f, 0.17f,
+    gluProject(0.478f, 0.37f, 0.533f,
                model_view, projection, viewport,
                &winX, &winY, &winZ);
-    std::cout << winX << " " << winY << " " << winZ << std::endl;
+    std::cout << std::setprecision(9) << winX << " " << winY << " " << winZ << std::endl;
 
     glRotatef(xrot, 1.0f, 0.0f, 0.0f);
     glRotatef(yrot, 0.0f, 1.0f, 0.0f);

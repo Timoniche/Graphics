@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 #include "shader.h"
 #include "worker.h"
@@ -197,82 +198,79 @@ void dglWidget::draw_line(int x0, int y0, int x1, int y1, QRgb color)
 
 void dglWidget::test_cube()
 {
-    Shader shader(&model_view, &proj, &viewport);
-    vec3f cube[6][4]
-    {
-        {
-            vec3f{-0.5f, -0.5f, 0.5f},
-            vec3f{0.5f, -0.5f, 0.5f},
-            vec3f{0.5f, 0.5f, 0.5f},
-            vec3f{-0.5f, 0.5f, 0.5f},
-        },
-        {
-            vec3f{-0.5f, -0.5f, -0.5f},
-            vec3f{-0.5f, 0.5f, -0.5f},
-            vec3f{0.5f, 0.5f, -0.5f},
-            vec3f{0.5f, -0.5f, -0.5f},
-        },
-        {
-            vec3f{-0.5f, 0.5f, -0.5f},
-            vec3f{-0.5f, 0.5f, 0.5f},
-            vec3f{0.5f, 0.5f, 0.5f},
-            vec3f{0.5f, 0.5f, -0.5f},
-        },
-        {
-            vec3f{-0.5f, -0.5f, -0.5f},
-            vec3f{0.5f, -0.5f, -0.5f},
-            vec3f{0.5f, -0.5f, 0.5f},
-            vec3f{-0.5f, -0.5f, 0.5f},
-        },
-        {
-            vec3f{0.5f, -0.5f, -0.5f},
-            vec3f{0.5f, 0.5f, -0.5f},
-            vec3f{0.5f, 0.5f, 0.5f},
-            vec3f{0.5f, -0.5f, 0.5f},
-        },
-        {
-            vec3f{-0.5f, -0.5f, -0.5f},
-            vec3f{-0.5f, -0.5f, 0.5f},
-            vec3f{-0.5f, 0.5f, 0.5f},
-            vec3f{-0.5f, 0.5f, -0.5f},
-        }
-    };
+//    Shader shader(&model_view, &proj, &viewport);
+//    vec3f cube[6][4]
+//    {
+//        {
+//            vec3f{-0.5f, -0.5f, 0.5f},
+//            vec3f{0.5f, -0.5f, 0.5f},
+//            vec3f{0.5f, 0.5f, 0.5f},
+//            vec3f{-0.5f, 0.5f, 0.5f},
+//        },
+//        {
+//            vec3f{-0.5f, -0.5f, -0.5f},
+//            vec3f{-0.5f, 0.5f, -0.5f},
+//            vec3f{0.5f, 0.5f, -0.5f},
+//            vec3f{0.5f, -0.5f, -0.5f},
+//        },
+//        {
+//            vec3f{-0.5f, 0.5f, -0.5f},
+//            vec3f{-0.5f, 0.5f, 0.5f},
+//            vec3f{0.5f, 0.5f, 0.5f},
+//            vec3f{0.5f, 0.5f, -0.5f},
+//        },
+//        {
+//            vec3f{-0.5f, -0.5f, -0.5f},
+//            vec3f{0.5f, -0.5f, -0.5f},
+//            vec3f{0.5f, -0.5f, 0.5f},
+//            vec3f{-0.5f, -0.5f, 0.5f},
+//        },
+//        {
+//            vec3f{0.5f, -0.5f, -0.5f},
+//            vec3f{0.5f, 0.5f, -0.5f},
+//            vec3f{0.5f, 0.5f, 0.5f},
+//            vec3f{0.5f, -0.5f, 0.5f},
+//        },
+//        {
+//            vec3f{-0.5f, -0.5f, -0.5f},
+//            vec3f{-0.5f, -0.5f, 0.5f},
+//            vec3f{-0.5f, 0.5f, 0.5f},
+//            vec3f{-0.5f, 0.5f, -0.5f},
+//        }
+//    };
 
-    int a[6][3] { {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
-                  {255, 255, 0}, {255, 0, 255}, {0, 255, 255}};
-    for (int i = 0; i < 6; i++)
-    {
-        vec3f tmp[4];
-        for (int j = 0; j < 4; j++)
-        {
-            Matrix<float> m = Matrix<float>(cube[i][j]);
-            m.transpose();
-            m = m * model_view * proj;
-            //std::cout « "m\n" « m « std::endl;
-            vec3f mr3 = m.get_projection();
-            //std::cout « "mr3\n" « mr3 « std::endl;
-            Matrix<float> g = Matrix<float>(mr3);
-            //g.transpose();
-            g = viewport * g;
-            tmp[j] = g.get_projection();
-            std::cout << "point\n" << tmp[j] << std::endl;
-        }
-        draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
-                a[i][0], a[i][1], a[i][2], 255);
-    }
+//    int a[6][3] { {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
+//                  {255, 255, 0}, {255, 0, 255}, {0, 255, 255}};
+//    for (int i = 0; i < 6; i++)
+//    {
+//        vec3f tmp[4];
+//        for (int j = 0; j < 4; j++)
+//        {
+//            Matrix<float> m = Matrix<float>(cube[i][j]);
+//            m.transpose();
+//            m = m * model_view * proj;
+//            //std::cout « "m\n" « m « std::endl;
+//            vec3f mr3 = m.get_projection();
+//            //std::cout « "mr3\n" « mr3 « std::endl;
+//            Matrix<float> g = Matrix<float>(mr3);
+//            g = viewport * g;
+//            tmp[j] = g.get_projection();
+//            //std::cout << "point\n" << tmp[j] << std::endl;
+//        }
+//        draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
+//                a[i][0], a[i][1], a[i][2], 255);
+//    }
 
-//                vec3f aaa = {0.89f, 0.23f, 0.17f};
-//                Matrix<float> m = Matrix<float>(aaa);
-//                m.transpose();
-//                m = m * model_view * proj;
-//                //std::cout « "m\n" « m « std::endl;
-//                vec3f mr3 = m.get_projection();
-//                //std::cout « "mr3\n" « mr3 « std::endl;
-//                Matrix<float> g = Matrix<float>(mr3);
-//                //g.transpose();
-//                g = viewport * g;
-//                vec3f tmp = g.get_projection();
-//                std::cout << "point\n" << tmp << std::endl;
+                vec3f aaa = {0.478f, 0.37f, 0.533f};
+                Matrix<float> m = Matrix<float>(aaa);
+                m.transpose();
+                m = m * model_view * proj;
+                vec3f p = m.get_projection();
+                vec3f ans = {0, 0, 0};
+                ans[0] = m_width * (p[0] + 1) / 2;
+                ans[1] = m_height * (p[1] + 1) / 2;
+                ans[2] = (p[2] + 1) / 2;
+                std::cout << std::setprecision(9) << "point\n" << ans << std::endl;
 }
 
 void dglWidget::draw_line(vec2i t0, vec2i t1, QRgb color)
@@ -317,14 +315,14 @@ void dglWidget::triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color)
 
 void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2, int colorR, int colorG, int colorB, float alp)
 {
-    vec3f n = (t2 - t0) ^ (t1 - t0);
-    n.normalize();
-    m_light_v.normalize();
-    float intensity = n * m_light_v;
-    intensity = std::max(0.1f, intensity);
-    colorR = static_cast<int>(colorR * intensity);
-    colorG = static_cast<int>(colorG * intensity);
-    colorB = static_cast<int>(colorB * intensity);
+//    vec3f n = (t2 - t0) ^ (t1 - t0);
+//    n.normalize();
+//    m_light_v.normalize();
+//    float intensity = n * m_light_v;
+//    intensity = std::max(0.1f, intensity);
+//    colorR = static_cast<int>(colorR * intensity);
+//    colorG = static_cast<int>(colorG * intensity);
+//    colorB = static_cast<int>(colorB * intensity);
 
     using std::swap;
     if (t0.get_y() == t1.get_y() && t0.get_y() == t2.get_y())
@@ -419,6 +417,15 @@ void dglWidget::dgl_viewport(int x, int y, int w, int h)
     Viewport[1][1] = h / 2.f;
     Viewport[2][2] = (far - near) / 2.f;
     viewport = Viewport;
+
+//        x_VP = x;
+//        y_VP = y;
+//        xw_VP = x + w;
+//        yh_VP = y + h;
+//        Matrix<float> Viewport = Matrix<float>(2, 2);
+//        Viewport[1][1] = w;
+//        Viewport[1][2] = h;
+//        viewport = Viewport;
 }
 
 void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3, int colorR, int colorG, int colorB, float alp)

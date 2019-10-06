@@ -61,56 +61,56 @@ void drawBox()
 
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-0.5f, -0.5f, 0.5f);
-    glTexCoord2f(0.5f, 0.0f);
+    glTexCoord2f(1.f, 0.0f);
     glVertex3f(0.5f, -0.5f, 0.5f);
-    glTexCoord2f(0.5f, 0.5f);
+    glTexCoord2f(1.f, 1.f);
     glVertex3f(0.5f, 0.5f, 0.5f);
-    glTexCoord2f(0.0f, 0.5f);
+    glTexCoord2f(0.0f, 1.f);
     glVertex3f(-0.5f, 0.5f, 0.5f);
 
-    glTexCoord2f(0.5f, 0.0f);
+    glTexCoord2f(1.f, 0.0f);
     glVertex3f(-0.5f, -0.5f, -0.5f);
-    glTexCoord2f(0.5f, 0.5f);
+    glTexCoord2f(1.f, 1.f);
     glVertex3f(-0.5f, 0.5f, -0.5f);
-    glTexCoord2f(0.0f, 0.5f);
+    glTexCoord2f(0.0f, 1.f);
     glVertex3f(0.5f, 0.5f, -0.5f);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(0.5f, -0.5f, -0.5f);
 
-    glTexCoord2f(0.0f, 0.5f);
+    glTexCoord2f(0.0f, 1.f);
     glVertex3f(-0.5f, 0.5f, -0.5f);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-0.5f, 0.5f, 0.5f);
-    glTexCoord2f(0.5f, 0.0f);
+    glTexCoord2f(1.f, 0.0f);
     glVertex3f(0.5f, 0.5f, 0.5f);
-    glTexCoord2f(0.5f, 0.5f);
+    glTexCoord2f(1.f, 1.f);
     glVertex3f(0.5f, 0.5f, -0.5f);
 
-    glTexCoord2f(0.5f, 0.5f);
+    glTexCoord2f(1.f, 1.f);
     glVertex3f(-0.5f, -0.5f, -0.5f);
-    glTexCoord2f(0.0f, 0.5f);
+    glTexCoord2f(0.0f, 1.f);
     glVertex3f(0.5f, -0.5f, -0.5f);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(0.5f, -0.5f, 0.5f);
-    glTexCoord2f(0.5f, 0.0f);
+    glTexCoord2f(1.f, 0.0f);
     glVertex3f(-0.5f, -0.5f, 0.5f);
 
-    glTexCoord2f(0.5f, 0.0f);
+    glTexCoord2f(1.f, 0.0f);
     glVertex3f(0.5f, -0.5f, -0.5f);
-    glTexCoord2f(0.5f, 0.5f);
+    glTexCoord2f(1.f, 1.f);
     glVertex3f(0.5f, 0.5f, -0.5f);
-    glTexCoord2f(0.0f, 0.5f);
+    glTexCoord2f(0.0f, 1.f);
     glVertex3f(0.5f, 0.5f, 0.5f);
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(0.5f, -0.5f, 0.5f);
 
     glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-0.5f, -0.5f, -0.5f);
-    glTexCoord2f(0.5f, 0.0f);
+    glTexCoord2f(1.f, 0.0f);
     glVertex3f(-0.5f, -0.5f, 0.5f);
-    glTexCoord2f(0.5f, 0.5f);
+    glTexCoord2f(1.f, 1.f);
     glVertex3f(-0.5f, 0.5f, 0.5f);
-    glTexCoord2f(0.0f, 0.5f);
+    glTexCoord2f(0.0f, 1.f);
     glVertex3f(-0.5f, 0.5f, -0.5f);
 
     glEnd();
@@ -151,7 +151,7 @@ void display()
     glLoadIdentity();
 
     gluLookAt(
-            -3, -4, -5, //eyeX eyeY eyeZ
+            2, 2, 1, //eyeX eyeY eyeZ
             0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f);
 //    float proj[16];

@@ -19,6 +19,8 @@
 #include "dglgeometry.h"
 #include "matrix.h"
 #include "worker.h"
+#include "readerbmp.h"
+#include "bmp.h"
 
 using namespace DGL;
 
@@ -106,6 +108,8 @@ private:
     float yh_VP = m_height;
     QPoint last_pos{};
     QTimer m_timer;
+    //ReaderBMP bmp;
+    BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp"};
 public:
     QThread *m_thread = nullptr;
     Worker *m_worker = nullptr;

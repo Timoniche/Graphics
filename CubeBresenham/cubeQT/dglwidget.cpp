@@ -132,7 +132,18 @@ void dglWidget::paintEvent(QPaintEvent *event)
     cout_matrices();
     m_image->fill(qRgba(0, 0, 0, 255));
     //QPainter painter{this};
-    test_cube();
+
+        test_cube();
+
+    //vec3i a = {0, 0, 1}; vec2i aa = {0, 0};
+    //    vec3i b = {256, 0, 1}; vec2i bb = {bmp.bmiHeader.biHeight - 1, 0};
+    //    vec3i c = {0, 256, 1}; vec2i cc = {0, bmp.bmiHeader.biWidth - 1};
+
+    //vec3i b = {256, 0, 1}; vec2i bb = {_bmp.bmp_info_header.height - 1, 0};
+    //vec3i c = {0, 256, 1}; vec2i cc = {0, _bmp.bmp_info_header.width - 1};
+
+    //triangle_filled(a, b, c, aa, bb, cc, 255, 0, 255, 255);
+
     pnt.drawImage(0, 0, *m_image);
 
 }
@@ -316,9 +327,7 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
     //_________________________________________________
 
     if (t0.y==t1.y && t0.y==t2.y) return;
-    if (t0.y>t1.y) std::swap(t0, t1);
-    if (t0.y>t2.y) std::swap(t0, t2);
-    if (t1.y>t2.y) std::swap(t1, t2);
+    sort_vec3_y<int>(t0, t1, t2);
     int total_height = t2.y-t0.y;
     for (int i=0; i<total_height; i++) {
         bool second_half = i>t1.y-t0.y || t1.y==t0.y;
@@ -326,17 +335,30 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
         float alpha = (float)i/total_height;
         float beta  = (float)(i-(second_half ? t1.y-t0.y : 0))/segment_height;
         vec3i A =               t0 + (t2-t0)*alpha;
+        vec2i Ab = b0 + (b2 - b0) * alpha;
         vec3i B = second_half ? t1 + (t2-t1)*beta : t0 + (t1-t0)*beta;
+        vec2i Bb = second_half ? b1 + (b2-b1)*beta : b0 + (b1-b0)*beta;
         if (A.x>B.x) std::swap(A, B);
         for (int j=A.x; j<=B.x; j++) {
             float phi = B.x==A.x ? 1. : (float)(j-A.x)/(float)(B.x-A.x);
             vec3i P = A + (B-A)*phi;
+            vec2i Pb = Ab + (Bb - Ab) * phi;
             P.x = j; P.y = t0.y+i;
             int idx = j+(t0.y+i)*m_width;
             if (idx < 0 || idx >= m_width * m_height || P.z > 10000) continue;
             if (zbuffer[idx] > P.z) {
                 zbuffer[idx] = P.z;
-                set_pixel(P.x, P.y, qRgba(colorR, colorG, colorB, alp));
+                //set_pixel(P.x, P.y, qRgba(colorR, colorG, colorB, alp));
+
+                //vec3i col = bmp.get_color(Pb[0], Pb[1]);
+                //std::cout << col;
+                vec3i col;
+                uint32_t channels = _bmp.bmp_info_header.bit_count / 8;
+                col[0] = _bmp.data[channels * (Pb[1] * _bmp.bmp_info_header.width + Pb[0]) + 0];   // B
+                col[1] = _bmp.data[channels * (Pb[1] * _bmp.bmp_info_header.width + Pb[0]) + 1];   // G
+                col[2] = _bmp.data[channels * (Pb[1] * _bmp.bmp_info_header.width + Pb[0]) + 2]; // R
+                if (channels == 4) alp = _bmp.data[channels * (Pb[1] * _bmp.bmp_info_header.width + Pb[0]) + 3];
+                set_pixel(P.x, P.y, qRgba(col[0], col[1], col[2], alp));
             }
         }
     }
@@ -402,13 +424,19 @@ void dglWidget::dgl_viewport(int x, int y, int w, int h)
     viewport = Viewport;
 }
 
+/**
+ * Pre: v0 -- v1
+ *      \     \
+ *      v3 -- v2
+ */
 void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3, int colorR, int colorG, int colorB, float alp)
 {
-    vec2i tmp = {0, 0};
-    triangle_filled(v0, v1, v2, tmp, tmp, tmp, colorR, colorB, colorG, alp);
-    triangle_filled(v0, v2, v3, tmp, tmp, tmp, colorR, colorB, colorG, alp);
-    triangle_filled(v1, v2, v3, tmp, tmp, tmp, colorR, colorB, colorG, alp);
-    triangle_filled(v0, v1, v3, tmp, tmp, tmp, colorR, colorB, colorG, alp);
+    vec2i dlc = {0, 0}; //v0
+    vec2i drc = {255, 0}; //v1
+    vec2i ulc = {0, 255}; //v2
+    vec2i urc = {255, 255}; //v3
+    triangle_filled(v1, v2, v3, drc, ulc, urc, colorR, colorB, colorG, alp);
+    triangle_filled(v0, v1, v3, dlc, drc, urc, colorR, colorB, colorG, alp);
 }
 
 

@@ -13,10 +13,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a4b7115c-ef35-48e8-be44-233ed5dad7ba" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/TallGreenGrass.bmp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/bmp.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/readerbmp.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/readerbmp.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/cubeQT.pro" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/cubeQT.pro" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglgeometry.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglgeometry.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/RotatingCube.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/RotatingCube.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -52,8 +57,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RotatingCube.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="360">
-              <caret line="74" column="29" selection-start-line="74" selection-start-column="29" selection-end-line="74" selection-end-column="29" />
+            <state relative-caret-position="531">
+              <caret line="112" column="25" selection-start-line="112" selection-start-column="25" selection-end-line="112" selection-end-column="25" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -220,7 +225,8 @@
       <workItem from="1570214115864" duration="6466000" />
       <workItem from="1570310063126" duration="2040000" />
       <workItem from="1570370437094" duration="3295000" />
-      <workItem from="1570378196239" duration="629000" />
+      <workItem from="1570378196239" duration="1489000" />
+      <workItem from="1570390220534" duration="3076000" />
     </task>
     <task id="LOCAL-00001" summary="texture added">
       <created>1566172640023</created>
@@ -233,7 +239,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="56207000" />
+    <option name="totallyTimeSpent" value="60143000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
@@ -244,7 +250,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.9325044" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.9325044" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39964476" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -327,8 +333,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/RotatingCube.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="360">
-          <caret line="74" column="29" selection-start-line="74" selection-start-column="29" selection-end-line="74" selection-end-column="29" />
+        <state relative-caret-position="531">
+          <caret line="112" column="25" selection-start-line="112" selection-start-column="25" selection-end-line="112" selection-end-column="25" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>

@@ -105,6 +105,14 @@ namespace DGL
             return z;
         }
 
+        bool operator==(const vec3<T> &rhs) const
+        {
+            double eps = 0.00001;
+            return (x - rhs.x < eps &&
+                    y - rhs.y < eps &&
+                    z - rhs.z < eps);
+        }
+
         vec3<T> operator+(const vec3<T> &rhs) const
         {
             return vec3<T>(x + rhs.x, y + rhs.y, z + rhs.z);

@@ -52,6 +52,7 @@ void dglWidget::mouseMoveEvent(QMouseEvent *event) /**NOT USE IT**/
     {
         m_eye[0] += dx / 300.f;
         m_eye[1] += dy / 300.f;
+
     }
     last_pos = event->pos();
     repaint();
@@ -234,59 +235,6 @@ void dglWidget::test_cube()
         }
     };
 
-    //    vec3f pack1[4] =
-    //    {
-    //        {-0.5f, -0.5f, 0.5f},
-    //        {0.5f, -0.5f, 0.5f},
-    //        {0.5f, 0.5f, 0.5f},
-    //        {-0.5f, 0.5f, 0.5f}
-    //    };
-
-    //    vec3f pack2[4] =
-    //    {
-    //        vec3f(-0.5f, -0.5f, -0.5f),
-    //        vec3f(-0.5f, 0.5f, -0.5f),
-    //        vec3f(0.5f, 0.5f, -0.5f),
-    //        vec3f(0.5f, -0.5f, -0.5f)
-    //    };
-
-    //    vec3f tmp[4];
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        vec3f aaa = pack1[i];
-    //        Matrix<float> m = Matrix<float>(aaa);
-    //        m.transpose();
-    //        m = m * model_view;
-    //        m = m * proj;
-    //        vec3f p = m.get_projection();
-    //        vec3f ans = {0, 0, 0};
-    //        ans[0] = m_width * (p[0] + 1) / 2;
-    //        ans[1] = m_height * (p[1] + 1) / 2;
-    //        ans[2] = 10000 * (p[2] + 1) / 2;
-    //        tmp[i] = ans;
-    //        std::cout << aaa << ans << std::endl;
-    //    }
-    //    draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
-    //            0, 255, 255, 255);
-    //    for (int i = 0; i < 4; i++)
-    //    {
-    //        vec3f aaa = pack2[i];
-    //        Matrix<float> m = Matrix<float>(aaa);
-    //        m.transpose();
-    //        m = m * model_view;
-    //        m = m * proj;
-    //        vec3f p = m.get_projection();
-    //        vec3f ans = {0, 0, 0};
-    //        ans[0] = m_width * (p[0] + 1) / 2;
-    //        ans[1] = m_height * (p[1] + 1) / 2;
-    //        ans[2] = 10000 * (p[2] + 1) / 2;
-    //        tmp[i] = ans;
-    //        std::cout << aaa << ans << std::endl;
-    //    }
-    //    draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
-    //            255 , 0, 255, 255);
-
-
     int a[6][3] { {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
                   {255, 255, 0}, {255, 0, 255}, {0, 255, 255}};
     for (int i = 0; i < 6; i++)
@@ -310,17 +258,6 @@ void dglWidget::test_cube()
         draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
                 a[i][0], a[i][1], a[i][2], 255);
     }
-
-    //                vec3f aaa = {0.478f, 0.37f, 0.533f};
-    //                Matrix<float> m = Matrix<float>(aaa);
-    //                m.transpose();
-    //                m = m * model_view * proj;
-    //                vec3f p = m.get_projection();
-    //                vec3f ans = {0, 0, 0};
-    //                ans[0] = m_width * (p[0] + 1) / 2;
-    //                ans[1] = m_height * (p[1] + 1) / 2;
-    //                ans[2] = (p[2] + 1) / 2;
-    //                std::cout << std::setprecision(9) << "point\n" << ans << std::endl;
 }
 
 void dglWidget::draw_line(vec2i t0, vec2i t1, QRgb color)
@@ -363,17 +300,22 @@ void dglWidget::triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color)
     }
 }
 
-void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2, int colorR, int colorG, int colorB, float alp)
+void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
+                                vec2i b0, vec2i b1, vec2i b2,
+                                int colorR, int colorG, int colorB, float alp)
 {
-    //    vec3f n = (t2 - t0) ^ (t1 - t0);
-    //    n.normalize();
-    //    m_light_v.normalize();
-    //    float intensity = n * m_light_v;
-    //    intensity = std::max(0.1f, intensity);
-    //    colorR = static_cast<int>(colorR * intensity);
-    //    colorG = static_cast<int>(colorG * intensity);
-    //    colorB = static_cast<int>(colorB * intensity);
-    if (t0.y==t1.y && t0.y==t2.y) return; // i dont care about degenerate triangles
+    //_________________________________________________
+    vec3f n = (t2 - t0) ^ (t1 - t0);
+    n.normalize();
+    m_light_v.normalize();
+    float intensity = n * m_light_v;
+    intensity = std::max(0.3f, intensity);
+    colorR = static_cast<int>(colorR * intensity);
+    colorG = static_cast<int>(colorG * intensity);
+    colorB = static_cast<int>(colorB * intensity);
+    //_________________________________________________
+
+    if (t0.y==t1.y && t0.y==t2.y) return;
     if (t0.y>t1.y) std::swap(t0, t1);
     if (t0.y>t2.y) std::swap(t0, t2);
     if (t1.y>t2.y) std::swap(t1, t2);
@@ -382,19 +324,19 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2, int colorR, int co
         bool second_half = i>t1.y-t0.y || t1.y==t0.y;
         int segment_height = second_half ? t2.y-t1.y : t1.y-t0.y;
         float alpha = (float)i/total_height;
-        float beta  = (float)(i-(second_half ? t1.y-t0.y : 0))/segment_height; // be careful: with above conditions no division by zero here
+        float beta  = (float)(i-(second_half ? t1.y-t0.y : 0))/segment_height;
         vec3i A =               t0 + (t2-t0)*alpha;
         vec3i B = second_half ? t1 + (t2-t1)*beta : t0 + (t1-t0)*beta;
         if (A.x>B.x) std::swap(A, B);
         for (int j=A.x; j<=B.x; j++) {
             float phi = B.x==A.x ? 1. : (float)(j-A.x)/(float)(B.x-A.x);
             vec3i P = A + (B-A)*phi;
-            P.x = j; P.y = t0.y+i; // a hack to fill holes (due to int cast precision problems)
+            P.x = j; P.y = t0.y+i;
             int idx = j+(t0.y+i)*m_width;
             if (idx < 0 || idx >= m_width * m_height || P.z > 10000) continue;
             if (zbuffer[idx] > P.z) {
                 zbuffer[idx] = P.z;
-                set_pixel(P.x, P.y, qRgba(colorR, colorG, colorB, alp)); // attention, due to int casts t0.y+i != A.y
+                set_pixel(P.x, P.y, qRgba(colorR, colorG, colorB, alp));
             }
         }
     }
@@ -458,23 +400,15 @@ void dglWidget::dgl_viewport(int x, int y, int w, int h)
     Viewport[1][1] = h / 2.f;
     Viewport[2][2] = (far - near) / 2.f;
     viewport = Viewport;
-
-    //        x_VP = x;
-    //        y_VP = y;
-    //        xw_VP = x + w;
-    //        yh_VP = y + h;
-    //        Matrix<float> Viewport = Matrix<float>(2, 2);
-    //        Viewport[1][1] = w;
-    //        Viewport[1][2] = h;
-    //        viewport = Viewport;
 }
 
 void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3, int colorR, int colorG, int colorB, float alp)
 {
-    triangle_filled(v0, v1, v2, colorR, colorB, colorG, alp);
-    triangle_filled(v0, v2, v3, colorR, colorB, colorG, alp);
-    triangle_filled(v1, v2, v3, colorR, colorB, colorG, alp);
-    triangle_filled(v0, v1, v3, colorR, colorB, colorG, alp);
+    vec2i tmp = {0, 0};
+    triangle_filled(v0, v1, v2, tmp, tmp, tmp, colorR, colorB, colorG, alp);
+    triangle_filled(v0, v2, v3, tmp, tmp, tmp, colorR, colorB, colorG, alp);
+    triangle_filled(v1, v2, v3, tmp, tmp, tmp, colorR, colorB, colorG, alp);
+    triangle_filled(v0, v1, v3, tmp, tmp, tmp, colorR, colorB, colorG, alp);
 }
 
 

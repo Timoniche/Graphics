@@ -45,7 +45,9 @@ public slots:
 
     void triangle(vec2i t0, vec2i t1, vec2i t2, QRgb color);
 
-    void triangle_filled(vec3i t0, vec3i t1, vec3i t2, int colorR, int colorG, int colorB, float alp );
+    void triangle_filled(vec3i t0, vec3i t1, vec3i t2,
+                         vec2i b0, vec2i b1, vec2i b2,
+                         int colorR, int colorG, int colorB, float alp );
 
     void triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color);
 
@@ -91,7 +93,7 @@ private:
     Matrix<float> MVP;
     Matrix<float> VP;
     float *zbuffer;
-    vec3f m_eye{-3.f, -4.f, -5.f};
+    vec3f m_eye{2, 2, 1};
     float near = 0.1f;
     float far = 100.f;
     vec3f m_center{0.0f, 0.0f, 0.0f};

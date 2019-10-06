@@ -154,12 +154,7 @@ void dglWidget::set_pixel(int x, int y, QRgb color)
         return;
     }
 
-    //    QPainter pnt{this};
-    //    pnt.begin(m_image.get());
-    //    pnt.setPen(QPen(color));
-    //    pnt.drawPoint(x, y);
-    //    pnt.end();
-    auto *rowData = reinterpret_cast<QRgb*>(m_image->scanLine(y));
+    auto *rowData = reinterpret_cast<QRgb*>(m_image->scanLine(m_height - y));
     rowData[x] = color;
 
 }
@@ -238,6 +233,59 @@ void dglWidget::test_cube()
             vec3f{-0.5f, 0.5f, -0.5f},
         }
     };
+
+    //    vec3f pack1[4] =
+    //    {
+    //        {-0.5f, -0.5f, 0.5f},
+    //        {0.5f, -0.5f, 0.5f},
+    //        {0.5f, 0.5f, 0.5f},
+    //        {-0.5f, 0.5f, 0.5f}
+    //    };
+
+    //    vec3f pack2[4] =
+    //    {
+    //        vec3f(-0.5f, -0.5f, -0.5f),
+    //        vec3f(-0.5f, 0.5f, -0.5f),
+    //        vec3f(0.5f, 0.5f, -0.5f),
+    //        vec3f(0.5f, -0.5f, -0.5f)
+    //    };
+
+    //    vec3f tmp[4];
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        vec3f aaa = pack1[i];
+    //        Matrix<float> m = Matrix<float>(aaa);
+    //        m.transpose();
+    //        m = m * model_view;
+    //        m = m * proj;
+    //        vec3f p = m.get_projection();
+    //        vec3f ans = {0, 0, 0};
+    //        ans[0] = m_width * (p[0] + 1) / 2;
+    //        ans[1] = m_height * (p[1] + 1) / 2;
+    //        ans[2] = 10000 * (p[2] + 1) / 2;
+    //        tmp[i] = ans;
+    //        std::cout << aaa << ans << std::endl;
+    //    }
+    //    draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
+    //            0, 255, 255, 255);
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        vec3f aaa = pack2[i];
+    //        Matrix<float> m = Matrix<float>(aaa);
+    //        m.transpose();
+    //        m = m * model_view;
+    //        m = m * proj;
+    //        vec3f p = m.get_projection();
+    //        vec3f ans = {0, 0, 0};
+    //        ans[0] = m_width * (p[0] + 1) / 2;
+    //        ans[1] = m_height * (p[1] + 1) / 2;
+    //        ans[2] = 10000 * (p[2] + 1) / 2;
+    //        tmp[i] = ans;
+    //        std::cout << aaa << ans << std::endl;
+    //    }
+    //    draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
+    //            255 , 0, 255, 255);
+
 
     int a[6][3] { {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
                   {255, 255, 0}, {255, 0, 255}, {0, 255, 255}};

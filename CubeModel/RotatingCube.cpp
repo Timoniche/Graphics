@@ -151,8 +151,8 @@ void display()
     glLoadIdentity();
 
     gluLookAt(
-            2.0f, 3.0f, 5.0f, //eyeX eyeY eyeZ
-            0.2f, 0.3f, 0.1f,
+            -3, -4, -5, //eyeX eyeY eyeZ
+            0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f);
 //    float proj[16];
 //    glGetFloatv(GL_MODELVIEW_MATRIX, proj);
@@ -196,10 +196,38 @@ void display()
     }
     std::cout << std::endl;
 
-    gluProject(0.478f, 0.37f, 0.533f,
-               model_view, projection, viewport,
-               &winX, &winY, &winZ);
-    std::cout << std::setprecision(9) << winX << " " << winY << " " << winZ << std::endl;
+    float cube[2][4][3]
+            {
+                    {
+                            {-0.5f, -0.5f, 0.5f},
+                            {0.5f, -0.5f, 0.5f},
+                            {0.5f, 0.5f, 0.5f},
+                            {-0.5f, 0.5f, 0.5f},
+                    },
+                    {
+                            {-0.5f, -0.5f, -0.5f},
+                            {-0.5f, 0.5f, -0.5f},
+                            {0.5f, 0.5f, -0.5f},
+                            {0.5f, -0.5f, -0.5f},
+                    }
+            };
+
+    float a, b, c;
+    for (int i = 0; i < 2; ++i)
+    {
+        for (int j = 0; j < 4; ++j)
+        {
+            a = cube[i][j][0];
+            b = cube[i][j][1];
+            c = cube[i][j][2];
+            std::cout << "abc: " << a << " " << b << " " << c << std::endl;
+            gluProject(a, b, c,
+                       model_view, projection, viewport,
+                       &winX, &winY, &winZ);
+            std::cout << std::setprecision(9) << winX << " " << winY << " " << winZ << std::endl;
+        }
+    }
+
 
     glRotatef(xrot, 1.0f, 0.0f, 0.0f);
     glRotatef(yrot, 0.0f, 1.0f, 0.0f);

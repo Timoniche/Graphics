@@ -103,19 +103,19 @@ void dglWidget::onLineEditTextChanged(const QString& text)
 
 void dglWidget::update_image()
 {
-    dgl_look_at(m_eye, m_center, m_up);
-    cout_matrices();
-    m_thread = new QThread();
-    m_worker = new Worker(&model_view, &proj, &viewport);
-    m_worker->moveToThread(m_thread);
-    bool ok1 = connect(m_thread, &QThread::started, m_worker, &Worker::draw_cube);
-    bool ok2 = connect(m_worker, &Worker::draw_quad, this, &dglWidget::draw_quad);
-    //bool ok3 = connect(m_worker, &Worker::finished, this, &dglWidget::updateImage);
-    bool ok4 = connect(m_worker, &Worker::finished, m_thread, &QThread::quit);
-    bool ok5 = connect(m_worker, &Worker::finished, m_worker, &QObject::deleteLater);
-    bool ok6 = connect(m_thread, &QThread::finished, m_thread, &QThread::deleteLater);
-    Q_ASSERT(ok1 && ok2 /**&& ok3**/ && ok4 && ok5 && ok6);
-    m_thread->start();
+    //    dgl_look_at(m_eye, m_center, m_up);
+    //    cout_matrices();
+    //    m_thread = new QThread();
+    //    m_worker = new Worker(&model_view, &proj, &viewport);
+    //    m_worker->moveToThread(m_thread);
+    //    bool ok1 = connect(m_thread, &QThread::started, m_worker, &Worker::draw_cube);
+    //    bool ok2 = connect(m_worker, &Worker::draw_quad, this, &dglWidget::draw_quad);
+    //    //bool ok3 = connect(m_worker, &Worker::finished, this, &dglWidget::updateImage);
+    //    bool ok4 = connect(m_worker, &Worker::finished, m_thread, &QThread::quit);
+    //    bool ok5 = connect(m_worker, &Worker::finished, m_worker, &QObject::deleteLater);
+    //    bool ok6 = connect(m_thread, &QThread::finished, m_thread, &QThread::deleteLater);
+    //    Q_ASSERT(ok1 && ok2 /**&& ok3**/ && ok4 && ok5 && ok6);
+    //    m_thread->start();
 }
 
 void dglWidget::paintEvent(QPaintEvent *event)
@@ -133,7 +133,7 @@ void dglWidget::paintEvent(QPaintEvent *event)
     m_image->fill(qRgba(0, 0, 0, 255));
     //QPainter painter{this};
 
-        test_cube();
+    test_cube();
 
     //vec3i a = {0, 0, 1}; vec2i aa = {0, 0};
     //    vec3i b = {256, 0, 1}; vec2i bb = {bmp.bmiHeader.biHeight - 1, 0};
@@ -206,6 +206,45 @@ void dglWidget::draw_line(int x0, int y0, int x1, int y1, QRgb color)
 void dglWidget::test_cube()
 {
     Shader shader(&model_view, &proj, &viewport);
+    vec2f textures[6][4]
+    {
+        {
+            vec2f{0, 0},
+            vec2f{1, 0},
+            vec2f{1, 1},
+            vec2f{0, 1},
+        },
+        {
+            vec2f{1, 0},
+            vec2f{1, 1},
+            vec2f{0, 1},
+            vec2f{0, 0},
+        },
+        {
+            vec2f{0, 1},
+            vec2f{0, 0},
+            vec2f{1, 0},
+            vec2f{1, 1},
+        },
+        {
+            vec2f{1, 1},
+            vec2f{0, 1},
+            vec2f{0, 0},
+            vec2f{1, 0},
+        },
+        {
+            vec2f{1, 0},
+            vec2f{1, 1},
+            vec2f{0, 1},
+            vec2f{0, 0},
+        },
+        {
+            vec2f{0, 0},
+            vec2f{1, 0},
+            vec2f{1, 1},
+            vec2f{0, 1},
+        }
+    };
     vec3f cube[6][4]
     {
         {
@@ -267,6 +306,7 @@ void dglWidget::test_cube()
             std::cout << aaa << ans << std::endl;
         }
         draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
+                textures[i][0], textures[i][1], textures[i][2], textures[i][3],
                 a[i][0], a[i][1], a[i][2], 255);
     }
 }
@@ -327,7 +367,25 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
     //_________________________________________________
 
     if (t0.y==t1.y && t0.y==t2.y) return;
-    sort_vec3_y<int>(t0, t1, t2);
+    //sort_vec3_y<int>(t0, t1, t2);
+
+    using std::swap;
+    if (t0.get_y() > t1.get_y())
+    {
+        swap(t0, t1);
+        swap(b0, b1);
+    }
+    if (t0.get_y() > t2.get_y())
+    {
+        swap(t0, t2);
+        swap(b0, b2);
+    }
+    if (t1.get_y() > t2.get_y())
+    {
+        swap(t1, t2);
+        swap(b1, b2);
+    }
+
     int total_height = t2.y-t0.y;
     for (int i=0; i<total_height; i++) {
         bool second_half = i>t1.y-t0.y || t1.y==t0.y;
@@ -338,7 +396,11 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
         vec2i Ab = b0 + (b2 - b0) * alpha;
         vec3i B = second_half ? t1 + (t2-t1)*beta : t0 + (t1-t0)*beta;
         vec2i Bb = second_half ? b1 + (b2-b1)*beta : b0 + (b1-b0)*beta;
-        if (A.x>B.x) std::swap(A, B);
+        if (A.x>B.x)
+        {
+            std::swap(A, B);
+            std::swap(Ab, Bb);
+        }
         for (int j=A.x; j<=B.x; j++) {
             float phi = B.x==A.x ? 1. : (float)(j-A.x)/(float)(B.x-A.x);
             vec3i P = A + (B-A)*phi;
@@ -429,14 +491,16 @@ void dglWidget::dgl_viewport(int x, int y, int w, int h)
  *      \     \
  *      v3 -- v2
  */
-void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3, int colorR, int colorG, int colorB, float alp)
+void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3,
+                          vec2f t0, vec2f t1, vec2f t2, vec2f t3,
+                          int colorR, int colorG, int colorB, float alp)
 {
-    vec2i dlc = {0, 0}; //v0
-    vec2i drc = {255, 0}; //v1
-    vec2i ulc = {0, 255}; //v2
-    vec2i urc = {255, 255}; //v3
-    triangle_filled(v1, v2, v3, drc, ulc, urc, colorR, colorB, colorG, alp);
-    triangle_filled(v0, v1, v3, dlc, drc, urc, colorR, colorB, colorG, alp);
+    vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
+    vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
+    vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
+    vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
+    triangle_filled(v1, v2, v3, tt1, tt2, tt3, colorR, colorB, colorG, alp);
+    triangle_filled(v0, v1, v3, tt0, tt1, tt3, colorR, colorB, colorG, alp);
 }
 
 

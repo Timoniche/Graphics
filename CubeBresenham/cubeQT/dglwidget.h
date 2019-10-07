@@ -59,7 +59,9 @@ public slots:
 
     void perspective(const float &angleOfView, const float &aspect, const float &near, const float &far);
 
-    void draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3, int colorR, int colorG, int colorB, float alp);
+    void draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3,
+                   vec2f t0, vec2f t1, vec2f t2, vec2f t3,
+                   int colorR, int colorG, int colorB, float alp);
 
 public slots:
 
@@ -109,7 +111,8 @@ private:
     QPoint last_pos{};
     QTimer m_timer;
     //ReaderBMP bmp;
-    BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp"};
+    //BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp"};
+    BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"};
 public:
     QThread *m_thread = nullptr;
     Worker *m_worker = nullptr;

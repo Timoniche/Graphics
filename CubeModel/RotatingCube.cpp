@@ -134,7 +134,7 @@ bool init()
 //    glMaterialfv(GL_FRONT, GL_DIFFUSE, dif);
     //
 
-    texture[0] = LoadTexture("./TallGreenGrass.bmp");
+    texture[0] = LoadTexture("./one.bmp");
 
     glEnable(GL_TEXTURE_2D);
     glClearColor(BLACK, 0.0f);

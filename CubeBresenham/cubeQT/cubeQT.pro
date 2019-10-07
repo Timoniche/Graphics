@@ -55,4 +55,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     CMakeLists \
-    TallGreenGrass.bmp
+    TallGreenGrass.bmp \
+    one.bmp

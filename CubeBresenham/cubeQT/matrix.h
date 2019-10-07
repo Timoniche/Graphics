@@ -75,7 +75,7 @@ protected:
     unsigned columns;
 
     // Storage for matrix data.
-    std::vector<std::vector<TYPE> > matrix;
+    std::vector <std::vector<TYPE>> matrix;
 
     // Order sub-index for rows.
     //   Use: matrix[ order[ row ] ][ column ].
@@ -206,7 +206,8 @@ public:
         {
             assert(matrix[3][0] != 0 && "not a point");
             return DGL::vec3f(matrix[0][0], matrix[1][0], matrix[2][0]) * (1 / matrix[3][0]);
-        } else {
+        } else
+        {
             assert(matrix[0][3] != 0 && "not a point");
             return DGL::vec3f(matrix[0][0], matrix[0][1], matrix[0][2]) * (1 / matrix[0][3]);
         }
@@ -308,7 +309,7 @@ public:
     //
     // Extend
     //
-    std::vector<TYPE> &operator[](const size_t x)
+    std::vector <TYPE> &operator[](const size_t x)
     {
         return matrix[x];
     }

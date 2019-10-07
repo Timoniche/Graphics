@@ -19,26 +19,25 @@
 #include "dglgeometry.h"
 #include "matrix.h"
 #include "worker.h"
-#include "readerbmp.h"
 #include "bmp.h"
 
 using namespace DGL;
 
 class dglWidget : public QWidget
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     explicit dglWidget(QWidget *parent = nullptr);
 
     ~dglWidget() override;
 
-signals:
+    signals:
 
 public slots:
+            //todo: put in separate dll
+            //todo: replace with Strassen multiplication
 
-    //todo: put in separate dll
-    //todo: replace with Strassen multiplication
     void set_pixel(int x, int y, QRgb color);
 
     void draw_line(int x0, int y0, int x1, int y1, QRgb color);
@@ -49,7 +48,7 @@ public slots:
 
     void triangle_filled(vec3i t0, vec3i t1, vec3i t2,
                          vec2i b0, vec2i b1, vec2i b2,
-                         int colorR, int colorG, int colorB, float alp );
+                         int colorR, int colorG, int colorB, float alp, BMP* bmp);
 
     void triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color);
 
@@ -65,7 +64,7 @@ public slots:
 
 public slots:
 
-    void onLineEditTextChanged(const QString& text);
+    void onLineEditTextChanged(const QString &text);
 
     void update_image();
 
@@ -86,23 +85,22 @@ protected:
 
 private:
     const int FIVE_SECONDS = 5'000;
-//    const int m_width = 1 << 10;
-//    const int m_height = 1 << 10;
     const int m_width = 500;
     const int m_height = 500;
-    std::unique_ptr<QImage> m_image;
+    std::unique_ptr <QImage> m_image;
     Matrix<float> model_view;
     Matrix<float> proj;
     Matrix<float> viewport;
     Matrix<float> MVP;
     Matrix<float> VP;
     float *zbuffer;
+    enum proj_mode {ORTHO, PERSP} _mode = PERSP;
     vec3f m_eye{2, 2, 1};
     float near = 0.1f;
     float far = 100.f;
     vec3f m_center{0.0f, 0.0f, 0.0f};
     vec3f m_up{0.0f, 1.0f, 0.0f};
-    vec3f m_light_v{-0.88f, -0.531f, 0.44f}; //todo normalize;
+    vec3f m_light_v{-0.88f, -0.531f, 0.44f};
     float eps = 0.000001f;
     float x_VP = 0;
     float y_VP = 0;
@@ -110,9 +108,9 @@ private:
     float yh_VP = m_height;
     QPoint last_pos{};
     QTimer m_timer;
-    //ReaderBMP bmp;
     //BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp"};
-    BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"};
+    //{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"}
+    BMP* _bmp = nullptr;
 public:
     QThread *m_thread = nullptr;
     Worker *m_worker = nullptr;

@@ -11,7 +11,7 @@ namespace Ui
 
 class MainWindow : public QMainWindow
 {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
@@ -19,7 +19,7 @@ public:
     ~MainWindow();
 
 private:
-    std::unique_ptr<Ui::MainWindow> ui;
+    std::unique_ptr <Ui::MainWindow> ui;
 };
 
 #endif // MAINWINDOW_H

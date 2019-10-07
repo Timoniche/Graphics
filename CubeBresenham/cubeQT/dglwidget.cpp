@@ -17,33 +17,28 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
 {
     qRegisterMetaType<vec3f>("vec3f");
     resize(m_width, m_height);
-
     m_image = std::make_unique<QImage>(m_width, m_height, QImage::Format_RGB32);
     m_image->fill(qRgba(0, 0, 0, 255));
     zbuffer = new float[size_t(m_width * m_height)];
     std::fill(zbuffer, zbuffer + m_width * m_height,
               std::numeric_limits<float>::max());
-
     perspective(80.0f, 4.0f / 3.0f, near, far);
     dgl_viewport(0, 0, m_width, m_height);
     VP = viewport * proj;
-
-    //connect(&m_timer, SIGNAL(timeout()), this, SLOT(repaint()));
-    //m_timer.setInterval(FIVE_SECONDS);
-    //m_timer.start(0);
-    //
-    //updateImage();
-    //
+    m_light_v.normalize();
     repaint();
+    _mode = PERSP;
+    //mode = ORTHO;
+    _bmp = new BMP("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
 }
 
 dglWidget::~dglWidget()
 {
     delete[] zbuffer;
+    delete _bmp;
 }
 
-//todo: make dglRotate
-void dglWidget::mouseMoveEvent(QMouseEvent *event) /**NOT USE IT**/
+void dglWidget::mouseMoveEvent(QMouseEvent *event)
 {
     float dx = event->x() - last_pos.x();
     float dy = event->y() - last_pos.y();
@@ -66,11 +61,10 @@ void dglWidget::wheelEvent(QWheelEvent *event)
 
 void dglWidget::clean_image()
 {
-    //m_image->fill(qRgba(0, 0, 0, 255));
-    //promise.set_value();
+    m_image->fill(qRgba(0, 0, 0, 255));
 }
 
-void dglWidget::onLineEditTextChanged(const QString& text)
+void dglWidget::onLineEditTextChanged(const QString &text)
 {
     std::string s = text.toStdString();
     std::stringstream ss(s);
@@ -79,13 +73,15 @@ void dglWidget::onLineEditTextChanged(const QString& text)
     for (size_t i = 0; i < 3; i++)
     {
         ss >> val_str;
-        try {
+        try
+        {
             values[i] = std::stof(val_str);
-        } catch (std::invalid_argument& e) {
+        } catch (std::invalid_argument &e)
+        {
             qDebug() << "incorrect input, should be x.f y.f z.f";
             qDebug() << e.what();
             return;
-        } catch (std::out_of_range& e)
+        } catch (std::out_of_range &e)
         {
             qDebug() << "out of range";
             qDebug() << e.what();
@@ -97,7 +93,8 @@ void dglWidget::onLineEditTextChanged(const QString& text)
     {
         clean_image();
     });
-    if (func.joinable()) { func.join(); }
+    if (func.joinable())
+    { func.join(); }
     repaint();
 }
 
@@ -124,28 +121,11 @@ void dglWidget::paintEvent(QPaintEvent *event)
               std::numeric_limits<float>::max());
     Q_UNUSED(event);
     QPainter pnt{this};
-    //    pnt.begin(m_image.get());
-    //    pnt.fillRect(0, 0, m_width, m_height, Qt::black);
-    //    pnt.end();
-
     dgl_look_at(m_eye, m_center, m_up);
-    cout_matrices();
-    m_image->fill(qRgba(0, 0, 0, 255));
-    //QPainter painter{this};
-
+    //cout_matrices();
+    clean_image();
     test_cube();
-
-    //vec3i a = {0, 0, 1}; vec2i aa = {0, 0};
-    //    vec3i b = {256, 0, 1}; vec2i bb = {bmp.bmiHeader.biHeight - 1, 0};
-    //    vec3i c = {0, 256, 1}; vec2i cc = {0, bmp.bmiHeader.biWidth - 1};
-
-    //vec3i b = {256, 0, 1}; vec2i bb = {_bmp.bmp_info_header.height - 1, 0};
-    //vec3i c = {0, 256, 1}; vec2i cc = {0, _bmp.bmp_info_header.width - 1};
-
-    //triangle_filled(a, b, c, aa, bb, cc, 255, 0, 255, 255);
-
     pnt.drawImage(0, 0, *m_image);
-
 }
 
 void dglWidget::cout_matrices()
@@ -156,6 +136,7 @@ void dglWidget::cout_matrices()
     std::cout << "viewport\n" << viewport << std::endl;
     std::cout << "_____________________________" << std::endl;
 }
+
 void dglWidget::set_pixel(int x, int y, QRgb color)
 {
     if (x >= xw_VP ||
@@ -165,10 +146,8 @@ void dglWidget::set_pixel(int x, int y, QRgb color)
     {
         return;
     }
-
-    auto *rowData = reinterpret_cast<QRgb*>(m_image->scanLine(m_height - y));
+    auto *rowData = reinterpret_cast<QRgb *>(m_image->scanLine(m_height - y));
     rowData[x] = color;
-
 }
 
 void dglWidget::draw_line(int x0, int y0, int x1, int y1, QRgb color)
@@ -205,7 +184,7 @@ void dglWidget::draw_line(int x0, int y0, int x1, int y1, QRgb color)
 
 void dglWidget::test_cube()
 {
-    Shader shader(&model_view, &proj, &viewport);
+    Shader shader(&model_view, &proj, m_width, m_height);
     vec2f textures[6][4]
     {
         {
@@ -285,25 +264,18 @@ void dglWidget::test_cube()
         }
     };
 
-    int a[6][3] { {255, 0, 0}, {0, 255, 0}, {0, 0, 255},
-                  {255, 255, 0}, {255, 0, 255}, {0, 255, 255}};
+    int a[6][3]{{255, 0,   0},
+                {0,   255, 0},
+                {0,   0,   255},
+                {255, 255, 0},
+                {255, 0,   255},
+                {0,   255, 255}};
     for (int i = 0; i < 6; i++)
     {
         vec3f tmp[4];
         for (int j = 0; j < 4; j++)
         {
-            vec3f aaa = cube[i][j];
-            Matrix<float> m = Matrix<float>(aaa);
-            m.transpose();
-            m = m * model_view;
-            m = m * proj;
-            vec3f p = m.get_projection();
-            vec3f ans = {0, 0, 0};
-            ans[0] = m_width * (p[0] + 1) / 2;
-            ans[1] = m_height * (p[1] + 1) / 2;
-            ans[2] = 10000 * (p[2] + 1) / 2;
-            tmp[j] = ans;
-            std::cout << aaa << ans << std::endl;
+            tmp[j] = shader.count_coordinates(cube[i][j]);
         }
         draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
                 textures[i][0], textures[i][1], textures[i][2], textures[i][3],
@@ -353,10 +325,10 @@ void dglWidget::triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color)
 
 void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
                                 vec2i b0, vec2i b1, vec2i b2,
-                                int colorR, int colorG, int colorB, float alp)
+                                int colorR, int colorG, int colorB, float alp, BMP* bmp)
 {
     //_________________________________________________
-    vec3f n = (t2 - t0) ^ (t1 - t0);
+    vec3f n = (t2 - t0) ^(t1 - t0);
     n.normalize();
     m_light_v.normalize();
     float intensity = n * m_light_v;
@@ -365,10 +337,7 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
     colorG = static_cast<int>(colorG * intensity);
     colorB = static_cast<int>(colorB * intensity);
     //_________________________________________________
-
-    if (t0.y==t1.y && t0.y==t2.y) return;
-    //sort_vec3_y<int>(t0, t1, t2);
-
+    if (t0.y == t1.y && t0.y == t2.y) return;
     using std::swap;
     if (t0.get_y() > t1.get_y())
     {
@@ -386,41 +355,49 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
         swap(b1, b2);
     }
 
-    int total_height = t2.y-t0.y;
-    for (int i=0; i<total_height; i++) {
-        bool second_half = i>t1.y-t0.y || t1.y==t0.y;
-        int segment_height = second_half ? t2.y-t1.y : t1.y-t0.y;
-        float alpha = (float)i/total_height;
-        float beta  = (float)(i-(second_half ? t1.y-t0.y : 0))/segment_height;
-        vec3i A =               t0 + (t2-t0)*alpha;
+    int total_height = t2.y - t0.y;
+    for (int i = 0; i < total_height; i++)
+    {
+        bool second_half = i > t1.y - t0.y || t1.y == t0.y;
+        int segment_height = second_half ? t2.y - t1.y : t1.y - t0.y;
+        float alpha = (float) i / total_height;
+        float beta = (float) (i - (second_half ? t1.y - t0.y : 0)) / segment_height;
+        vec3i A = t0 + (t2 - t0) * alpha;
         vec2i Ab = b0 + (b2 - b0) * alpha;
-        vec3i B = second_half ? t1 + (t2-t1)*beta : t0 + (t1-t0)*beta;
-        vec2i Bb = second_half ? b1 + (b2-b1)*beta : b0 + (b1-b0)*beta;
-        if (A.x>B.x)
+        vec3i B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
+        vec2i Bb = second_half ? b1 + (b2 - b1) * beta : b0 + (b1 - b0) * beta;
+        if (A.x > B.x)
         {
             std::swap(A, B);
             std::swap(Ab, Bb);
         }
-        for (int j=A.x; j<=B.x; j++) {
-            float phi = B.x==A.x ? 1. : (float)(j-A.x)/(float)(B.x-A.x);
-            vec3i P = A + (B-A)*phi;
+        for (int j = A.x; j <= B.x; j++)
+        {
+            float phi = B.x == A.x ? 1. : (float) (j - A.x) / (float) (B.x - A.x);
+            vec3i P = A + (B - A) * phi;
             vec2i Pb = Ab + (Bb - Ab) * phi;
-            P.x = j; P.y = t0.y+i;
-            int idx = j+(t0.y+i)*m_width;
+            P.x = j;
+            P.y = t0.y + i;
+            int idx = j + (t0.y + i) * m_width;
             if (idx < 0 || idx >= m_width * m_height || P.z > 10000) continue;
-            if (zbuffer[idx] > P.z) {
+            if (zbuffer[idx] > P.z)
+            {
                 zbuffer[idx] = P.z;
-                //set_pixel(P.x, P.y, qRgba(colorR, colorG, colorB, alp));
-
-                //vec3i col = bmp.get_color(Pb[0], Pb[1]);
-                //std::cout << col;
-                vec3i col;
-                uint32_t channels = _bmp.bmp_info_header.bit_count / 8;
-                col[0] = _bmp.data[channels * (Pb[1] * _bmp.bmp_info_header.width + Pb[0]) + 0];   // B
-                col[1] = _bmp.data[channels * (Pb[1] * _bmp.bmp_info_header.width + Pb[0]) + 1];   // G
-                col[2] = _bmp.data[channels * (Pb[1] * _bmp.bmp_info_header.width + Pb[0]) + 2]; // R
-                if (channels == 4) alp = _bmp.data[channels * (Pb[1] * _bmp.bmp_info_header.width + Pb[0]) + 3];
-                set_pixel(P.x, P.y, qRgba(col[0], col[1], col[2], alp));
+                if (bmp != nullptr)
+                {
+                    vec3i col;
+                    uint32_t channels = bmp->bmp_info_header.bit_count / 8;
+                    col[0] = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 0];   // B
+                    col[1] = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 1];   // G
+                    col[2] = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 2]; // R
+                    if (channels == 4) alp = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 3];
+                    set_pixel(P.x, P.y, qRgba(int(intensity * col[0]),
+                              int(intensity * col[1]),
+                            int(intensity * col[2]), alp));
+                } else
+                {
+                    set_pixel(P.x, P.y, qRgba(colorR, colorG, colorB, alp));
+                }
             }
         }
     }
@@ -499,8 +476,8 @@ void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3,
     vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
     vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
     vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
-    triangle_filled(v1, v2, v3, tt1, tt2, tt3, colorR, colorB, colorG, alp);
-    triangle_filled(v0, v1, v3, tt0, tt1, tt3, colorR, colorB, colorG, alp);
+    triangle_filled(v1, v2, v3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp);
+    triangle_filled(v0, v1, v3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp);
 }
 
 
@@ -509,14 +486,33 @@ void dglWidget::perspective(const float &fovy,
                             const float &zNear,
                             const float &zFar)
 {
-    float const rad = fovy * float(M_PI) / 180.f;
-    float const tanHalfFovy = tanf(rad / 2.0f);
-    Matrix<float> Result(4, 4);
-    Result.put(0, 0, (1 / (aspect * tanHalfFovy)));
-    Result.put(1, 1, (1 / (tanHalfFovy)));
-    Result.put(2, 2, (-(zFar + zNear) / (zFar - zNear)));
-    Result.put(3, 2, (-1));
-    Result.put(2, 3, (-(2 * zFar * zNear) / (zFar - zNear)));
-    Result.transpose();
-    proj = Result;
+    switch (_mode) {
+        case PERSP:
+        {
+            float const rad = fovy * float(M_PI) / 180.f;
+            float const tanHalfFovy = tanf(rad / 2.0f);
+            Matrix<float> Result(4, 4);
+            Result.put(0, 0, (1 / (aspect * tanHalfFovy)));
+            Result.put(1, 1, (1 / (tanHalfFovy)));
+            Result.put(2, 2, (-(zFar + zNear) / (zFar - zNear)));
+            Result.put(3, 2, (-1));
+            Result.put(2, 3, (-(2 * zFar * zNear) / (zFar - zNear)));
+            Result.transpose();
+            proj = Result;
+            break;
+        }
+        case ORTHO:
+        {
+            float const rad = fovy * float(M_PI) / 180.f;
+            float const tanHalfFovy = tanf(rad / 2.0f);
+            Matrix<float> Result = IdentityMatrix<float>(4, 4);
+            Result.put(0, 0, (1 / (aspect * tanHalfFovy * zNear)));
+            Result.put(1, 1, (1 / (tanHalfFovy * zNear)));
+            Result.put(2, 2, (-2 / (zFar - zNear)));
+            Result.put(2, 3, (-(zFar + zNear) / (zFar - zNear)));
+            Result.transpose();
+            proj = Result;
+            break;
+        }
+    }
 }

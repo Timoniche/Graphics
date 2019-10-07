@@ -31,8 +31,7 @@ SOURCES += \
     dglgeometry.cpp \
     dgl.cpp \
     worker.cpp \
-    shader.cpp \
-    readerbmp.cpp
+    shader.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -42,7 +41,6 @@ HEADERS += \
     dgl.h \
     worker.h \
     shader.h \
-    readerbmp.h \
     bmp.h
 
 FORMS += \

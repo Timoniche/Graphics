@@ -8,15 +8,16 @@ using namespace DGL;
 
 class Shader
 {
-    Matrix<float> const* model_view;
-    Matrix<float> const* proj;
-    Matrix<float> const* viewport;
+    Matrix<float> const *model_view;
+    Matrix<float> const *proj;
     Matrix<float> MVP;
+    int m_width = 500;
+    int m_height = 500;
 
 public:
-    Shader(Matrix<float> const* model_view,
-           Matrix<float> const* proj,
-           Matrix<float> const* viewport);
+    Shader(Matrix<float> const *model_view,
+           Matrix<float> const *proj,
+           int w, int h);
 
     vec3f count_coordinates(vec3f world_coordinates);
 

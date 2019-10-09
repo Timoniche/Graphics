@@ -61,6 +61,7 @@ public slots:
     void draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3,
                    vec2f t0, vec2f t1, vec2f t2, vec2f t3,
                    int colorR, int colorG, int colorB, float alp);
+    void dgl_rotate(float angle, float x, float y, float z);
 
 public slots:
 
@@ -83,16 +84,19 @@ protected:
 
     void wheelEvent(QWheelEvent *event) override;
 
+    void resizeEvent(QResizeEvent* e) override;
+
 private:
     const int FIVE_SECONDS = 5'000;
-    const int m_width = 500;
-    const int m_height = 500;
+    int m_width;
+    int m_height;
     std::unique_ptr <QImage> m_image;
     Matrix<float> model_view;
     Matrix<float> proj;
     Matrix<float> viewport;
     Matrix<float> MVP;
     Matrix<float> VP;
+    Matrix<float> rotate = IdentityMatrix<float>(4, 4);
     float *zbuffer;
     enum proj_mode {ORTHO, PERSP} _mode = PERSP;
     vec3f m_eye{2, 2, 1};

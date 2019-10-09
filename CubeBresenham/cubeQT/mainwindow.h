@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <memory>
+#include "dglwidget.h"
 
 namespace Ui
 {
@@ -16,10 +17,12 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
 
-    ~MainWindow();
+    ~MainWindow() override;
 
+    void resizeEvent(QResizeEvent* e) override;
 private:
     std::unique_ptr <Ui::MainWindow> ui;
+    dglWidget* wid = nullptr;
 };
 
 #endif // MAINWINDOW_H

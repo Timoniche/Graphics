@@ -16,10 +16,12 @@
 dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
 {
     qRegisterMetaType<vec3f>("vec3f");
+    m_width = parent->width();
+    m_height = parent->height();
     resize(m_width, m_height);
-    m_image = std::make_unique<QImage>(m_width, m_height, QImage::Format_RGB32);
+    m_image = std::make_unique<QImage>(3000, 3000, QImage::Format_RGB32);
     m_image->fill(qRgba(0, 0, 0, 255));
-    zbuffer = new float[size_t(m_width * m_height)];
+    zbuffer = new float[3000 * 3000];
     std::fill(zbuffer, zbuffer + m_width * m_height,
               std::numeric_limits<float>::max());
     perspective(80.0f, 4.0f / 3.0f, near, far);
@@ -28,14 +30,25 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     m_light_v.normalize();
     repaint();
     _mode = PERSP;
-    //mode = ORTHO;
     _bmp = new BMP("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
+
+    //dgl_rotate(float(M_PI) / 3, 0.0f, 1.0f, 0.0f);
 }
 
 dglWidget::~dglWidget()
 {
     delete[] zbuffer;
     delete _bmp;
+}
+
+void dglWidget::resizeEvent(QResizeEvent* e)
+{
+    m_height = e->size().height();
+    m_width = e->size().width();
+    //float x_VP = 0;
+    //float y_VP = 0;
+    float xw_VP = m_width;
+    float yh_VP = m_height;
 }
 
 void dglWidget::mouseMoveEvent(QMouseEvent *event)
@@ -139,13 +152,13 @@ void dglWidget::cout_matrices()
 
 void dglWidget::set_pixel(int x, int y, QRgb color)
 {
-    if (x >= xw_VP ||
-            y >= yh_VP ||
-            x < x_VP ||
-            y < y_VP)
-    {
-        return;
-    }
+//    if (x >= xw_VP ||
+//            y >= yh_VP ||
+//            x < x_VP ||
+//            y < y_VP)
+//    {
+//        return;
+//    }
     auto *rowData = reinterpret_cast<QRgb *>(m_image->scanLine(m_height - y));
     rowData[x] = color;
 }
@@ -275,7 +288,12 @@ void dglWidget::test_cube()
         vec3f tmp[4];
         for (int j = 0; j < 4; j++)
         {
-            tmp[j] = shader.count_coordinates(cube[i][j]);
+            //tmp[j] = shader.count_coordinates(cube[i][j]);
+            Matrix<float> m = Matrix<float>(shader.count_coordinates(cube[i][j]));
+            m.transpose();
+            m = m * rotate;
+            tmp[j] = m.get_projection();
+            std::cout << tmp[j];
         }
         draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
                 textures[i][0], textures[i][1], textures[i][2], textures[i][3],
@@ -404,6 +422,29 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
 
 }
 
+void dglWidget::dgl_rotate(float angle, float x, float y, float z)
+{
+    vec3f axis{x, y, z};
+    axis.normalize();
+    float b = angle;
+
+    float c = cosf(b);
+    float ac = 1.00f - c;
+    float s = sinf(b);
+
+    rotate[0][0] = axis.x * axis.x * ac + c;
+    rotate[0][1] = axis.x * axis.y * ac + axis.z * s;
+    rotate[0][2] = axis.x * axis.z * ac - axis.y * s;
+
+    rotate[1][0] = axis.y * axis.x * ac - axis.z * s;
+    rotate[1][1] = axis.y * axis.y * ac + c;
+    rotate[1][2] = axis.y * axis.z * ac + axis.x * s;
+
+    rotate[2][0] = axis.z * axis.x * ac + axis.y * s;
+    rotate[2][1] = axis.z * axis.y * ac - axis.x * s;
+    rotate[2][2] = axis.z * axis.z * ac + c;
+}
+
 /***
   Whole plan: Viewport * Projection * [View * Model] * v.
   dgl_look_at makes View * Model
@@ -487,32 +528,32 @@ void dglWidget::perspective(const float &fovy,
                             const float &zFar)
 {
     switch (_mode) {
-        case PERSP:
-        {
-            float const rad = fovy * float(M_PI) / 180.f;
-            float const tanHalfFovy = tanf(rad / 2.0f);
-            Matrix<float> Result(4, 4);
-            Result.put(0, 0, (1 / (aspect * tanHalfFovy)));
-            Result.put(1, 1, (1 / (tanHalfFovy)));
-            Result.put(2, 2, (-(zFar + zNear) / (zFar - zNear)));
-            Result.put(3, 2, (-1));
-            Result.put(2, 3, (-(2 * zFar * zNear) / (zFar - zNear)));
-            Result.transpose();
-            proj = Result;
-            break;
-        }
-        case ORTHO:
-        {
-            float const rad = fovy * float(M_PI) / 180.f;
-            float const tanHalfFovy = tanf(rad / 2.0f);
-            Matrix<float> Result = IdentityMatrix<float>(4, 4);
-            Result.put(0, 0, (1 / (aspect * tanHalfFovy * zNear)));
-            Result.put(1, 1, (1 / (tanHalfFovy * zNear)));
-            Result.put(2, 2, (-2 / (zFar - zNear)));
-            Result.put(2, 3, (-(zFar + zNear) / (zFar - zNear)));
-            Result.transpose();
-            proj = Result;
-            break;
-        }
+    case PERSP:
+    {
+        float const rad = fovy * float(M_PI) / 180.f;
+        float const tanHalfFovy = tanf(rad / 2.0f);
+        Matrix<float> Result(4, 4);
+        Result.put(0, 0, (1 / (aspect * tanHalfFovy)));
+        Result.put(1, 1, (1 / (tanHalfFovy)));
+        Result.put(2, 2, (-(zFar + zNear) / (zFar - zNear)));
+        Result.put(3, 2, (-1));
+        Result.put(2, 3, (-(2 * zFar * zNear) / (zFar - zNear)));
+        Result.transpose();
+        proj = Result;
+        break;
+    }
+    case ORTHO:
+    {
+        float const rad = fovy * float(M_PI) / 180.f;
+        float const tanHalfFovy = tanf(rad / 2.0f);
+        Matrix<float> Result = IdentityMatrix<float>(4, 4);
+        Result.put(0, 0, (1 / (aspect * tanHalfFovy * zNear)));
+        Result.put(1, 1, (1 / (tanHalfFovy * zNear)));
+        Result.put(2, 2, (-2 / (zFar - zNear)));
+        Result.put(2, 3, (-(zFar + zNear) / (zFar - zNear)));
+        Result.transpose();
+        proj = Result;
+        break;
+    }
     }
 }

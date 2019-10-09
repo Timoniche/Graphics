@@ -229,7 +229,7 @@ void display()
     }
 
 
-    glRotatef(xrot, 1.0f, 0.0f, 0.0f);
+    //glRotatef(xrot, 1.0f, 0.0f, 0.0f);
     glRotatef(yrot, 0.0f, 1.0f, 0.0f);
 
     drawBox();

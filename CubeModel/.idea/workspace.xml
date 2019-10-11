@@ -14,10 +14,9 @@
   <component name="ChangeListManager">
     <list default="true" id="a4b7115c-ef35-48e8-be44-233ed5dad7ba" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/mainwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/mainwindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/mainwindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/mainwindow.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/mainwindow.ui" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/mainwindow.ui" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/matrix.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/matrix.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/shader.cpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/shader.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RotatingCube.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/RotatingCube.cpp" afterDir="false" />
     </list>
@@ -55,11 +54,20 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RotatingCube.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="77">
-              <caret line="231" column="6" selection-start-line="231" selection-start-column="6" selection-end-line="231" selection-end-column="6" />
+            <state relative-caret-position="365">
+              <caret line="230" lean-forward="true" selection-start-line="230" selection-end-line="230" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://C:/freeglut/include/GL/freeglut_std.h">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="197">
+              <caret line="447" column="24" selection-start-line="447" selection-start-column="14" selection-end-line="447" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -127,7 +135,7 @@
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="-12" />
     <option name="y" value="-12" />
     <option name="width" value="981" />
@@ -141,7 +149,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -157,6 +164,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -229,6 +237,7 @@
       <workItem from="1570468693461" duration="25000" />
       <workItem from="1570471711281" duration="598000" />
       <workItem from="1570651401287" duration="1319000" />
+      <workItem from="1570753618197" duration="1529000" />
     </task>
     <task id="LOCAL-00001" summary="texture added">
       <created>1566172640023</created>
@@ -241,18 +250,18 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="63850000" />
+    <option name="totallyTimeSpent" value="65379000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
+    <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49695122" visible="true" weight="0.056438792" />
+      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49695122" visible="true" weight="0.027027028" />
       <window_info id="Structure" order="1" sideWeight="0.5030488" side_tool="true" weight="0.24960254" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.5079929" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.5079929" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39964476" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -281,13 +290,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="918">
           <caret line="51" selection-start-line="51" selection-end-line="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://C:/freeglut/include/GL/freeglut_std.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="11448">
-          <caret line="636" selection-start-line="636" selection-end-line="636" />
         </state>
       </provider>
     </entry>
@@ -333,10 +335,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://C:/freeglut/include/GL/freeglut_std.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="197">
+          <caret line="447" column="24" selection-start-line="447" selection-start-column="14" selection-end-line="447" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/RotatingCube.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="77">
-          <caret line="231" column="6" selection-start-line="231" selection-start-column="6" selection-end-line="231" selection-end-column="6" />
+        <state relative-caret-position="365">
+          <caret line="230" lean-forward="true" selection-start-line="230" selection-end-line="230" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>

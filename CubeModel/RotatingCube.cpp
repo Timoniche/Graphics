@@ -114,6 +114,7 @@ void drawBox()
     glVertex3f(-0.5f, 0.5f, -0.5f);
 
     glEnd();
+
 }
 
 bool init()
@@ -231,6 +232,7 @@ void display()
 
     //glRotatef(xrot, 1.0f, 0.0f, 0.0f);
     glRotatef(yrot, 0.0f, 1.0f, 0.0f);
+
 
     drawBox();
 

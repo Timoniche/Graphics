@@ -24,6 +24,7 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     zbuffer = new float[3000 * 3000];
     std::fill(zbuffer, zbuffer + m_width * m_height,
               std::numeric_limits<float>::max());
+    dgl_look_at(m_eye, m_center, m_up);
     perspective(80.0f, 4.0f / 3.0f, near, far);
     dgl_viewport(0, 0, m_width, m_height);
     VP = viewport * proj;
@@ -31,8 +32,6 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     repaint();
     _mode = PERSP;
     _bmp = new BMP("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
-
-    //dgl_rotate(float(M_PI) / 3, 0.0f, 1.0f, 0.0f);
 }
 
 dglWidget::~dglWidget()
@@ -51,24 +50,39 @@ void dglWidget::resizeEvent(QResizeEvent* e)
     float yh_VP = m_height;
 }
 
-void dglWidget::mouseMoveEvent(QMouseEvent *event)
+void dglWidget::mousePressEvent(QMouseEvent *event)
 {
-    float dx = event->x() - last_pos.x();
-    float dy = event->y() - last_pos.y();
+    float x = event->x();
+    float y = event->y();
 
     if (event->buttons() & Qt::LeftButton)
     {
-        m_eye[0] += dx / 300.f;
-        m_eye[1] += dy / 300.f;
-
+        mouseDown = true;
+        xdiff = x - yrot;
+        ydiff = -y + xrot;
+    } else
+    {
+        mouseDown = false;
     }
-    last_pos = event->pos();
     repaint();
+}
+void dglWidget::mouseMoveEvent(QMouseEvent *event)
+{
+    float x = event->x();
+    float y = event->y();
+
+    if (mouseDown)
+    {
+        yrot = x - xdiff;
+        xrot = y + ydiff;
+        repaint();
+    }
 }
 
 void dglWidget::wheelEvent(QWheelEvent *event)
 {
-    m_eye[2] += float(event->delta()) / 200.f;
+    vec3f direction_to_get_closer = m_center - m_eye;
+    m_eye = m_eye + direction_to_get_closer * (float(event->delta()) / 2000.0f);
     repaint();
 }
 
@@ -135,6 +149,8 @@ void dglWidget::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
     QPainter pnt{this};
     dgl_look_at(m_eye, m_center, m_up);
+    dgl_rotate(xrot, 1.0f, 0.0f, 0.0f);
+    dgl_rotate(yrot, 0.0f, 1.0f, 0.0f);
     //cout_matrices();
     clean_image();
     test_cube();
@@ -152,13 +168,13 @@ void dglWidget::cout_matrices()
 
 void dglWidget::set_pixel(int x, int y, QRgb color)
 {
-//    if (x >= xw_VP ||
-//            y >= yh_VP ||
-//            x < x_VP ||
-//            y < y_VP)
-//    {
-//        return;
-//    }
+    //    if (x >= xw_VP ||
+    //            y >= yh_VP ||
+    //            x < x_VP ||
+    //            y < y_VP)
+    //    {
+    //        return;
+    //    }
     auto *rowData = reinterpret_cast<QRgb *>(m_image->scanLine(m_height - y));
     rowData[x] = color;
 }
@@ -288,11 +304,7 @@ void dglWidget::test_cube()
         vec3f tmp[4];
         for (int j = 0; j < 4; j++)
         {
-            //tmp[j] = shader.count_coordinates(cube[i][j]);
-            Matrix<float> m = Matrix<float>(shader.count_coordinates(cube[i][j]));
-            m.transpose();
-            m = m * rotate;
-            tmp[j] = m.get_projection();
+            tmp[j] = shader.count_coordinates(cube[i][j]);
             std::cout << tmp[j];
         }
         draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
@@ -426,23 +438,24 @@ void dglWidget::dgl_rotate(float angle, float x, float y, float z)
 {
     vec3f axis{x, y, z};
     axis.normalize();
-    float b = angle;
+    x = axis.x;
+    y = axis.y;
+    z = axis.z;
+    float angle_rad = angle * (float(M_PI) / 180.0f);
 
-    float c = cosf(b);
-    float ac = 1.00f - c;
-    float s = sinf(b);
+    float c = cosf(angle_rad);
+    float s = sinf(angle_rad);
+    float t = 1 - c;
 
-    rotate[0][0] = axis.x * axis.x * ac + c;
-    rotate[0][1] = axis.x * axis.y * ac + axis.z * s;
-    rotate[0][2] = axis.x * axis.z * ac - axis.y * s;
+    float m[16] = {
+        c+x*x*t,y*x*t+z*s,z*x*t-y*s,0,
+        x*y*t-z*s,c+y*y*t,z*y*t+x*s,0,
+        x*z*t+y*s,y*z*t-x*s,z*z*t+c,0,
+        0,0,0,1
+    };
 
-    rotate[1][0] = axis.y * axis.x * ac - axis.z * s;
-    rotate[1][1] = axis.y * axis.y * ac + c;
-    rotate[1][2] = axis.y * axis.z * ac + axis.x * s;
-
-    rotate[2][0] = axis.z * axis.x * ac + axis.y * s;
-    rotate[2][1] = axis.z * axis.y * ac - axis.x * s;
-    rotate[2][2] = axis.z * axis.z * ac + c;
+    Matrix<float> ro = Matrix<float>(m);
+    model_view = ro * model_view;
 }
 
 /***

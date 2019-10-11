@@ -82,6 +82,8 @@ protected:
 
     void mouseMoveEvent(QMouseEvent *event) override;
 
+    void mousePressEvent(QMouseEvent *event) override;
+
     void wheelEvent(QWheelEvent *event) override;
 
     void resizeEvent(QResizeEvent* e) override;
@@ -96,7 +98,6 @@ private:
     Matrix<float> viewport;
     Matrix<float> MVP;
     Matrix<float> VP;
-    Matrix<float> rotate = IdentityMatrix<float>(4, 4);
     float *zbuffer;
     enum proj_mode {ORTHO, PERSP} _mode = PERSP;
     vec3f m_eye{2, 2, 1};
@@ -110,11 +111,17 @@ private:
     float y_VP = 0;
     float xw_VP = m_width;
     float yh_VP = m_height;
-    QPoint last_pos{};
     QTimer m_timer;
     //BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp"};
     //{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"}
     BMP* _bmp = nullptr;
+
+    bool mouseDown = false;
+
+    float xrot = 0.0f;
+    float yrot = 0.0f;
+    float xdiff = 0.0f;
+    float ydiff = 0.0f;
 public:
     QThread *m_thread = nullptr;
     Worker *m_worker = nullptr;

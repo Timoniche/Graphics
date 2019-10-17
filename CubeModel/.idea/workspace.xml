@@ -12,14 +12,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a4b7115c-ef35-48e8-be44-233ed5dad7ba" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/matrix.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/matrix.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/shader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/shader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/RotatingCube.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/RotatingCube.cpp" afterDir="false" />
-    </list>
+    <list default="true" id="a4b7115c-ef35-48e8-be44-233ed5dad7ba" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -237,7 +230,7 @@
       <workItem from="1570468693461" duration="25000" />
       <workItem from="1570471711281" duration="598000" />
       <workItem from="1570651401287" duration="1319000" />
-      <workItem from="1570753618197" duration="1529000" />
+      <workItem from="1570753618197" duration="2124000" />
     </task>
     <task id="LOCAL-00001" summary="texture added">
       <created>1566172640023</created>
@@ -250,7 +243,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="65379000" />
+    <option name="totallyTimeSpent" value="65974000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />

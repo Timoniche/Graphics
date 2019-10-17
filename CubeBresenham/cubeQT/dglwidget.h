@@ -109,8 +109,8 @@ private:
     float eps = 0.000001f;
     float x_VP = 0;
     float y_VP = 0;
-    float xw_VP = m_width;
-    float yh_VP = m_height;
+    //float xw_VP = m_width;
+    //float yh_VP = m_height;
     QTimer m_timer;
     //BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp"};
     //{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"}

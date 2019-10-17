@@ -22,7 +22,7 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     m_image = std::make_unique<QImage>(3000, 3000, QImage::Format_RGB32);
     m_image->fill(qRgba(0, 0, 0, 255));
     zbuffer = new float[3000 * 3000];
-    std::fill(zbuffer, zbuffer + m_width * m_height,
+    std::fill(zbuffer, zbuffer + 3000 * 3000,
               std::numeric_limits<float>::max());
     dgl_look_at(m_eye, m_center, m_up);
     perspective(80.0f, 4.0f / 3.0f, near, far);
@@ -32,6 +32,7 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     repaint();
     _mode = PERSP;
     _bmp = new BMP("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
+    //_bmp = new BMP("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp");
 }
 
 dglWidget::~dglWidget()
@@ -42,12 +43,16 @@ dglWidget::~dglWidget()
 
 void dglWidget::resizeEvent(QResizeEvent* e)
 {
-    m_height = e->size().height();
-    m_width = e->size().width();
-    //float x_VP = 0;
-    //float y_VP = 0;
-    float xw_VP = m_width;
-    float yh_VP = m_height;
+    int size = std::min(e->size().height(), e->size().width());
+    float delta_w = std::abs(e->size().width() - size) / 2;
+    float delta_h = std::abs(e->size().height() - size) / 2;
+   // m_height = e->size().height();
+   // m_width = e->size().width();
+    m_width = size;
+    m_height = size;
+
+    x_VP = delta_w;
+    y_VP = delta_h;
 }
 
 void dglWidget::mousePressEvent(QMouseEvent *event)
@@ -144,7 +149,7 @@ void dglWidget::update_image()
 
 void dglWidget::paintEvent(QPaintEvent *event)
 {
-    std::fill(zbuffer, zbuffer + m_width * m_height,
+    std::fill(zbuffer, zbuffer + 3000 * 3000,
               std::numeric_limits<float>::max());
     Q_UNUSED(event);
     QPainter pnt{this};
@@ -305,7 +310,10 @@ void dglWidget::test_cube()
         for (int j = 0; j < 4; j++)
         {
             tmp[j] = shader.count_coordinates(cube[i][j]);
-            std::cout << tmp[j];
+            qDebug() << x_VP << " " << y_VP << "\n";
+            //tmp[j].x += x_VP;
+            //tmp[j].y -= y_VP;
+            //std::cout << tmp[j];
         }
         draw_quad(tmp[0], tmp[1], tmp[2], tmp[3],
                 textures[i][0], textures[i][1], textures[i][2], textures[i][3],
@@ -417,16 +425,20 @@ void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
                 {
                     vec3i col;
                     uint32_t channels = bmp->bmp_info_header.bit_count / 8;
-                    col[0] = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 0];   // B
-                    col[1] = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 1];   // G
-                    col[2] = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 2]; // R
+                    unsigned int max_size_index = static_cast<unsigned int>(bmp->data.size() - 1);
+                    size_t index_col0 = std::min(max_size_index, channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 0);
+                    size_t index_col1 = std::min(max_size_index, channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 1);
+                    size_t index_col2 = std::min(max_size_index, channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 2);
+                    col[0] = bmp->data[index_col0];   // B
+                    col[1] = bmp->data[index_col1];   // G
+                    col[2] = bmp->data[index_col2];   // R
                     if (channels == 4) alp = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 3];
-                    set_pixel(P.x, P.y, qRgba(int(intensity * col[0]),
+                    set_pixel(P.x + x_VP, P.y - y_VP, qRgba(int(intensity * col[2]),
                               int(intensity * col[1]),
-                            int(intensity * col[2]), alp));
+                            int(intensity * col[0]), alp));
                 } else
                 {
-                    set_pixel(P.x, P.y, qRgba(colorR, colorG, colorB, alp));
+                    set_pixel(P.x + x_VP, P.y - y_VP, qRgba(colorR, colorG, colorB, alp));
                 }
             }
         }
@@ -504,8 +516,8 @@ void dglWidget::dgl_viewport(int x, int y, int w, int h)
 {
     x_VP = x;
     y_VP = y;
-    xw_VP = x + w;
-    yh_VP = y + h;
+    //xw_VP = x + w;
+    //yh_VP = y + h;
     Matrix<float> Viewport = IdentityMatrix<float>(4, 4);
     Viewport[0][3] = x + w / 2.f;
     Viewport[1][3] = y + h / 2.f;

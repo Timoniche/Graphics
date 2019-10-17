@@ -17,6 +17,10 @@ vec3f Shader::count_coordinates(vec3f world_coordinates)
     m = m * MVP;
     vec3f p = m.get_projection();
     vec3f ans = {0, 0, 0};
+    //std::cout << "before " << p[0] << p[1] << std::endl;
+    //p[0] /= p[2];
+    //p[1] /= p[2];
+    //std::cout << "after " << p[0] << p[1] << std::endl;
     ans[0] = m_width * (p[0] + 1) / 2;
     ans[1] = m_height * (p[1] + 1) / 2;
     ans[2] = 10000 * (p[2] + 1) / 2;

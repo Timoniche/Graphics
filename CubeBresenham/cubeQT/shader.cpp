@@ -19,6 +19,11 @@ std::pair<vec3f, float> Shader::before_viewport(vec3f world_coordinates)
     return {fst, m[0][3]};
 }
 
+vec3f Shader::reverse_coordinates(vec3f screen_coordinates)
+{
+    return vec3f{3, 3, 3};
+}
+
 vec3f Shader::count_coordinates(vec3f world_coordinates)
 {
     Matrix<float> m = Matrix<float>(world_coordinates);

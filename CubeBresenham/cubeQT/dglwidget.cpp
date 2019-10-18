@@ -79,7 +79,7 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     };
 
     vec3f translate2 = {0.3f, -0.5f, -0.5f};
-    float alpha2 = 1.0f;
+    float alpha2 = 1.2f;
     vec3f cube2[6][4];
     for (int i = 0; i < 6; i++)
     {
@@ -102,6 +102,19 @@ dglWidget::~dglWidget()
     {
         delete objects[i];
     }
+}
+
+void dglWidget::mouseDoubleClickEvent(QMouseEvent* e)
+{
+    Shader shader(&model_view, &proj, m_width, m_height);
+    float x = float(e->x());
+    float y = float(e->y());
+    vec3f eye_screen = shader.count_coordinates(m_eye);
+    float z = float(eye_screen.z - 1);
+    vec3f to_reverse = {x, y, z};
+
+    m_center = shader.reverse_coordinates(to_reverse);
+    repaint();
 }
 
 void dglWidget::resizeEvent(QResizeEvent* e)
@@ -224,8 +237,7 @@ void dglWidget::paintEvent(QPaintEvent *event)
     //test_cube();
     for (auto o : objects)
     {
-        auto* t = dynamic_cast<dgl_cube*>(o);
-        if (t)
+        if (auto* t = dynamic_cast<dgl_cube*>(o))
         {
             Shader shader(&model_view, &proj, m_width, m_height);
             auto cube = t->quads;
@@ -435,10 +447,6 @@ void dglWidget::test_cube()
 
             tmp[j] = shader.count_coordinates(cube[i][j]);
             bv[j] = shader.before_viewport(cube[i][j]);
-            //qDebug() << x_VP << " " << y_VP << "\n";
-            //tmp[j].x += x_VP;
-            //tmp[j].y -= y_VP;
-            //std::cout << tmp[j];
         }
         draw_quad(bv[0], bv[1], bv[2], bv[3],
                 textures[i][0], textures[i][1], textures[i][2], textures[i][3],
@@ -503,7 +511,8 @@ void dglWidget::triangle3D(std::pair<vec3f, float> w0,
                            std::pair<vec3f, float> w1,
                            std::pair<vec3f, float> w2,
                            vec2f b0, vec2f b1, vec2f b2,
-                           int colorR, int colorG, int colorB, float alp, BMP* bmp, float intensity)
+                           int colorR, int colorG, int colorB, float alp,
+                           BMP* bmp, float intensity)
 {
     colorR = static_cast<int>(colorR * intensity);
     colorG = static_cast<int>(colorG * intensity);
@@ -573,82 +582,106 @@ for (P.x=bboxmin.x; P.x<=bboxmax.x; P.x++) {
 /**
  * @deprecated
  */
-void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
-                                vec2i b0, vec2i b1, vec2i b2,
-                                int colorR, int colorG, int colorB, float alp, BMP* bmp, float intensity)
+void dglWidget::triangle_filled(std::pair<vec3f, float> w0,
+                                std::pair<vec3f, float> w1,
+                                std::pair<vec3f, float> w2,
+                                vec2f b0, vec2f b1, vec2f b2,
+                                int colorR, int colorG, int colorB, float alp,
+                                BMP* bmp, float intensity)
 {
     colorR = static_cast<int>(colorR * intensity);
     colorG = static_cast<int>(colorG * intensity);
     colorB = static_cast<int>(colorB * intensity);
 
-    if (t0.y == t1.y && t0.y == t2.y) return;
-    using std::swap;
-    if (t0.get_y() > t1.get_y())
+    std::function viewport_f = ([](vec3f p, int m_width, int m_height)
     {
-        swap(t0, t1);
-        swap(b0, b1);
-    }
-    if (t0.get_y() > t2.get_y())
-    {
-        swap(t0, t2);
-        swap(b0, b2);
-    }
-    if (t1.get_y() > t2.get_y())
-    {
-        swap(t1, t2);
-        swap(b1, b2);
-    }
+            vec3f ans = {0, 0, 0};
+            ans[0] = m_width * (p[0] + 1) / 2;
+    ans[1] = m_height * (p[1] + 1) / 2;
+    ans[2] = 10000 * (p[2] + 1) / 2;
+    return ans;
+});
+vec3i t0 = viewport_f(w0.first / w0.second, m_width, m_height);
+vec3i t1 = viewport_f(w1.first / w1.second, m_width, m_height);
+vec3i t2 = viewport_f(w2.first / w2.second, m_width, m_height);
 
-    int total_height = t2.y - t0.y;
-    for (int i = 0; i < total_height; i++)
+//if (t0.y - t1.y < eps && t0.y - t2.y < eps) return;
+using std::swap;
+if (t0.get_y() > t1.get_y())
+{
+    swap(t0, t1);
+    swap(w0, w1);
+    swap(b0, b1);
+}
+if (t0.get_y() > t2.get_y())
+{
+    swap(t0, t2);
+    swap(w0, w2);
+    swap(b0, b2);
+}
+if (t1.get_y() > t2.get_y())
+{
+    swap(t1, t2);
+    swap(w1, w2);
+    swap(b1, b2);
+}
+
+vec3i pts[3]  = {t0, t1, t2};
+vec2i pts2[3] = {{t0.x, t0.y}, {t1.x, t1.y}, {t2.x, t2.y}};
+
+int total_height = t2.y - t0.y;
+int beginh = std::abs(std::max(0, t0.y) - t0.y);
+int endh = std::abs(std::min(m_height - 1, t2.y) - t2.y);
+for (int i = 0 + beginh; i < total_height - endh; i++)
+{
+    bool second_half = i > t1.y - t0.y || t1.y == t0.y;
+    int segment_height = second_half ? t2.y - t1.y : t1.y - t0.y;
+    float alpha = (float) i / total_height;
+    float beta = (float) (i - (second_half ? t1.y - t0.y : 0)) / segment_height;
+    vec3i A =  t0 + (t2 - t0) * alpha;
+    vec3i B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
+    if (A.x > B.x)
     {
-        bool second_half = i > t1.y - t0.y || t1.y == t0.y;
-        int segment_height = second_half ? t2.y - t1.y : t1.y - t0.y;
-        float alpha = (float) i / total_height;
-        float beta = (float) (i - (second_half ? t1.y - t0.y : 0)) / segment_height;
-        vec3i A = t0 + (t2 - t0) * alpha;
-        vec2i Ab = b0 + (b2 - b0) * alpha;
-        vec3i B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
-        vec2i Bb = second_half ? b1 + (b2 - b1) * beta : b0 + (b1 - b0) * beta;
-        if (A.x > B.x)
+        std::swap(A, B);
+        //std::swap(Ab, Bb);
+    }
+    for (int j = std::max(A.x, 0); j <= std::min(B.x, m_width - 1); j++)
+    {
+        vec2i P;
+        P.x = j;
+        P.y = t0.y + i;
+        vec3f bc_screen  = barycentric(pts2[0], pts2[1], pts2[2], P);
+        vec3f bc_clip    = vec3f(bc_screen.x/w0.second, bc_screen.y/w1.second, bc_screen.z/w2.second);
+        bc_clip = bc_clip / (bc_clip.x+bc_clip.y+bc_clip.z);
+        vec3f ans = pts[0] * bc_clip[0] + pts[1] * bc_clip[1] + pts[2] * bc_clip[2];
+        vec2i T = b0 * bc_clip[0] + b1 * bc_clip[1] + b2 * bc_clip[2];
+        int idx = j + (t0.y + i) * m_width;
+        if (ans.z > 10000 || ans.z < 0) continue;
+        if (zbuffer[idx] > ans.z)
         {
-            std::swap(A, B);
-            std::swap(Ab, Bb);
-        }
-        for (int j = A.x; j <= B.x; j++)
-        {
-            float phi = B.x == A.x ? 1. : (float) (j - A.x) / (float) (B.x - A.x);
-            vec3i P = A + (B - A) * phi;
-            vec2i Pb = Ab + (Bb - Ab) * phi;
-            P.x = j;
-            P.y = t0.y + i;
-            int idx = j + (t0.y + i) * m_width;
-            if (idx < 0 || idx >= m_width * m_height || P.z > 10000) continue;
-            if (zbuffer[idx] > P.z)
+            zbuffer[idx] = ans.z;
+            if (bmp != nullptr)
             {
-                zbuffer[idx] = P.z;
-                if (bmp != nullptr)
-                {
-                    vec3i col;
-                    uint32_t channels = bmp->bmp_info_header.bit_count / 8;
-                    unsigned int max_size_index = static_cast<unsigned int>(bmp->data.size() - 1);
-                    size_t index_col0 = std::min(max_size_index, channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 0);
-                    size_t index_col1 = std::min(max_size_index, channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 1);
-                    size_t index_col2 = std::min(max_size_index, channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 2);
-                    col[0] = bmp->data[index_col0];   // B
-                    col[1] = bmp->data[index_col1];   // G
-                    col[2] = bmp->data[index_col2];   // R
-                    if (channels == 4) alp = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 3];
-                    set_pixel(P.x + x_VP, P.y - y_VP, qRgba(int(intensity * col[2]),
-                              int(intensity * col[1]),
-                            int(intensity * col[0]), alp));
-                } else
-                {
-                    set_pixel(P.x + x_VP, P.y - y_VP, qRgba(colorR, colorG, colorB, alp));
-                }
+                vec3i col;
+                uint32_t channels = bmp->bmp_info_header.bit_count / 8;
+                unsigned int max_size_index = static_cast<unsigned int>(bmp->data.size() - 1);
+                size_t index_col0 = std::min(max_size_index, channels * (T.y * bmp->bmp_info_header.width + T.x) + 0);
+                size_t index_col1 = std::min(max_size_index, channels * (T.y * bmp->bmp_info_header.width + T.x) + 1);
+                size_t index_col2 = std::min(max_size_index, channels * (T.y * bmp->bmp_info_header.width + T.x) + 2);
+                col[0] = bmp->data[index_col0];   // B
+                col[1] = bmp->data[index_col1];   // G
+                col[2] = bmp->data[index_col2];   // R
+                if (channels == 4) alp = bmp->data[channels * (T.y * bmp->bmp_info_header.width + T.x) + 3];
+                set_pixel(P.x + x_VP, P.y - y_VP, qRgba(int(intensity * col[2]),
+                          int(intensity * col[1]),
+                        int(intensity * col[0]), alp));
+            } else
+            {
+                set_pixel(P.x + x_VP, P.y - y_VP, qRgba(colorR, colorG, colorB, alp));
             }
         }
     }
+}
 
 }
 
@@ -745,21 +778,24 @@ void dglWidget::draw_quad(std::pair<vec3f, float> bv0,
                           std::pair<vec3f, float> bv2,
                           std::pair<vec3f, float> bv3,
                           vec2f t0, vec2f t1, vec2f t2, vec2f t3,
-                          int colorR, int colorG, int colorB, float alp, float intesity,
+                          int colorR, int colorG, int colorB, float alp, float intensity,
                           BMP* _bmp)
 {
-    //    vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
-    //    vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
-    //    vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
-    //    vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
-    vec2f tt0 = {t0[0] * 255, t0[1] * 255};
-    vec2f tt1 = {t1[0] * 255, t1[1] * 255};
-    vec2f tt2 = {t2[0] * 255, t2[1] * 255};
-    vec2f tt3 = {t3[0] * 255, t3[1] * 255};
-    //triangle_filled(v1, v2, v3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp);
-    //triangle_filled(v0, v1, v3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp);
-    triangle3D(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intesity);
-    triangle3D(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intesity);
+            vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
+            vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
+            vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
+            vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
+
+//    vec2f tt0 = {t0[0] * 255, t0[1] * 255};
+//    vec2f tt1 = {t1[0] * 255, t1[1] * 255};
+//    vec2f tt2 = {t2[0] * 255, t2[1] * 255};
+//    vec2f tt3 = {t3[0] * 255, t3[1] * 255};
+
+    triangle_filled(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    triangle_filled(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+
+    //triangle3D(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    //triangle3D(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
 }
 
 

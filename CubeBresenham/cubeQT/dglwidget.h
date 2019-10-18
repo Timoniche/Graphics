@@ -50,8 +50,8 @@ public slots:
 
     vec3f barycentric(vec2f A, vec2f B, vec2f C, vec2f P);
 
-    void triangle_filled(vec3i t0, vec3i t1, vec3i t2,
-                         vec2i b0, vec2i b1, vec2i b2,
+    void triangle_filled(std::pair<vec3f, float> w0, std::pair<vec3f, float> w1, std::pair<vec3f, float> w2,
+                         vec2f b0, vec2f b1, vec2f b2,
                          int colorR, int colorG, int colorB, float alp, BMP* bmp, float intensity);
 
     void triangle3D(std::pair<vec3f, float> w0,
@@ -101,6 +101,8 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
     void resizeEvent(QResizeEvent* e) override;
+
+    void mouseDoubleClickEvent(QMouseEvent* e) override;
 
 private:
     const int FIVE_SECONDS = 5'000;

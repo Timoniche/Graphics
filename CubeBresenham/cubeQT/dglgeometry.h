@@ -64,6 +64,11 @@ namespace DGL
         {
             return vec2<T>(x * k, y * k);
         }
+
+        vec2<T> operator/(float k) const
+        {
+            return vec2<T>(x / k, y / k);
+        }
     };
 
 //______________________________________________________________________________________________________________________
@@ -129,6 +134,12 @@ namespace DGL
         {
             return vec3<T>(x * k, y * k, z * k);
         }
+
+        vec3<T> operator/(float k) const
+        {
+            return vec3<T>(x / k, y / k, z / k);
+        }
+
 
         T operator*(const vec3<T> &rhs) const
         {

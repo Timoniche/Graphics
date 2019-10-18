@@ -21,6 +21,7 @@ public:
 
     std::pair<vec3f, float> before_viewport(vec3f world_coordinates);
     vec3f count_coordinates(vec3f world_coordinates);
+    vec3f reverse_coordinates(vec3f screen_coordinates);
 
 };
 

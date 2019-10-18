@@ -46,8 +46,14 @@ public slots:
 
     void triangle(vec2i t0, vec2i t1, vec2i t2, QRgb color);
 
+    vec3f barycentric(vec2f A, vec2f B, vec2f C, vec2f P);
+
     void triangle_filled(vec3i t0, vec3i t1, vec3i t2,
                          vec2i b0, vec2i b1, vec2i b2,
+                         int colorR, int colorG, int colorB, float alp, BMP* bmp);
+
+    void triangle3D(vec3f t0, vec3f t1, vec3f t2,
+                         vec2f b0, vec2f b1, vec2f b2,
                          int colorR, int colorG, int colorB, float alp, BMP* bmp);
 
     void triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color);

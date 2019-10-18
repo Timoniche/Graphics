@@ -9,7 +9,8 @@ MainWindow::MainWindow(QWidget *parent) :
         ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    this->setStyleSheet("background-color: black;");
+    ui->centralWidget->setStyleSheet("background-color: black;");
 //    bool ok = connect(ui->lineEdit, &QLineEdit::textChanged,
 //                      ui->widget, &dglWidget::onLineEditTextChanged);
 //    Q_ASSERT(ok);
@@ -17,10 +18,14 @@ MainWindow::MainWindow(QWidget *parent) :
 //           std::max(ui->widget->height(),
 //                    ui->widget_2->height()) + 20);
     setWindowTitle("DGL");
+
     wid = new dglWidget(this);
+
     //wid->resize(500, 500);
+
     wid->show();
-//    qRegisterMetaType<vec3f>("vec3f");
+
+    //    qRegisterMetaType<vec3f>("vec3f");
 }
 
 void MainWindow::resizeEvent(QResizeEvent* e)

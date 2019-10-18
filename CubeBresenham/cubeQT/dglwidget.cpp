@@ -12,9 +12,14 @@
 #include "shader.h"
 #include "worker.h"
 #include "shader.h"
+#include "geom_test.h"
 
 dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
 {
+    setStyleSheet("background-color: black;");
+   //this->setPaletteBackgroundColor(Qt::black);
+    setAutoFillBackground(true);
+
     qRegisterMetaType<vec3f>("vec3f");
     m_width = parent->width();
     m_height = parent->height();
@@ -149,6 +154,7 @@ void dglWidget::update_image()
 
 void dglWidget::paintEvent(QPaintEvent *event)
 {
+    clean_image();
     std::fill(zbuffer, zbuffer + 3000 * 3000,
               std::numeric_limits<float>::max());
     Q_UNUSED(event);
@@ -157,7 +163,6 @@ void dglWidget::paintEvent(QPaintEvent *event)
     dgl_rotate(xrot, 1.0f, 0.0f, 0.0f);
     dgl_rotate(yrot, 0.0f, 1.0f, 0.0f);
     //cout_matrices();
-    clean_image();
     test_cube();
     pnt.drawImage(0, 0, *m_image);
 }
@@ -310,7 +315,7 @@ void dglWidget::test_cube()
         for (int j = 0; j < 4; j++)
         {
             tmp[j] = shader.count_coordinates(cube[i][j]);
-            qDebug() << x_VP << " " << y_VP << "\n";
+            //qDebug() << x_VP << " " << y_VP << "\n";
             //tmp[j].x += x_VP;
             //tmp[j].y -= y_VP;
             //std::cout << tmp[j];
@@ -357,6 +362,90 @@ void dglWidget::triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color)
         for (int j = A.get_x(); j <= B.get_x(); j++)
         {
             set_pixel(j, y, color);
+        }
+    }
+}
+
+vec3f dglWidget::barycentric(vec2f A, vec2f B, vec2f C, vec2f P) {
+    vec3f s[2];
+    for (int i=2; i--; ) {
+        s[i][0] = C[i]-A[i];
+        s[i][1] = B[i]-A[i];
+        s[i][2] = A[i]-P[i];
+    }
+    vec3f u = (s[0] ^ s[1]);
+    if (std::abs(u[2])>1e-2) // dont forget that u[2] is integer. If it is zero then triangle ABC is degenerate
+        return vec3f(1.f-(u.x+u.y)/u.z, u.y/u.z, u.x/u.z);
+    return vec3f(-1,1,1); // in this case generate negative coordinates, it will be thrown away by the rasterizator
+}
+
+//void triangle(mat<4,3,float> &clipc, IShader &shader, TGAImage &image, float *zbuffer)
+void dglWidget::triangle3D(vec3f t0, vec3f t1, vec3f t2,
+                           vec2f b0, vec2f b1, vec2f b2,
+                           int colorR, int colorG, int colorB, float alp, BMP* bmp)
+{
+    vec3f n = (t2 - t0) ^(t1 - t0);
+    n.normalize();
+    m_light_v.normalize();
+    float intensity = n * m_light_v;
+    intensity = std::max(0.2f, intensity);
+    colorR = static_cast<int>(colorR * intensity);
+    colorG = static_cast<int>(colorG * intensity);
+    colorB = static_cast<int>(colorB * intensity);
+
+    vec3f pts[3]  = {t0, t1, t2}; // transposed to ease access to each of the points
+    vec2f pts2[3] = {{t0.x, t0.y}, {t1.x, t1.y}, {t2.x, t2.y}};
+    vec2f bboxmin( std::numeric_limits<float>::max(),  std::numeric_limits<float>::max());
+    vec2f bboxmax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
+    vec2f clamp(m_width-1, m_height-1);
+    for (int i=0; i<3; i++) {
+        for (int j=0; j<2; j++) {
+            bboxmin[j] = std::max(0.f,      std::min(bboxmin[j], pts[i][j]));
+            bboxmax[j] = std::min(clamp[j], std::max(bboxmax[j], pts[i][j]));
+        }
+    }
+    vec2i P;
+    for (P.x=bboxmin.x; P.x<=bboxmax.x; P.x++) {
+        for (P.y=bboxmin.y; P.y<=bboxmax.y; P.y++) {
+            vec3f bc_screen  = barycentric(pts2[0], pts2[1], pts2[2], P);
+            vec3f ans = pts[0] * bc_screen[0] + pts[1] * bc_screen[1] + pts[2] * bc_screen[2];
+            vec2i T = b0 * bc_screen[0] + b1 * bc_screen[1] + b2 * bc_screen[2];
+            //vec3f bc_clip    = vec3f(bc_screen.x/pts[0][3], bc_screen.y/pts[1][3], bc_screen.z/pts[2][3]);
+            //bc_clip = bc_clip * (1 / (bc_clip.x+bc_clip.y+bc_clip.z));
+            //float frag_depth = clipc[2]*bc_clip;
+
+            //if (bc_screen.x<0 || bc_screen.y<0 || bc_screen.z<0 || zbuffer[P.x+P.y*image.get_width()]>frag_depth) continue;
+            //if (bc_screen.x<0 || bc_screen.y<0 || bc_screen.z<0 || zbuffer[P.x+P.y*image.get_width()]>frag_depth) continue;
+
+            //bool discard = shader.fragment(bc_clip, color);
+            //if (!discard) {
+                //zbuffer[P.x+P.y*m_width] = frag_depth;
+            int idx = P.x+P.y*m_width;
+            if (idx < 0 || idx >= m_width * m_height || bc_screen.x<0 || bc_screen.y<0 || bc_screen.z<0) continue;
+            if (zbuffer[idx] > ans.z)
+            {
+                zbuffer[idx] = ans.z;
+                if (bmp != nullptr)
+                {
+                    vec3i col;
+                    uint32_t channels = bmp->bmp_info_header.bit_count / 8;
+                    unsigned int max_size_index = static_cast<unsigned int>(bmp->data.size() - 1);
+                    size_t index_col0 = std::min(max_size_index, channels * (T.y * bmp->bmp_info_header.width + T.x) + 0);
+                    size_t index_col1 = std::min(max_size_index, channels * (T.y * bmp->bmp_info_header.width + T.x) + 1);
+                    size_t index_col2 = std::min(max_size_index, channels * (T.y * bmp->bmp_info_header.width + T.x) + 2);
+                    col[0] = bmp->data[index_col0];   // B
+                    col[1] = bmp->data[index_col1];   // G
+                    col[2] = bmp->data[index_col2];   // R
+                    if (channels == 4) alp = bmp->data[channels * (T.y * bmp->bmp_info_header.width + T.x) + 3];
+                    set_pixel(P.x + x_VP, P.y - y_VP, qRgba(int(intensity * col[2]),
+                              int(intensity * col[1]),
+                            int(intensity * col[0]), alp));
+                } else
+                {
+                    set_pixel(P.x + x_VP, P.y - y_VP, qRgba(colorR, colorG, colorB, alp));
+                }
+            //}
+            }
         }
     }
 }
@@ -538,12 +627,18 @@ void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3,
                           vec2f t0, vec2f t1, vec2f t2, vec2f t3,
                           int colorR, int colorG, int colorB, float alp)
 {
-    vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
-    vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
-    vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
-    vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
-    triangle_filled(v1, v2, v3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp);
-    triangle_filled(v0, v1, v3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp);
+//    vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
+//    vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
+//    vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
+//    vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
+    vec2f tt0 = {t0[0] * 255, t0[1] * 255};
+    vec2f tt1 = {t1[0] * 255, t1[1] * 255};
+    vec2f tt2 = {t2[0] * 255, t2[1] * 255};
+    vec2f tt3 = {t3[0] * 255, t3[1] * 255};
+    //triangle_filled(v1, v2, v3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp);
+    //triangle_filled(v0, v1, v3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp);
+    triangle3D(v1, v2, v3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp);
+    triangle3D(v0, v1, v3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp);
 }
 
 

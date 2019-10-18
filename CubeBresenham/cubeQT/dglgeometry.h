@@ -24,7 +24,7 @@ namespace DGL
     template<typename T>
     struct vec2
     {
-    private:
+    public:
         T x;
         T y;
 
@@ -35,6 +35,8 @@ namespace DGL
         vec2(T x, T y) : x(x), y(y)
         {}
 
+        template<typename U>
+        vec2<T>(vec2<U> const &v);
     public:
         T get_x() const
         { return x; }
@@ -154,6 +156,14 @@ namespace DGL
         friend std::ostream &operator<<(std::ostream &s, vec3<U> &v);
 
     };
+
+    template<>
+    template<>
+    vec2<int>::vec2(vec2<float> const &v);
+
+    template<>
+    template<>
+    vec2<float>::vec2(vec2<int> const &v);
 
     template<>
     template<>

@@ -17,7 +17,7 @@
 dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
 {
     setStyleSheet("background-color: black;");
-   //this->setPaletteBackgroundColor(Qt::black);
+    //this->setPaletteBackgroundColor(Qt::black);
     setAutoFillBackground(true);
 
     qRegisterMetaType<vec3f>("vec3f");
@@ -51,8 +51,8 @@ void dglWidget::resizeEvent(QResizeEvent* e)
     int size = std::min(e->size().height(), e->size().width());
     float delta_w = std::abs(e->size().width() - size) / 2;
     float delta_h = std::abs(e->size().height() - size) / 2;
-   // m_height = e->size().height();
-   // m_width = e->size().width();
+    // m_height = e->size().height();
+    // m_width = e->size().width();
     m_width = size;
     m_height = size;
 
@@ -92,7 +92,9 @@ void dglWidget::mouseMoveEvent(QMouseEvent *event)
 void dglWidget::wheelEvent(QWheelEvent *event)
 {
     vec3f direction_to_get_closer = m_center - m_eye;
-    m_eye = m_eye + direction_to_get_closer * (float(event->delta()) / 2000.0f);
+
+    direction_to_get_closer.normalize();
+    m_eye = m_eye + direction_to_get_closer * (float(event->delta()) / 500.0f);
     repaint();
 }
 
@@ -322,7 +324,7 @@ void dglWidget::test_cube()
             //tmp[j].y -= y_VP;
             //std::cout << tmp[j];
         }
-        draw_quad(tmp[0], tmp[1], tmp[2], tmp[3], bv[0], bv[1], bv[2], bv[3],
+        draw_quad(bv[0], bv[1], bv[2], bv[3],
                 textures[i][0], textures[i][1], textures[i][2], textures[i][3],
                 a[i][0], a[i][1], a[i][2], 255);
     }
@@ -376,20 +378,30 @@ vec3f dglWidget::barycentric(vec2f A, vec2f B, vec2f C, vec2f P) {
         s[i][2] = A[i]-P[i];
     }
     vec3f u = (s[0] ^ s[1]);
-    if (std::abs(u[2])>1e-2) // dont forget that u[2] is integer. If it is zero then triangle ABC is degenerate
+    if (std::abs(u[2])>1e-2)
         return vec3f(1.f-(u.x+u.y)/u.z, u.y/u.z, u.x/u.z);
-    return vec3f(-1,1,1); // in this case generate negative coordinates, it will be thrown away by the rasterizator
+    return vec3f(-1,1,1);
 }
 
-//void triangle(mat<4,3,float> &clipc, IShader &shader, TGAImage &image, float *zbuffer)
-void dglWidget::triangle3D(vec3f t0, vec3f t1, vec3f t2,
+void dglWidget::triangle3D(std::pair<vec3f, float> w0,
                            std::pair<vec3f, float> w1,
                            std::pair<vec3f, float> w2,
-                           std::pair<vec3f, float> w3,
                            vec2f b0, vec2f b1, vec2f b2,
                            int colorR, int colorG, int colorB, float alp, BMP* bmp)
 {
-    vec3f n = (t2 - t0) ^(t1 - t0);
+    std::function viewport_f = ([](vec3f p, int m_width, int m_height)
+    {
+        vec3f ans = {0, 0, 0};
+        ans[0] = m_width * (p[0] + 1) / 2;
+        ans[1] = m_height * (p[1] + 1) / 2;
+        ans[2] = 10000 * (p[2] + 1) / 2;
+        return ans;
+    });
+    vec3f t0 = viewport_f(w0.first * (1.f / w0.second), m_width, m_height);
+    vec3f t1 = viewport_f(w1.first * (1.f / w1.second), m_width, m_height);
+    vec3f t2 = viewport_f(w2.first * (1.f / w2.second), m_width, m_height);
+
+    vec3f n = (w2.first - w0.first) ^ (w1.first - w0.first);
     n.normalize();
     m_light_v.normalize();
     float intensity = n * m_light_v;
@@ -398,7 +410,7 @@ void dglWidget::triangle3D(vec3f t0, vec3f t1, vec3f t2,
     colorG = static_cast<int>(colorG * intensity);
     colorB = static_cast<int>(colorB * intensity);
 
-    vec3f pts[3]  = {t0, t1, t2}; // transposed to ease access to each of the points
+    vec3f pts[3]  = {t0, t1, t2};
     vec2f pts2[3] = {{t0.x, t0.y}, {t1.x, t1.y}, {t2.x, t2.y}};
     vec2f bboxmin( std::numeric_limits<float>::max(),  std::numeric_limits<float>::max());
     vec2f bboxmax(-std::numeric_limits<float>::max(), -std::numeric_limits<float>::max());
@@ -413,22 +425,10 @@ void dglWidget::triangle3D(vec3f t0, vec3f t1, vec3f t2,
     for (P.x=bboxmin.x; P.x<=bboxmax.x; P.x++) {
         for (P.y=bboxmin.y; P.y<=bboxmax.y; P.y++) {
             vec3f bc_screen  = barycentric(pts2[0], pts2[1], pts2[2], P);
-            vec3f bc_clip    = vec3f(bc_screen.x/w1.second, bc_screen.y/w2.second, bc_screen.z/w3.second);
+            vec3f bc_clip    = vec3f(bc_screen.x/w0.second, bc_screen.y/w1.second, bc_screen.z/w2.second);
             bc_clip = bc_clip * (1 / (bc_clip.x+bc_clip.y+bc_clip.z));
             vec3f ans = pts[0] * bc_clip[0] + pts[1] * bc_clip[1] + pts[2] * bc_clip[2];
             vec2i T = b0 * bc_clip[0] + b1 * bc_clip[1] + b2 * bc_clip[2];
-
-
-            //vec3f bc_clip    = vec3f(bc_screen.x/pts[0][3], bc_screen.y/pts[1][3], bc_screen.z/pts[2][3]);
-            //bc_clip = bc_clip * (1 / (bc_clip.x+bc_clip.y+bc_clip.z));
-            //float frag_depth = clipc[2]*bc_clip;
-
-            //if (bc_screen.x<0 || bc_screen.y<0 || bc_screen.z<0 || zbuffer[P.x+P.y*image.get_width()]>frag_depth) continue;
-            //if (bc_screen.x<0 || bc_screen.y<0 || bc_screen.z<0 || zbuffer[P.x+P.y*image.get_width()]>frag_depth) continue;
-
-            //bool discard = shader.fragment(bc_clip, color);
-            //if (!discard) {
-                //zbuffer[P.x+P.y*m_width] = frag_depth;
             int idx = P.x+P.y*m_width;
             if (idx < 0 || idx >= m_width * m_height || bc_screen.x<0 || bc_screen.y<0 || bc_screen.z<0) continue;
             if (zbuffer[idx] > ans.z)
@@ -453,12 +453,15 @@ void dglWidget::triangle3D(vec3f t0, vec3f t1, vec3f t2,
                 {
                     set_pixel(P.x + x_VP, P.y - y_VP, qRgba(colorR, colorG, colorB, alp));
                 }
-            //}
+                //}
             }
         }
     }
 }
 
+/**
+ * @deprecated
+ */
 void dglWidget::triangle_filled(vec3i t0, vec3i t1, vec3i t2,
                                 vec2i b0, vec2i b1, vec2i b2,
                                 int colorR, int colorG, int colorB, float alp, BMP* bmp)
@@ -632,26 +635,25 @@ void dglWidget::dgl_viewport(int x, int y, int w, int h)
  *      \     \
  *      v3 -- v2
  */
-void dglWidget::draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3,
-                          std::pair<vec3f, float> bv0,
+void dglWidget::draw_quad(std::pair<vec3f, float> bv0,
                           std::pair<vec3f, float> bv1,
                           std::pair<vec3f, float> bv2,
                           std::pair<vec3f, float> bv3,
                           vec2f t0, vec2f t1, vec2f t2, vec2f t3,
                           int colorR, int colorG, int colorB, float alp)
 {
-//    vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
-//    vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
-//    vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
-//    vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
+    //    vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
+    //    vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
+    //    vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
+    //    vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
     vec2f tt0 = {t0[0] * 255, t0[1] * 255};
     vec2f tt1 = {t1[0] * 255, t1[1] * 255};
     vec2f tt2 = {t2[0] * 255, t2[1] * 255};
     vec2f tt3 = {t3[0] * 255, t3[1] * 255};
     //triangle_filled(v1, v2, v3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp);
     //triangle_filled(v0, v1, v3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp);
-    triangle3D(v1, v2, v3, bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp);
-    triangle3D(v0, v1, v3, bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp);
+    triangle3D(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp);
+    triangle3D(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp);
 }
 
 

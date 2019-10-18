@@ -52,10 +52,9 @@ public slots:
                          vec2i b0, vec2i b1, vec2i b2,
                          int colorR, int colorG, int colorB, float alp, BMP* bmp);
 
-    void triangle3D(vec3f t0, vec3f t1, vec3f t2,
+    void triangle3D(std::pair<vec3f, float> w0,
                     std::pair<vec3f, float> w1,
                     std::pair<vec3f, float> w2,
-                    std::pair<vec3f, float> w3,
                          vec2f b0, vec2f b1, vec2f b2,
                          int colorR, int colorG, int colorB, float alp, BMP* bmp);
 
@@ -67,8 +66,7 @@ public slots:
 
     void perspective(const float &angleOfView, const float &aspect, const float &near, const float &far);
 
-    void draw_quad(vec3f v0, vec3f v1, vec3f v2, vec3f v3,
-                   std::pair<vec3f, float> bv0,
+    void draw_quad(std::pair<vec3f, float> bv0,
                    std::pair<vec3f, float> bv1,
                    std::pair<vec3f, float> bv2,
                    std::pair<vec3f, float> bv3,

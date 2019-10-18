@@ -19,6 +19,7 @@ public:
            Matrix<float> const *proj,
            int w, int h);
 
+    std::pair<vec3f, float> before_viewport(vec3f world_coordinates);
     vec3f count_coordinates(vec3f world_coordinates);
 
 };

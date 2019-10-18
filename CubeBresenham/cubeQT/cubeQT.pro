@@ -32,7 +32,7 @@ SOURCES += \
     dgl.cpp \
     worker.cpp \
     shader.cpp \
-    geom_test.cpp
+    dgl_object.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -43,7 +43,7 @@ HEADERS += \
     worker.h \
     shader.h \
     bmp.h \
-    geom_test.h
+    dgl_object.h
 
 FORMS += \
         mainwindow.ui

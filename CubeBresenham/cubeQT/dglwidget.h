@@ -21,6 +21,8 @@
 #include "worker.h"
 #include "bmp.h"
 
+#include "dgl_object.h"
+
 using namespace DGL;
 
 class dglWidget : public QWidget
@@ -50,13 +52,13 @@ public slots:
 
     void triangle_filled(vec3i t0, vec3i t1, vec3i t2,
                          vec2i b0, vec2i b1, vec2i b2,
-                         int colorR, int colorG, int colorB, float alp, BMP* bmp);
+                         int colorR, int colorG, int colorB, float alp, BMP* bmp, float intensity);
 
     void triangle3D(std::pair<vec3f, float> w0,
                     std::pair<vec3f, float> w1,
                     std::pair<vec3f, float> w2,
                          vec2f b0, vec2f b1, vec2f b2,
-                         int colorR, int colorG, int colorB, float alp, BMP* bmp);
+                         int colorR, int colorG, int colorB, float alp, BMP* bmp, float intensity);
 
     void triangle_filled(vec2i t0, vec2i t1, vec2i t2, QRgb color);
 
@@ -71,7 +73,8 @@ public slots:
                    std::pair<vec3f, float> bv2,
                    std::pair<vec3f, float> bv3,
                    vec2f t0, vec2f t1, vec2f t2, vec2f t3,
-                   int colorR, int colorG, int colorB, float alp);
+                   int colorR, int colorG, int colorB, float alp, float intensity,
+                   BMP* bmp);
     void dgl_rotate(float angle, float x, float y, float z);
 
 public slots:
@@ -133,6 +136,9 @@ private:
     float yrot = 0.0f;
     float xdiff = 0.0f;
     float ydiff = 0.0f;
+
+    std::vector<dgl_object*> objects;
+
 public:
     QThread *m_thread = nullptr;
     Worker *m_worker = nullptr;

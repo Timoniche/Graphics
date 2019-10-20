@@ -523,7 +523,7 @@ void dglWidget::triangle_bbox_barycentric(std::pair<vec3f, float> w0,
             vec3f ans = {0, 0, 0};
             ans[0] = m_width * (p[0] + 1) / 2;
     ans[1] = m_height * (p[1] + 1) / 2;
-    ans[2] = 10000 * (p[2] + 1) / 2;
+    ans[2] = (p[2] + 1) / 2;
     return ans;
 });
 vec3f t0 = viewport_f(w0.first * (1.f / w0.second), m_width, m_height);
@@ -547,10 +547,14 @@ for (P.x=bboxmin.x; P.x<=bboxmax.x; P.x++) {
         vec3f bc_screen  = barycentric(pts2[0], pts2[1], pts2[2], P);
         vec3f bc_clip    = vec3f(bc_screen.x/w0.second, bc_screen.y/w1.second, bc_screen.z/w2.second);
         bc_clip = bc_clip * (1 / (bc_clip.x+bc_clip.y+bc_clip.z));
+
         vec3f ans = pts[0] * bc_clip[0] + pts[1] * bc_clip[1] + pts[2] * bc_clip[2];
+        //vec3f ans = pts[0] * bc_screen[0] + pts[1] * bc_screen[1] + pts[2] * bc_screen[2];
+
         vec2i T = b0 * bc_clip[0] + b1 * bc_clip[1] + b2 * bc_clip[2];
         int idx = P.x+P.y*m_width;
         if (idx < 0 || idx >= m_width * m_height || bc_screen.x<0 || bc_screen.y<0 || bc_screen.z<0) continue;
+        if (ans.z > 1 || ans.z < 0) continue;
         if (zbuffer[idx] > ans.z)
         {
             zbuffer[idx] = ans.z;
@@ -573,7 +577,7 @@ for (P.x=bboxmin.x; P.x<=bboxmax.x; P.x++) {
             {
                 set_pixel(P.x + x_VP, P.y - y_VP, qRgba(colorR, colorG, colorB, alp));
             }
-            //}
+
         }
     }
 }
@@ -594,7 +598,7 @@ void dglWidget::triangle_scanline(std::pair<vec3f, float> w0,
         vec3f ans = {0, 0, 0};
         ans[0] = m_width * (p[0] + 1) / 2;
         ans[1] = m_height * (p[1] + 1) / 2;
-        ans[2] = 10000 * (p[2] + 1) / 2;
+        ans[2] = /**10000 * **/(p[2] + 1) / 2;
         return ans;
     });
 
@@ -631,7 +635,6 @@ float Z2 = 1 / w2.second;
         swap(b1, b2);
         swap(Z1, Z2);
     }
-    //qDebug() << w0.second << " " << w1.second << " " << w2.second << "\n";
     int total_height = t2.y - t0.y;
     int beginh = std::abs(std::max(0, t0.y) - t0.y);
     int endh = std::abs(std::min(m_height - 1, t2.y) - t2.y);
@@ -667,10 +670,14 @@ float Z2 = 1 / w2.second;
             P.x = j;
             P.y = t0.y + i;
             int idx = j + (t0.y + i) * m_width;
-            if (P.z > 10000) continue;
-            if (zbuffer[idx] > P.z)
+            if ((1 / ZP) < near || (1 / ZP) > far) continue;
+            if (zbuffer[idx] > 1 / ZP)
             {
-                zbuffer[idx] = P.z;
+                zbuffer[idx] = 1 / ZP;
+//            if (P.z < 0 || (P.z > 10000)) continue;
+//            if (zbuffer[idx] > P.z)
+//            {
+//                zbuffer[idx] = P.z;
                 if (bmp != nullptr)
                 {
                     vec3i col;
@@ -717,7 +724,6 @@ void dglWidget::triangle_scanline_barycentric(std::pair<vec3f, float> w0,
 vec3i t0 = viewport_f(w0.first / w0.second, m_width, m_height);
 vec3i t1 = viewport_f(w1.first / w1.second, m_width, m_height);
 vec3i t2 = viewport_f(w2.first / w2.second, m_width, m_height);
-//if (t0.y - t1.y < eps && t0.y - t2.y < eps) return;
 using std::swap;
 if (t0.get_y() > t1.get_y())
 {
@@ -738,12 +744,12 @@ if (t1.get_y() > t2.get_y())
     swap(b1, b2);
 }
 
-vec3i pts[3]  = {t0, t1, t2};
+vec3f pts[3]  = {t0, t1, t2};
 vec2i pts2[3] = {{t0.x, t0.y}, {t1.x, t1.y}, {t2.x, t2.y}};
 
 int total_height = t2.y - t0.y;
-int beginh = std::abs(std::max(0, t0.y) - t0.y);
-int endh = std::abs(std::min(m_height - 1, t2.y) - t2.y);
+int beginh = std::abs(std::max(0, int(t0.y)) - t0.y);
+int endh = std::abs(std::min(m_height - 1, int(t2.y)) - t2.y);
 for (int i = 0 + beginh; i < total_height - endh; i++)
 {
     bool second_half = i > t1.y - t0.y || t1.y == t0.y;
@@ -755,7 +761,6 @@ for (int i = 0 + beginh; i < total_height - endh; i++)
     if (A.x > B.x)
     {
         std::swap(A, B);
-        //std::swap(Ab, Bb);
     }
     for (int j = std::max(A.x, 0); j <= std::min(B.x, m_width - 1); j++)
     {

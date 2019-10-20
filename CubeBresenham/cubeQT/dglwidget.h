@@ -110,7 +110,7 @@ protected:
 
 private:
     const int FIVE_SECONDS = 5'000;
-            int m_width;
+    int m_width;
     int m_height;
     std::unique_ptr <QImage> m_image;
     Matrix<float> model_view;
@@ -121,7 +121,7 @@ private:
     float *zbuffer;
     enum proj_mode {ORTHO, PERSP} _mode = PERSP;
     vec3f m_eye{2, 2, 1};
-    float near = 0.1f;
+    float near = 1.f;
     float far = 100.f;
     vec3f m_center{0.0f, 0.0f, 0.0f};
     vec3f m_up{0.0f, 1.0f, 0.0f};
@@ -129,8 +129,6 @@ private:
     float eps = 0.0001f;
     int x_VP = 0;
     int y_VP = 0;
-    //float xw_VP = m_width;
-    //float yh_VP = m_height;
     QTimer m_timer;
     //BMP _bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp"};
     //{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"}

@@ -507,12 +507,12 @@ vec3f dglWidget::barycentric(vec2f A, vec2f B, vec2f C, vec2f P) {
     return vec3f(-1,1,1);
 }
 
-void dglWidget::triangle3D(std::pair<vec3f, float> w0,
-                           std::pair<vec3f, float> w1,
-                           std::pair<vec3f, float> w2,
-                           vec2f b0, vec2f b1, vec2f b2,
-                           int colorR, int colorG, int colorB, float alp,
-                           BMP* bmp, float intensity)
+void dglWidget::triangle_bbox_barycentric(std::pair<vec3f, float> w0,
+                                          std::pair<vec3f, float> w1,
+                                          std::pair<vec3f, float> w2,
+                                          vec2f b0, vec2f b1, vec2f b2,
+                                          int colorR, int colorG, int colorB, float alp,
+                                          BMP* bmp, float intensity)
 {
     colorR = static_cast<int>(colorR * intensity);
     colorG = static_cast<int>(colorG * intensity);
@@ -579,15 +579,128 @@ for (P.x=bboxmin.x; P.x<=bboxmax.x; P.x++) {
 }
 }
 
-/**
- * @deprecated
- */
-void dglWidget::triangle_filled(std::pair<vec3f, float> w0,
-                                std::pair<vec3f, float> w1,
-                                std::pair<vec3f, float> w2,
-                                vec2f b0, vec2f b1, vec2f b2,
-                                int colorR, int colorG, int colorB, float alp,
-                                BMP* bmp, float intensity)
+void dglWidget::triangle_scanline(std::pair<vec3f, float> w0,
+                                  std::pair<vec3f, float> w1,
+                                  std::pair<vec3f, float> w2,
+                                  vec2f b0, vec2f b1, vec2f b2,
+                                  int colorR, int colorG, int colorB, float alp, BMP* bmp, float intensity)
+{
+    colorR = static_cast<int>(colorR * intensity);
+    colorG = static_cast<int>(colorG * intensity);
+    colorB = static_cast<int>(colorB * intensity);
+
+    std::function viewport_f = ([](vec3f p, int m_width, int m_height)
+    {
+        vec3f ans = {0, 0, 0};
+        ans[0] = m_width * (p[0] + 1) / 2;
+        ans[1] = m_height * (p[1] + 1) / 2;
+        ans[2] = 10000 * (p[2] + 1) / 2;
+        return ans;
+    });
+
+float Z0 = 1 / w0.second;
+float Z1 = 1 / w1.second;
+float Z2 = 1 / w2.second;
+
+    vec3i t0 = viewport_f(w0.first * Z0, m_width, m_height);
+    vec3i t1 = viewport_f(w1.first * Z1, m_width, m_height);
+    vec3i t2 = viewport_f(w2.first * Z2, m_width, m_height);
+
+
+
+    b0 = b0 * Z0;
+    b1 = b1 * Z1;
+    b2 = b2 * Z2;
+
+    using std::swap;
+    if (t0.get_y() > t1.get_y())
+    {
+        swap(t0, t1);
+        swap(b0, b1);
+        swap(Z0, Z1);
+    }
+    if (t0.get_y() > t2.get_y())
+    {
+        swap(t0, t2);
+        swap(b0, b2);
+        swap(Z0, Z2);
+    }
+    if (t1.get_y() > t2.get_y())
+    {
+        swap(t1, t2);
+        swap(b1, b2);
+        swap(Z1, Z2);
+    }
+    //qDebug() << w0.second << " " << w1.second << " " << w2.second << "\n";
+    int total_height = t2.y - t0.y;
+    int beginh = std::abs(std::max(0, t0.y) - t0.y);
+    int endh = std::abs(std::min(m_height - 1, t2.y) - t2.y);
+    for (int i = 0 + beginh; i < total_height - endh; i++)
+    {
+        bool second_half = i > t1.y - t0.y || t1.y == t0.y;
+        int segment_height = second_half ? t2.y - t1.y : t1.y - t0.y;
+        float alpha = (float) i / total_height;
+        float beta = (float) (i - (second_half ? t1.y - t0.y : 0)) / segment_height;
+
+
+        vec3f A = t0 + (t2 - t0) * alpha;
+        float ZA = Z0 + (Z2 - Z0) * alpha;
+        vec2f Ab = ((b0) + ((b2) - (b0)) * alpha) / ZA;
+        vec3f B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;
+        float ZB = second_half ? Z1 + (Z2 - Z1) * beta : Z0 + (Z1 - Z0) * beta;
+        vec2f Bb = (second_half ? ((b1) + ((b2) - (b1)) * beta) :
+                                  ((b0) + ((b1) - (b0)) * beta)) / ZB;
+        if (A.x > B.x)
+        {
+            std::swap(A, B);
+            std::swap(Ab, Bb);
+            std::swap(ZA, ZB);
+        }
+         for (int j = std::max(int(A.x), 0); j <= std::min(int(B.x), m_width - 1); j++)
+        {
+            float phi = int(B.x) == int(A.x) ? 1. : (float) (j - A.x) / (float) (B.x - A.x);
+            vec3f P = A + (B - A) * phi;
+            float ZP = ZA + (ZB - ZA) * phi;
+            float d1 = (float)ZA / ZP;
+            float d2 = (float)ZB / ZP;
+            vec2f Pb = ((Ab * d1) + ((Bb * d2) - (Ab * d1)) * phi);
+            P.x = j;
+            P.y = t0.y + i;
+            int idx = j + (t0.y + i) * m_width;
+            if (P.z > 10000) continue;
+            if (zbuffer[idx] > P.z)
+            {
+                zbuffer[idx] = P.z;
+                if (bmp != nullptr)
+                {
+                    vec3i col;
+                    uint32_t channels = bmp->bmp_info_header.bit_count / 8;
+                    unsigned int max_size_index = static_cast<unsigned int>(bmp->data.size() - 1);
+                    size_t index_col0 = std::min(max_size_index, channels * (int(Pb[1]) * bmp->bmp_info_header.width + int(Pb[0])) + 0);
+                    size_t index_col1 = std::min(max_size_index, channels * (int(Pb[1]) * bmp->bmp_info_header.width + int(Pb[0])) + 1);
+                    size_t index_col2 = std::min(max_size_index, channels * (int(Pb[1]) * bmp->bmp_info_header.width + int(Pb[0])) + 2);
+                    col[0] = bmp->data[index_col0];   // B
+                    col[1] = bmp->data[index_col1];   // G
+                    col[2] = bmp->data[index_col2];   // R
+                    if (channels == 4) alp = bmp->data[channels * (Pb[1] * bmp->bmp_info_header.width + Pb[0]) + 3];
+                    set_pixel(P.x + x_VP, P.y - y_VP, qRgba(int(intensity * col[2]),
+                              int(intensity * col[1]),
+                            int(intensity * col[0]), alp));
+                } else
+                {
+                    set_pixel(P.x + x_VP, P.y - y_VP, qRgba(colorR, colorG, colorB, alp));
+                }
+            }
+        }
+    }
+}
+
+void dglWidget::triangle_scanline_barycentric(std::pair<vec3f, float> w0,
+                                              std::pair<vec3f, float> w1,
+                                              std::pair<vec3f, float> w2,
+                                              vec2f b0, vec2f b1, vec2f b2,
+                                              int colorR, int colorG, int colorB, float alp,
+                                              BMP* bmp, float intensity)
 {
     colorR = static_cast<int>(colorR * intensity);
     colorG = static_cast<int>(colorG * intensity);
@@ -604,7 +717,6 @@ void dglWidget::triangle_filled(std::pair<vec3f, float> w0,
 vec3i t0 = viewport_f(w0.first / w0.second, m_width, m_height);
 vec3i t1 = viewport_f(w1.first / w1.second, m_width, m_height);
 vec3i t2 = viewport_f(w2.first / w2.second, m_width, m_height);
-
 //if (t0.y - t1.y < eps && t0.y - t2.y < eps) return;
 using std::swap;
 if (t0.get_y() > t1.get_y())
@@ -653,7 +765,8 @@ for (int i = 0 + beginh; i < total_height - endh; i++)
         vec3f bc_screen  = barycentric(pts2[0], pts2[1], pts2[2], P);
         vec3f bc_clip    = vec3f(bc_screen.x/w0.second, bc_screen.y/w1.second, bc_screen.z/w2.second);
         bc_clip = bc_clip / (bc_clip.x+bc_clip.y+bc_clip.z);
-        vec3f ans = pts[0] * bc_clip[0] + pts[1] * bc_clip[1] + pts[2] * bc_clip[2];
+        //vec3f ans = pts[0] * bc_screen[0] + pts[1] * bc_screen[1] + pts[2] * bc_screen[2];
+        vec3f ans = pts[0] * bc_clip[0] + pts[1] * bc_clip[1] + pts[2] * bc_clip[2]; //?!
         vec2i T = b0 * bc_clip[0] + b1 * bc_clip[1] + b2 * bc_clip[2];
         int idx = j + (t0.y + i) * m_width;
         if (ans.z > 10000 || ans.z < 0) continue;
@@ -781,21 +894,24 @@ void dglWidget::draw_quad(std::pair<vec3f, float> bv0,
                           int colorR, int colorG, int colorB, float alp, float intensity,
                           BMP* _bmp)
 {
-            vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
-            vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
-            vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
-            vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
+    vec2i tt0 = {int(t0[0] * 255), int(t0[1] * 255)};
+    vec2i tt1 = {int(t1[0] * 255), int(t1[1] * 255)};
+    vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
+    vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
 
-//    vec2f tt0 = {t0[0] * 255, t0[1] * 255};
-//    vec2f tt1 = {t1[0] * 255, t1[1] * 255};
-//    vec2f tt2 = {t2[0] * 255, t2[1] * 255};
-//    vec2f tt3 = {t3[0] * 255, t3[1] * 255};
+    //    vec2f tt0 = {t0[0] * 255, t0[1] * 255};
+    //    vec2f tt1 = {t1[0] * 255, t1[1] * 255};
+    //    vec2f tt2 = {t2[0] * 255, t2[1] * 255};
+    //    vec2f tt3 = {t3[0] * 255, t3[1] * 255};
 
-    triangle_filled(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
-    triangle_filled(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    triangle_scanline(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    triangle_scanline(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
 
-    //triangle3D(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
-    //triangle3D(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    //triangle_scanline_barycentric(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    //triangle_scanline_barycentric(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+
+    //triangle_bbox_barycentric(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    //triangle_bbox_barycentric(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
 }
 
 

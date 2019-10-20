@@ -3,8 +3,8 @@
 Shader::Shader(Matrix<float> const *model_view,
                Matrix<float> const *proj,
                int w, int h) : model_view(model_view),
-    proj(proj),
-    m_width(w), m_height(h)
+                               proj(proj),
+                               m_width(w), m_height(h)
 {
     MVP = (*model_view) * (*proj);
 }

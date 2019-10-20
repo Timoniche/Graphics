@@ -22,4 +22,5 @@ dgl_cube::dgl_cube(vec3f q[6][4], BMP _bmp)
     bmp = _bmp;
 }
 
-dgl_cube::~dgl_cube() {}
+dgl_cube::~dgl_cube()
+{}

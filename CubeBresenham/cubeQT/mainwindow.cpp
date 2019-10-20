@@ -5,8 +5,8 @@
 #include <QDebug>
 
 MainWindow::MainWindow(QWidget *parent) :
-        QMainWindow(parent),
-        ui(new Ui::MainWindow)
+    QMainWindow(parent),
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     this->setStyleSheet("background-color: black;");
@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //    qRegisterMetaType<vec3f>("vec3f");
 }
 
-void MainWindow::resizeEvent(QResizeEvent* e)
+void MainWindow::resizeEvent(QResizeEvent *e)
 {
     int h = e->size().height();
     int w = e->size().width();

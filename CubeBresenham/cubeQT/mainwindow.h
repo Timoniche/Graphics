@@ -19,10 +19,11 @@ public:
 
     ~MainWindow() override;
 
-    void resizeEvent(QResizeEvent* e) override;
+    void resizeEvent(QResizeEvent *e) override;
+
 private:
     std::unique_ptr <Ui::MainWindow> ui;
-    dglWidget* wid = nullptr;
+    dglWidget *wid = nullptr;
 };
 
 #endif // MAINWINDOW_H

@@ -37,6 +37,7 @@ namespace DGL
 
         template<typename U>
         vec2<T>(vec2<U> const &v);
+
     public:
         T get_x() const
         { return x; }

@@ -286,14 +286,14 @@ void dglWidget::paintEvent(QPaintEvent *event)
                     //tmp[j] = shader.count_coordinates(cube[i][j]);
                     bv[j] = shader.before_viewport(cube[i][j]);
                 }
-                if (bv[0].second > 1e-2 && bv[1].second > 1e-2 &&
-                        bv[2].second > 1e-2 && bv[3].second > 1e-2)
-                {
+//                if (bv[0].second > 1e-2 && bv[1].second > 1e-2 &&
+//                        bv[2].second > 1e-2 && bv[3].second > 1e-2)
+//                {
 
                     draw_quad(bv[0], bv[1], bv[2], bv[3],
                             textures[i][0], textures[i][1], textures[i][2], textures[i][3],
                             a[i][0], a[i][1], a[i][2], 255, norms[i], &t->bmp);
-                }
+//                }
             }
         }
     }

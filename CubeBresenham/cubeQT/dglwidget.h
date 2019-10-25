@@ -127,7 +127,7 @@ private:
         ORTHO, PERSP
     } _mode = PERSP;
     vec3f m_eye{2.f, 2.f, 1.f};
-    float near = 0.1f;
+    float near = 1.f;
     float far = 100.f;
     vec3f m_center{0.0f, 0.0f, 0.0f};
     vec3f m_up{0.0f, 1.0f, 0.0f};

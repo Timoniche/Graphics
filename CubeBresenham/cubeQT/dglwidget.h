@@ -9,6 +9,7 @@
 #include <QMoveEvent>
 #include <QPoint>
 #include <QWheelEvent>
+#include <QKeyEvent>
 #include <QString>
 #include <QThread>
 #include <QTimer>
@@ -82,6 +83,8 @@ public slots:
 
     void dgl_rotate(float angle, float x, float y, float z);
 
+    std::pair<vec3f, float> get_bilinear(BMP* bmp, float u, float v);
+
 public slots:
 
     void onLineEditTextChanged(const QString &text);
@@ -107,6 +110,8 @@ protected:
 
     void mouseDoubleClickEvent(QMouseEvent *e) override;
 
+    void keyPressEvent(QKeyEvent *e) override;
+
 private:
     int m_width;
     int m_height;
@@ -121,8 +126,8 @@ private:
     {
         ORTHO, PERSP
     } _mode = PERSP;
-    vec3f m_eye{2, 2, 1};
-    float near = 1.f;
+    vec3f m_eye{2.f, 2.f, 1.f};
+    float near = 0.1f;
     float far = 100.f;
     vec3f m_center{0.0f, 0.0f, 0.0f};
     vec3f m_up{0.0f, 1.0f, 0.0f};
@@ -144,6 +149,7 @@ private:
         ans[2] = (p[2] + 1) / 2;
         return ans;
     });
+    bool _bilinear = false;
 public:
     QThread *m_thread = nullptr;
     Worker *m_worker = nullptr;

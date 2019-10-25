@@ -4,6 +4,7 @@
 #include <vector>
 #include <stdexcept>
 #include <iostream>
+#include <dglgeometry.h>
 
 #pragma pack(push, 1)
 struct BMPFileHeader
@@ -57,6 +58,34 @@ struct BMP
         read(fname);
     }
 
+    std::pair<DGL::vec3f, float> get_pixel(int x, int y)
+    {
+        using DGL::vec3f;
+        vec3f col;
+        float alp = -1.f;
+        uint32_t channels = bmp_info_header.bit_count / 8;
+        unsigned int max_size_index = static_cast<unsigned int>(data.size() - 1);
+        size_t index_col0 = channels * static_cast<uint32_t>(y * bmp_info_header.width + x) + 0;
+        size_t index_col1 = channels * static_cast<uint32_t>(y * bmp_info_header.width + x) + 1;
+        size_t index_col2 = channels * static_cast<uint32_t>(y * bmp_info_header.width + x) + 2;
+        size_t index_alp = std::min(max_size_index, channels * static_cast<uint32_t>(y * bmp_info_header.width + x) + 3);
+
+        if (index_col0 > max_size_index || index_col1 > max_size_index || index_col2 > max_size_index)
+        {
+            col[0] = 0;
+            col[1] = 0;
+            col[2] = 0;
+        } else
+        {
+            col[0] = data[index_col0];   // B
+            col[1] = data[index_col1];   // G
+            col[2] = data[index_col2];   // R
+        }
+        if (channels == 4) alp = data[index_alp];
+        return {{col[2], col[1], col[0]}, alp};
+
+    }
+
     void read(const char *fname)
     {
         std::ifstream inp{fname, std::ios_base::binary};
@@ -104,7 +133,7 @@ struct BMP
             if (bmp_info_header.height < 0)
             {
                 throw std::runtime_error(
-                    "The program can treat only BMP images with the origin in the bottom left corner!");
+                            "The program can treat only BMP images with the origin in the bottom left corner!");
             }
 
             data.resize(bmp_info_header.width * bmp_info_header.height * bmp_info_header.bit_count / 8);
@@ -164,7 +193,7 @@ struct BMP
 
             uint32_t new_stride = make_stride_aligned(4);
             file_header.file_size =
-                file_header.offset_data + data.size() + bmp_info_header.height * (new_stride - row_stride);
+                    file_header.offset_data + data.size() + bmp_info_header.height * (new_stride - row_stride);
         }
     }
 
@@ -276,12 +305,12 @@ private:
     {
         BMPColorHeader expected_color_header;
         if (expected_color_header.red_mask != bmp_color_header.red_mask ||
-            expected_color_header.blue_mask != bmp_color_header.blue_mask ||
-            expected_color_header.green_mask != bmp_color_header.green_mask ||
-            expected_color_header.alpha_mask != bmp_color_header.alpha_mask)
+                expected_color_header.blue_mask != bmp_color_header.blue_mask ||
+                expected_color_header.green_mask != bmp_color_header.green_mask ||
+                expected_color_header.alpha_mask != bmp_color_header.alpha_mask)
         {
             throw std::runtime_error(
-                "Unexpected color mask format! The program expects the pixel data to be in the BGRA format");
+                        "Unexpected color mask format! The program expects the pixel data to be in the BGRA format");
         }
         if (expected_color_header.color_space_type != bmp_color_header.color_space_type)
         {

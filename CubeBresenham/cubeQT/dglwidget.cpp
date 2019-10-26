@@ -14,8 +14,6 @@
 #include "worker.h"
 #include "shader.h"
 
-typedef std::pair<vec3f, float> pvf;
-
 dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
 {
     setStyleSheet("background-color: black;");
@@ -36,64 +34,73 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     VP = viewport * proj;
     m_light_v.normalize();
     _mode = PERSP;
-    BMP bmp1("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
-    BMP bmp2("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp");
+    try {
 
-    setFocusPolicy(Qt::StrongFocus);
-    vec3f cube1[6][4]
-    {
-        {
-            vec3f{-0.5f, -0.5f, 0.5f},
-            vec3f{0.5f, -0.5f, 0.5f},
-            vec3f{0.5f, 0.5f, 0.5f},
-            vec3f{-0.5f, 0.5f, 0.5f},
-        },
-        {
-            vec3f{-0.5f, -0.5f, -0.5f},
-            vec3f{-0.5f, 0.5f, -0.5f},
-            vec3f{0.5f, 0.5f, -0.5f},
-            vec3f{0.5f, -0.5f, -0.5f},
-        },
-        {
-            vec3f{-0.5f, 0.5f, -0.5f},
-            vec3f{-0.5f, 0.5f, 0.5f},
-            vec3f{0.5f, 0.5f, 0.5f},
-            vec3f{0.5f, 0.5f, -0.5f},
-        },
-        {
-            vec3f{-0.5f, -0.5f, -0.5f},
-            vec3f{0.5f, -0.5f, -0.5f},
-            vec3f{0.5f, -0.5f, 0.5f},
-            vec3f{-0.5f, -0.5f, 0.5f},
-        },
-        {
-            vec3f{0.5f, -0.5f, -0.5f},
-            vec3f{0.5f, 0.5f, -0.5f},
-            vec3f{0.5f, 0.5f, 0.5f},
-            vec3f{0.5f, -0.5f, 0.5f},
-        },
-        {
-            vec3f{-0.5f, -0.5f, -0.5f},
-            vec3f{-0.5f, -0.5f, 0.5f},
-            vec3f{-0.5f, 0.5f, 0.5f},
-            vec3f{-0.5f, 0.5f, -0.5f},
-        }
-    };
+        //BMP bmp1("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
+        //BMP bmp2("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp");
+        BMP bmp1("/Users/dulaev/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
+        BMP bmp2("/Users/dulaev/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp");
+        //BMP bmp1(":/textures/textures/one.bmp");
+        //BMP bmp2(":/textures/textures/TallGreenGrass.bmp");
 
-    vec3f translate2 = {0.3f, -0.5f, -0.5f};
-    float alpha2 = 1.2f;
-    vec3f cube2[6][4];
-    for (int i = 0; i < 6; i++)
-    {
-        for (int j = 0; j < 4; j++)
+        setFocusPolicy(Qt::StrongFocus);
+        vec3f cube1[6][4]
         {
-            cube2[i][j] = (cube1[i][j] + translate2) * alpha2;
+            {
+                vec3f{-0.5f, -0.5f, 0.5f},
+                vec3f{0.5f, -0.5f, 0.5f},
+                vec3f{0.5f, 0.5f, 0.5f},
+                vec3f{-0.5f, 0.5f, 0.5f},
+            },
+            {
+                vec3f{-0.5f, -0.5f, -0.5f},
+                vec3f{-0.5f, 0.5f, -0.5f},
+                vec3f{0.5f, 0.5f, -0.5f},
+                vec3f{0.5f, -0.5f, -0.5f},
+            },
+            {
+                vec3f{-0.5f, 0.5f, -0.5f},
+                vec3f{-0.5f, 0.5f, 0.5f},
+                vec3f{0.5f, 0.5f, 0.5f},
+                vec3f{0.5f, 0.5f, -0.5f},
+            },
+            {
+                vec3f{-0.5f, -0.5f, -0.5f},
+                vec3f{0.5f, -0.5f, -0.5f},
+                vec3f{0.5f, -0.5f, 0.5f},
+                vec3f{-0.5f, -0.5f, 0.5f},
+            },
+            {
+                vec3f{0.5f, -0.5f, -0.5f},
+                vec3f{0.5f, 0.5f, -0.5f},
+                vec3f{0.5f, 0.5f, 0.5f},
+                vec3f{0.5f, -0.5f, 0.5f},
+            },
+            {
+                vec3f{-0.5f, -0.5f, -0.5f},
+                vec3f{-0.5f, -0.5f, 0.5f},
+                vec3f{-0.5f, 0.5f, 0.5f},
+                vec3f{-0.5f, 0.5f, -0.5f},
+            }
+        };
+
+        vec3f translate2 = {0.3f, -0.5f, -0.5f};
+        float alpha2 = 1.2f;
+        vec3f cube2[6][4];
+        for (int i = 0; i < 6; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                cube2[i][j] = (cube1[i][j] + translate2) * alpha2;
+            }
         }
+        dgl_cube *o1 = new dgl_cube(cube1, bmp1);
+        dgl_cube *o2 = new dgl_cube(cube2, bmp2);
+        objects.push_back(o1);
+        objects.push_back(o2);
+    } catch (std::runtime_error& e) {
+        qDebug() << e.what();
     }
-    dgl_cube *o1 = new dgl_cube(cube1, bmp1);
-    dgl_cube *o2 = new dgl_cube(cube2, bmp2);
-    objects.push_back(o1);
-    objects.push_back(o2);
 }
 
 dglWidget::~dglWidget()
@@ -244,7 +251,7 @@ void dglWidget::paintEvent(QPaintEvent *event)
     clean_image();
     std::fill(zbuffer, zbuffer + 3000 * 3000,
               std::numeric_limits<float>::max());
-    Q_UNUSED(event);
+    Q_UNUSED(event)
     QPainter pnt{this};
     dgl_look_at(m_eye, m_center, m_up);
     dgl_rotate(_xrot, 1.0f, 0.0f, 0.0f);
@@ -279,21 +286,21 @@ void dglWidget::paintEvent(QPaintEvent *event)
             for (int i = 0; i < 6; i++)
             {
                 //vec3f tmp[4];
-                std::pair<vec3f, float> bv[4];
+                vec4f bv[4];
                 for (int j = 0; j < 4; j++)
                 {
 
                     //tmp[j] = shader.count_coordinates(cube[i][j]);
                     bv[j] = shader.before_viewport(cube[i][j]);
                 }
-//                if (bv[0].second > 1e-2 && bv[1].second > 1e-2 &&
-//                        bv[2].second > 1e-2 && bv[3].second > 1e-2)
-//                {
+                //                if (bv[0].second > 1e-2 && bv[1].second > 1e-2 &&
+                //                        bv[2].second > 1e-2 && bv[3].second > 1e-2)
+                //                {
 
-                    draw_quad(bv[0], bv[1], bv[2], bv[3],
-                            textures[i][0], textures[i][1], textures[i][2], textures[i][3],
-                            a[i][0], a[i][1], a[i][2], 255, norms[i], &t->bmp);
-//                }
+                draw_quad(bv[0], bv[1], bv[2], bv[3],
+                        textures[i][0], textures[i][1], textures[i][2], textures[i][3],
+                        a[i][0], a[i][1], a[i][2], 255, norms[i], &t->bmp);
+                //                }
             }
         }
     }
@@ -405,9 +412,9 @@ vec3f dglWidget::barycentric(vec2f A, vec2f B, vec2f C, vec2f P)
     return vec3f(-1, 1, 1);
 }
 
-void dglWidget::triangle_bbox_barycentric(std::pair<vec3f, float> w0,
-                                          std::pair<vec3f, float> w1,
-                                          std::pair<vec3f, float> w2,
+void dglWidget::triangle_bbox_barycentric(vec4f w0,
+                                          vec4f w1,
+                                          vec4f w2,
                                           vec2f b0, vec2f b1, vec2f b2,
                                           int colorR, int colorG, int colorB, float alp,
                                           BMP *bmp, float intensity)
@@ -415,9 +422,9 @@ void dglWidget::triangle_bbox_barycentric(std::pair<vec3f, float> w0,
     colorR = static_cast<int>(colorR * intensity);
     colorG = static_cast<int>(colorG * intensity);
     colorB = static_cast<int>(colorB * intensity);
-    vec3f t0 = viewport_f(w0.first / w0.second, m_width, m_height);
-    vec3f t1 = viewport_f(w1.first / w1.second, m_width, m_height);
-    vec3f t2 = viewport_f(w2.first / w2.second, m_width, m_height);
+    vec3f t0 = viewport_f(vec3f{w0[0], w0[1], w0[2]} / w0[3], m_width, m_height);
+    vec3f t1 = viewport_f(vec3f{w1[0], w1[1], w1[2]} / w1[3], m_width, m_height);
+    vec3f t2 = viewport_f(vec3f{w2[0], w2[1], w2[2]} / w2[3], m_width, m_height);
 
     vec3f pts[3] = {t0, t1, t2};
     vec2f pts2[3] = {{t0.x, t0.y},
@@ -440,7 +447,7 @@ void dglWidget::triangle_bbox_barycentric(std::pair<vec3f, float> w0,
         for (P.y = static_cast<int>(bboxmin.y); P.y <= bboxmax.y; P.y++)
         {
             vec3f bc_screen = barycentric(pts2[0], pts2[1], pts2[2], P);
-            vec3f bc_clip = vec3f(bc_screen.x / w0.second, bc_screen.y / w1.second, bc_screen.z / w2.second);
+            vec3f bc_clip = vec3f(bc_screen.x / w0[3], bc_screen.y / w1[3], bc_screen.z / w2[3]);
             bc_clip = bc_clip * (1 / (bc_clip.x + bc_clip.y + bc_clip.z));
 
             vec3f ans = pts[0] * bc_clip[0] + pts[1] * bc_clip[1] + pts[2] * bc_clip[2];
@@ -487,9 +494,9 @@ void dglWidget::triangle_bbox_barycentric(std::pair<vec3f, float> w0,
     }
 }
 
-void dglWidget::triangle_scanline(std::pair<vec3f, float> w0,
-                                  std::pair<vec3f, float> w1,
-                                  std::pair<vec3f, float> w2,
+void dglWidget::triangle_scanline(vec4f w0,
+                                  vec4f w1,
+                                  vec4f w2,
                                   vec2f b0, vec2f b1, vec2f b2,
                                   int colorR, int colorG, int colorB, float alp, BMP *bmp, float intensity)
 {
@@ -497,13 +504,13 @@ void dglWidget::triangle_scanline(std::pair<vec3f, float> w0,
     colorG = static_cast<int>(colorG * intensity);
     colorB = static_cast<int>(colorB * intensity);
 
-    float Z0 = 1 / w0.second;
-    float Z1 = 1 / w1.second;
-    float Z2 = 1 / w2.second;
+    float Z0 = 1 / w0[3];
+    float Z1 = 1 / w1[3];
+    float Z2 = 1 / w2[3];
 
-    vec3i t0 = viewport_f(w0.first * Z0, m_width, m_height);
-    vec3i t1 = viewport_f(w1.first * Z1, m_width, m_height);
-    vec3i t2 = viewport_f(w2.first * Z2, m_width, m_height);
+    vec3i t0 = viewport_f(vec3f{w0[0], w0[1], w0[2]}  * Z0, m_width, m_height);
+    vec3i t1 = viewport_f(vec3f{w1[0], w1[1], w1[2]}  * Z1, m_width, m_height);
+    vec3i t2 = viewport_f(vec3f{w2[0], w2[1], w2[2]}  * Z2, m_width, m_height);
 
     b0 = b0 * Z0;
     b1 = b1 * Z1;
@@ -563,7 +570,8 @@ void dglWidget::triangle_scanline(std::pair<vec3f, float> w0,
             P.x = j;
             P.y = t0.y + i;
             int idx = j + (t0.y + i) * m_width;
-            if (isnanf(ZP)) continue;
+            //if (isnanf(ZP)) continue;
+            if (isnan(ZP)) continue;
             if ((1 / ZP) < near || (1 / ZP) > far) continue;
             if (zbuffer[idx] > 1 / ZP)
             {
@@ -573,17 +581,17 @@ void dglWidget::triangle_scanline(std::pair<vec3f, float> w0,
 
                     if (_bilinear)
                     {
-                        pvf p = get_bilinear(bmp, Pb[0], Pb[1]);
-                        vec3f col = p.first;
-                        if (int(p.second) != -1) alp = p.second;
+                        vec4f p = get_bilinear(bmp, Pb[0], Pb[1]);
+                        vec3f col = {p[0], p[1], p[2]};
+                        if (int(p[3]) != -1) alp = p[3];
                         set_pixel(P.x + xTR, P.y - yTR, qRgba(int(intensity * col[0]),
                                   int(intensity * col[1]),
                                 int(intensity * col[2]), static_cast<int>(alp)));
                     } else
                     {
-                        pvf p = bmp->get_pixel(int(Pb[0]), int(Pb[1]));
-                        vec3f col = p.first;
-                        if (int(p.second) != -1) alp = p.second;
+                        vec4f p = bmp->get_pixel(int(Pb[0]), int(Pb[1]));
+                        vec3f col = {p[0], p[1], p[2]};
+                        if (int(p[3]) != -1) alp = p[3];
                         set_pixel(P.x + xTR, P.y - yTR, qRgba(int(intensity * col[0]),
                                   int(intensity * col[1]),
                                 int(intensity * col[2]), static_cast<int>(alp)));
@@ -600,9 +608,9 @@ void dglWidget::triangle_scanline(std::pair<vec3f, float> w0,
     }
 }
 
-void dglWidget::triangle_scanline_barycentric(std::pair<vec3f, float> w0,
-                                              std::pair<vec3f, float> w1,
-                                              std::pair<vec3f, float> w2,
+void dglWidget::triangle_scanline_barycentric(vec4f w0,
+                                              vec4f w1,
+                                              vec4f w2,
                                               vec2f b0, vec2f b1, vec2f b2,
                                               int colorR, int colorG, int colorB, float alp,
                                               BMP *bmp, float intensity)
@@ -611,7 +619,7 @@ void dglWidget::triangle_scanline_barycentric(std::pair<vec3f, float> w0,
     colorG = static_cast<int>(colorG * intensity);
     colorB = static_cast<int>(colorB * intensity);
 
-    std::function viewport_f = ([](vec3f p, int m_width, int m_height)
+    std::function<vec3f(vec3f, int, int)> viewport_f = ([](vec3f p, int m_width, int m_height)
     {
             vec3f ans = {0, 0, 0};
             ans[0] = m_width * (p[0] + 1) / 2;
@@ -619,9 +627,9 @@ void dglWidget::triangle_scanline_barycentric(std::pair<vec3f, float> w0,
     ans[2] = 10000 * (p[2] + 1) / 2;
     return ans;
 });
-vec3i t0 = viewport_f(w0.first / w0.second, m_width, m_height);
-vec3i t1 = viewport_f(w1.first / w1.second, m_width, m_height);
-vec3i t2 = viewport_f(w2.first / w2.second, m_width, m_height);
+vec3i t0 = viewport_f(vec3f{w0[0], w0[1], w0[2]} / w0[3], m_width, m_height);
+vec3i t1 = viewport_f(vec3f{w1[0], w1[1], w1[2]} / w1[3], m_width, m_height);
+vec3i t2 = viewport_f(vec3f{w2[0], w2[1], w2[2]} / w2[3], m_width, m_height);
 using std::swap;
 if (t0.get_y() > t1.get_y())
 {
@@ -668,7 +676,7 @@ for (int i = 0 + beginh; i < total_height - endh; i++)
         P.x = j;
         P.y = t0.y + i;
         vec3f bc_screen = barycentric(pts2[0], pts2[1], pts2[2], P);
-        vec3f bc_clip = vec3f(bc_screen.x / w0.second, bc_screen.y / w1.second, bc_screen.z / w2.second);
+        vec3f bc_clip = vec3f(bc_screen.x / w0[3], bc_screen.y / w1[3], bc_screen.z / w2[3]);
         bc_clip = bc_clip / (bc_clip.x + bc_clip.y + bc_clip.z);
         //vec3f ans = pts[0] * bc_screen[0] + pts[1] * bc_screen[1] + pts[2] * bc_screen[2];
         vec3f ans = pts[0] * bc_clip[0] + pts[1] * bc_clip[1] + pts[2] * bc_clip[2]; //?!
@@ -681,8 +689,8 @@ for (int i = 0 + beginh; i < total_height - endh; i++)
             if (bmp != nullptr)
             {
                 auto p = bmp->get_pixel(T.x, T.y);
-                vec3i col = p.first;
-                if (int(p.second) != -1) alp = p.second;
+                vec3i col = vec3f{p[0], p[1], p[2]};
+                if (int(p[3]) != -1) alp = p[3];
 
                 if (!_bilinear)
                 {
@@ -705,27 +713,16 @@ for (int i = 0 + beginh; i < total_height - endh; i++)
 
 }
 
-std::pair<vec3f, float> dglWidget::get_bilinear(BMP *bmp, float u, float v) {
+vec4f dglWidget::get_bilinear(BMP *bmp, float u, float v) {
     int x = int(floor(u));
     int y = int(floor(v));
     float u_ratio = u - x;
     float v_ratio = v - y;
     float u_opposite = 1 - u_ratio;
     float v_opposite = 1 - v_ratio;
-    std::function<pvf(pvf, float)> ff = ([](pvf a, float u)
-    {
-            pvf ans = {a.first * u, a.second * u};
-            return ans;
-});
-    std::function<pvf(pvf, pvf)> sum = ([](pvf a, pvf u)
-    {
-            pvf ans = {a.first + u.first, a.second + u.second};
-            return ans;
-});
-    auto result = sum(
-                ff(sum(ff(bmp->get_pixel(x, y), u_opposite), ff(bmp->get_pixel(x + 1, y), u_ratio)), v_opposite),
-                ff(sum(ff(bmp->get_pixel(x, y + 1), u_opposite), ff(bmp->get_pixel(x + 1, y + 1), u_ratio)), v_ratio)
-                );
+    auto result = (bmp->get_pixel(x, y) * u_opposite + bmp->get_pixel(x + 1, y) * u_ratio) * v_opposite +
+            (bmp->get_pixel(x, y + 1) * u_opposite + bmp->get_pixel(x + 1, y + 1) * u_ratio) * v_ratio;
+
     return result;
 }
 
@@ -816,10 +813,10 @@ void dglWidget::dgl_viewport(int x, int y, int w, int h)
  *      \     \
  *      v3 -- v2
  */
-void dglWidget::draw_quad(std::pair<vec3f, float> bv0,
-                          std::pair<vec3f, float> bv1,
-                          std::pair<vec3f, float> bv2,
-                          std::pair<vec3f, float> bv3,
+void dglWidget::draw_quad(vec4f bv0,
+                          vec4f bv1,
+                          vec4f bv2,
+                          vec4f bv3,
                           vec2f t0, vec2f t1, vec2f t2, vec2f t3,
                           int colorR, int colorG, int colorB, float alp, float intensity,
                           BMP *_bmp)

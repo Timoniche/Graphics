@@ -10,13 +10,12 @@ Shader::Shader(Matrix<float> const *model_view,
 }
 
 
-std::pair<vec3f, float> Shader::before_viewport(vec3f world_coordinates)
+vec4f Shader::before_viewport(vec3f world_coordinates)
 {
     Matrix<float> m = Matrix<float>(world_coordinates);
     m.transpose();
     m = m * MVP;
-    vec3f fst = {m[0][0], m[0][1], m[0][2]};
-    return {fst, m[0][3]};
+    return {m[0][0], m[0][1], m[0][2], m[0][3]};
 }
 
 vec3f Shader::reverse_coordinates(vec3f screen_coordinates)

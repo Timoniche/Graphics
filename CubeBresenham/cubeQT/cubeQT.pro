@@ -56,4 +56,9 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 DISTFILES += \
     CMakeLists \
     TallGreenGrass.bmp \
-    one.bmp
+    one.bmp \
+    textures/TallGreenGrass.bmp \
+    textures/one.bmp
+
+RESOURCES += \
+    res.qrc

@@ -20,7 +20,8 @@ public:
 class dgl_cube : public dgl_object
 {
 public:
-    BMP bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"};
+    //BMP bmp{"C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"};
+    BMP bmp{"/Users/dulaev/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp"};
     vec3f quads[6][4];
     vec2f textures[6][4]{
         {

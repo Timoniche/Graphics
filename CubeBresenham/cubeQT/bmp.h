@@ -58,7 +58,7 @@ struct BMP
         read(fname);
     }
 
-    std::pair<DGL::vec3f, float> get_pixel(int x, int y)
+    DGL::vec4f get_pixel(int x, int y)
     {
         using DGL::vec3f;
         vec3f col;
@@ -82,7 +82,7 @@ struct BMP
             col[2] = data[index_col2];   // R
         }
         if (channels == 4) alp = data[index_alp];
-        return {{col[2], col[1], col[0]}, alp};
+        return {col[2], col[1], col[0], alp};
 
     }
 

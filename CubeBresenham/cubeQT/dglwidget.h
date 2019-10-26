@@ -49,19 +49,21 @@ public slots:
     vec3f barycentric(vec2f A, vec2f B, vec2f C, vec2f P);
 
     void
-    triangle_scanline_barycentric(std::pair<vec3f, float> w0, std::pair<vec3f, float> w1, std::pair<vec3f, float> w2,
+    triangle_scanline_barycentric(vec4f w0,
+                                  vec4f w1,
+                                  vec4f w2,
                                   vec2f b0, vec2f b1, vec2f b2,
                                   int colorR, int colorG, int colorB, float alp, BMP *bmp, float intensity);
 
-    void triangle_scanline(std::pair<vec3f, float> w0,
-                           std::pair<vec3f, float> w1,
-                           std::pair<vec3f, float> w2,
+    void triangle_scanline(vec4f w0,
+                           vec4f w1,
+                           vec4f w2,
                            vec2f b0, vec2f b1, vec2f b2,
                            int colorR, int colorG, int colorB, float alp, BMP *bmp, float intensity);
 
-    void triangle_bbox_barycentric(std::pair<vec3f, float> w0,
-                                   std::pair<vec3f, float> w1,
-                                   std::pair<vec3f, float> w2,
+    void triangle_bbox_barycentric(vec4f w0,
+                                   vec4f w1,
+                                   vec4f w2,
                                    vec2f b0, vec2f b1, vec2f b2,
                                    int colorR, int colorG, int colorB, float alp, BMP *bmp, float intensity);
 
@@ -73,17 +75,17 @@ public slots:
 
     void perspective(const float &angleOfView, const float &aspect, const float &near, const float &far);
 
-    void draw_quad(std::pair<vec3f, float> bv0,
-                   std::pair<vec3f, float> bv1,
-                   std::pair<vec3f, float> bv2,
-                   std::pair<vec3f, float> bv3,
+    void draw_quad(vec4f bv0,
+                   vec4f bv1,
+                   vec4f bv2,
+                   vec4f bv3,
                    vec2f t0, vec2f t1, vec2f t2, vec2f t3,
                    int colorR, int colorG, int colorB, float alp, float intensity,
                    BMP *bmp);
 
     void dgl_rotate(float angle, float x, float y, float z);
 
-    std::pair<vec3f, float> get_bilinear(BMP* bmp, float u, float v);
+    vec4f get_bilinear(BMP* bmp, float u, float v);
 
 public slots:
 
@@ -127,7 +129,7 @@ private:
         ORTHO, PERSP
     } _mode = PERSP;
     vec3f m_eye{2.f, 2.f, 1.f};
-    float near = 1.f;
+    float near = 0.1f;
     float far = 100.f;
     vec3f m_center{0.0f, 0.0f, 0.0f};
     vec3f m_up{0.0f, 1.0f, 0.0f};

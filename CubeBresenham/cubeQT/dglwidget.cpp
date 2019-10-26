@@ -26,6 +26,7 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     m_image = std::make_unique<QImage>(3000, 3000, QImage::Format_RGB32);
     m_image->fill(qRgba(0, 0, 0, 255));
     zbuffer = new float[3000 * 3000];
+    buf.assign(3000 * 3000, std::vector<std::pair<float, QRgb>>{});
     std::fill(zbuffer, zbuffer + 3000 * 3000,
               std::numeric_limits<float>::max());
     dgl_look_at(m_eye, m_center, m_up);
@@ -249,8 +250,13 @@ void dglWidget::update_image()
 void dglWidget::paintEvent(QPaintEvent *event)
 {
     clean_image();
-    std::fill(zbuffer, zbuffer + 3000 * 3000,
-              std::numeric_limits<float>::max());
+    //    std::fill(zbuffer, zbuffer + 3000 * 3000,
+    //              std::numeric_limits<float>::max());
+    for (size_t i = 0; i < 3000 * 3000; i++)
+    {
+        zbuffer[i] = std::numeric_limits<float>::max();
+        buf[i].clear();
+    }
     Q_UNUSED(event)
     QPainter pnt{this};
     dgl_look_at(m_eye, m_center, m_up);
@@ -412,6 +418,9 @@ vec3f dglWidget::barycentric(vec2f A, vec2f B, vec2f C, vec2f P)
     return vec3f(-1, 1, 1);
 }
 
+/**
+ * @deprecated
+ */
 void dglWidget::triangle_bbox_barycentric(vec4f w0,
                                           vec4f w1,
                                           vec4f w2,
@@ -569,7 +578,7 @@ void dglWidget::triangle_scanline(vec4f w0,
             vec2f Pb = ((Ab * d1) + ((Bb * d2) - (Ab * d1)) * phi);
             P.x = j;
             P.y = t0.y + i;
-            int idx = j + (t0.y + i) * m_width;
+            size_t idx = size_t(j + (t0.y + i) * m_width);
             //if (isnanf(ZP)) continue;
             if (isnan(ZP)) continue;
             if ((1 / ZP) < near || (1 / ZP) > far) continue;
@@ -578,26 +587,53 @@ void dglWidget::triangle_scanline(vec4f w0,
                 zbuffer[idx] = 1 / ZP;
                 if (bmp != nullptr)
                 {
-
-                    if (_bilinear)
+                    QRgb mix{qRgba(0, 0, 0, int(alp))};
+                    float min_delta = std::numeric_limits<float>::max();
+                    for (size_t i = 0; i < buf[idx].size(); i++)
                     {
-                        vec4f p = get_bilinear(bmp, Pb[0], Pb[1]);
-                        vec3f col = {p[0], p[1], p[2]};
-                        if (int(p[3]) != -1) alp = p[3];
-                        set_pixel(P.x + xTR, P.y - yTR, qRgba(int(intensity * col[0]),
-                                  int(intensity * col[1]),
-                                int(intensity * col[2]), static_cast<int>(alp)));
-                    } else
-                    {
-                        vec4f p = bmp->get_pixel(int(Pb[0]), int(Pb[1]));
-                        vec3f col = {p[0], p[1], p[2]};
-                        if (int(p[3]) != -1) alp = p[3];
-                        set_pixel(P.x + xTR, P.y - yTR, qRgba(int(intensity * col[0]),
-                                  int(intensity * col[1]),
-                                int(intensity * col[2]), static_cast<int>(alp)));
+                        if (buf[idx][i].first > 1 / ZP)
+                        {
+                            if (buf[idx][i].first - 1 / ZP <  min_delta)
+                            {
+                                min_delta = buf[idx][i].first - 1 / ZP;
+                                mix = buf[idx][i].second;
+                            }
+                        }
                     }
 
 
+                    vec4f p = bmp->get_pixel(int(Pb[0]), int(Pb[1]));
+                    vec3f col = {p[0], p[1], p[2]};
+                    if (_bilinear)
+                    {
+                        p = get_bilinear(bmp, Pb[0], Pb[1]);
+                        col = {p[0], p[1], p[2]};
+                        if (int(p[3]) != -1) alp = p[3];
+
+                    } else
+                    {
+                        p = bmp->get_pixel(int(Pb[0]), int(Pb[1]));
+                        col = {p[0], p[1], p[2]};
+                        if (int(p[3]) != -1) alp = p[3];
+                    }
+
+                    QRgb qcol{qRgba(0, 0, 0, int(alp))};
+                    if (std::numeric_limits<float>::max() - min_delta < 1e-2f)
+                    {
+                        qcol = qRgba(int(intensity * col[0]),
+                                int(intensity * col[1]),
+                                int(intensity * col[2]), static_cast<int>(alp));
+                    } else
+                    {
+                        QColor tmp(mix);
+                        int R = int(intensity * col[0] * 0.5f + tmp.red() * 0.5f);
+                        int G = int(intensity * col[1] * 0.5f + tmp.green() * 0.5f);
+                        int B = int(intensity * col[2] * 0.5f + tmp.blue() * 0.5f);
+                        qcol = qRgba(R, G, B, static_cast<int>(alp));
+                    }
+
+                    buf[idx].emplace_back(1 / ZP, qcol);
+                    set_pixel(int(P.x + xTR), int(P.y - yTR), qcol);
 
                 } else
                 {
@@ -608,6 +644,9 @@ void dglWidget::triangle_scanline(vec4f w0,
     }
 }
 
+/**
+ * @deprecated
+ */
 void dglWidget::triangle_scanline_barycentric(vec4f w0,
                                               vec4f w1,
                                               vec4f w2,
@@ -690,25 +729,25 @@ for (int i = 0 + beginh; i < total_height - endh; i++)
             {
                 auto p = bmp->get_pixel(T.x, T.y);
                 vec3i col = vec3f{p[0], p[1], p[2]};
-                if (int(p[3]) != -1) alp = p[3];
+            if (int(p[3]) != -1) alp = p[3];
 
-                if (!_bilinear)
-                {
-                    set_pixel(P.x + xTR, P.y - yTR, qRgba(int(intensity * col[0]),
-                              int(intensity * col[1]),
-                            int(intensity * col[2]), static_cast<int>(alp)));
-                } else
-                {
-                    set_pixel(P.x + xTR, P.y - yTR, qRgba(int(intensity * col[0]),
-                              int(intensity * col[1]),
-                            int(intensity * col[2]), static_cast<int>(alp)));
-                }
+            if (!_bilinear)
+            {
+                set_pixel(P.x + xTR, P.y - yTR, qRgba(int(intensity * col[0]),
+                          int(intensity * col[1]),
+                        int(intensity * col[2]), static_cast<int>(alp)));
             } else
             {
-                set_pixel(P.x + xTR, P.y - yTR, qRgba(colorR, colorG, colorB, static_cast<int>(alp)));
+                set_pixel(P.x + xTR, P.y - yTR, qRgba(int(intensity * col[0]),
+                          int(intensity * col[1]),
+                        int(intensity * col[2]), static_cast<int>(alp)));
             }
+        } else
+        {
+            set_pixel(P.x + xTR, P.y - yTR, qRgba(colorR, colorG, colorB, static_cast<int>(alp)));
         }
     }
+}
 }
 
 }

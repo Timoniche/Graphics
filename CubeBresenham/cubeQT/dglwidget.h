@@ -48,6 +48,9 @@ public slots:
 
     vec3f barycentric(vec2f A, vec2f B, vec2f C, vec2f P);
 
+    /**
+     * @deprecated
+     */
     void
     triangle_scanline_barycentric(vec4f w0,
                                   vec4f w1,
@@ -61,6 +64,9 @@ public slots:
                            vec2f b0, vec2f b1, vec2f b2,
                            int colorR, int colorG, int colorB, float alp, BMP *bmp, float intensity);
 
+    /**
+     * @deprecated
+     */
     void triangle_bbox_barycentric(vec4f w0,
                                    vec4f w1,
                                    vec4f w2,
@@ -124,6 +130,7 @@ private:
     Matrix<float> MVP;
     Matrix<float> VP;
     float *zbuffer;
+    std::vector<std::vector<std::pair<float, QRgb>>> buf;
     enum proj_mode
     {
         ORTHO, PERSP

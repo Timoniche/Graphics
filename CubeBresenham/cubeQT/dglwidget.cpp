@@ -37,10 +37,10 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
     _mode = PERSP;
     try {
 
-        //BMP bmp1("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
-        //BMP bmp2("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp");
-        BMP bmp1("/Users/dulaev/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
-        BMP bmp2("/Users/dulaev/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp");
+        BMP bmp1("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
+        BMP bmp2("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp");
+        //BMP bmp1("/Users/dulaev/Desktop/Graphics/CubeBresenham/cubeQT/one.bmp");
+        //BMP bmp2("/Users/dulaev/Desktop/Graphics/CubeBresenham/cubeQT/TallGreenGrass.bmp");
         //BMP bmp1(":/textures/textures/one.bmp");
         //BMP bmp2(":/textures/textures/TallGreenGrass.bmp");
 
@@ -119,6 +119,10 @@ void dglWidget::keyPressEvent(QKeyEvent *e)
     {
     case Qt::Key_B:
         _bilinear = !_bilinear;
+        repaint();
+        break;
+    case Qt::Key_N:
+        _blending = !_blending;
         repaint();
         break;
     default:
@@ -579,8 +583,8 @@ void dglWidget::triangle_scanline(vec4f w0,
             P.x = j;
             P.y = t0.y + i;
             size_t idx = size_t(j + (t0.y + i) * m_width);
-            //if (isnanf(ZP)) continue;
-            if (isnan(ZP)) continue;
+            if (isnanf(ZP)) continue;
+            //if (isnan(ZP)) continue;
             if ((1 / ZP) < near || (1 / ZP) > far) continue;
             if (zbuffer[idx] > 1 / ZP)
             {
@@ -618,7 +622,7 @@ void dglWidget::triangle_scanline(vec4f w0,
                     }
 
                     QRgb qcol{qRgba(0, 0, 0, int(alp))};
-                    if (std::numeric_limits<float>::max() - min_delta < 1e-2f)
+                    if (!_blending || std::numeric_limits<float>::max() - min_delta < 1e-2f)
                     {
                         qcol = qRgba(int(intensity * col[0]),
                                 int(intensity * col[1]),

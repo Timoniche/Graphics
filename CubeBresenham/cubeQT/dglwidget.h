@@ -159,6 +159,7 @@ private:
         return ans;
     });
     bool _bilinear = false;
+    bool _blending = false;
 public:
     QThread *m_thread = nullptr;
     Worker *m_worker = nullptr;

@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowTitle("DGL");
 
     wid = new dglWidget(this);
+    this->resize(100, 100);
 
     //wid->resize(500, 500);
 
@@ -32,7 +33,7 @@ void MainWindow::resizeEvent(QResizeEvent *e)
 {
     int h = e->size().height();
     int w = e->size().width();
-    wid->resize(w, h);
+    if (wid) wid->resize(w, h);
 }
 
 MainWindow::~MainWindow()

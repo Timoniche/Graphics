@@ -91,6 +91,8 @@ public slots:
 
     void dgl_rotate(float angle, float x, float y, float z);
 
+    void screen();
+
     vec4f get_bilinear(BMP* bmp, float u, float v);
 
 public slots:
@@ -138,7 +140,7 @@ private:
     vec3f m_eye{2.f, 2.f, 1.f};
     float near = 0.1f;
     float far = 100.f;
-    vec3f m_center{0.0f, 0.0f, 0.0f};
+    vec3f m_center{0.2f, 0.5f, 0.3f};
     vec3f m_up{0.0f, 1.0f, 0.0f};
     vec3f m_light_v{-0.88f, -0.531f, 0.44f};
     float eps = static_cast<float>(1e-2);

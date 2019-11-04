@@ -9,23 +9,7 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="431650b1-ed61-495c-bb9a-266491484783" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bmp.h" beforeDir="false" afterPath="$PROJECT_DIR$/bmp.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dgl.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/dgl.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dgl_object.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/dgl_object.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dgl_object.h" beforeDir="false" afterPath="$PROJECT_DIR$/dgl_object.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dglgeometry.h" beforeDir="false" afterPath="$PROJECT_DIR$/dglgeometry.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dglwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/dglwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dglwidget.h" beforeDir="false" afterPath="$PROJECT_DIR$/dglwidget.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mainwindow.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/mainwindow.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/mainwindow.h" beforeDir="false" afterPath="$PROJECT_DIR$/mainwindow.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shader.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/shader.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/shader.h" beforeDir="false" afterPath="$PROJECT_DIR$/shader.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/worker.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/worker.h" beforeDir="false" afterPath="$PROJECT_DIR$/worker.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../CubeModel/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../CubeModel/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="431650b1-ed61-495c-bb9a-266491484783" name="Default Changelist" comment="" />
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -47,7 +31,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/mainwindow.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="227">
+            <state relative-caret-position="324">
               <caret line="18" selection-start-line="18" selection-end-line="18" />
             </state>
           </provider>
@@ -65,7 +49,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/shader.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
+            <state relative-caret-position="342">
               <caret line="19" column="25" selection-start-line="19" selection-start-column="25" selection-end-line="19" selection-end-column="25" />
             </state>
           </provider>
@@ -86,7 +70,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/worker.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
+            <state relative-caret-position="396">
               <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
             </state>
           </provider>
@@ -95,8 +79,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dglwidget.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="10055">
-              <caret line="912" column="53" selection-start-line="912" selection-start-column="53" selection-end-line="912" selection-end-column="53" />
+            <state relative-caret-position="-497">
+              <caret line="869" column="53" selection-start-line="869" selection-start-column="53" selection-end-line="869" selection-end-column="53" />
             </state>
           </provider>
         </entry>
@@ -104,7 +88,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dglgeometry.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="162">
+            <state relative-caret-position="216">
               <caret line="12" selection-start-line="12" selection-end-line="12" />
             </state>
           </provider>
@@ -113,8 +97,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dgl_object.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="502">
-              <caret line="38" column="24" lean-forward="true" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
+            <state relative-caret-position="684">
+              <caret line="39" column="24" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -122,8 +106,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/dglwidget.h">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-483">
-              <caret line="110" column="8" selection-start-line="110" selection-start-column="8" selection-end-line="110" selection-end-column="8" />
+            <state relative-caret-position="2196">
+              <caret line="122" column="8" selection-start-line="122" selection-start-column="8" selection-end-line="122" selection-end-column="8" />
             </state>
           </provider>
         </entry>
@@ -183,8 +167,9 @@
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="width" value="1920" />
-    <option name="height" value="1080" />
+    <option name="x" value="948" />
+    <option name="width" value="981" />
+    <option name="height" value="1032" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="1" id="Add" />
@@ -264,11 +249,12 @@
       <workItem from="1570468730792" duration="202000" />
       <workItem from="1570471693814" duration="11000" />
       <workItem from="1571599377419" duration="1380000" />
+      <workItem from="1572451307875" duration="18000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="5358000" />
+    <option name="totallyTimeSpent" value="5376000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
@@ -289,7 +275,7 @@
       <window_info anchor="bottom" id="Terminal" order="9" />
       <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
       <window_info anchor="bottom" id="Version Control" order="11" show_stripe_button="false" />
-      <window_info anchor="bottom" id="CMake" order="12" weight="0.3605442" />
+      <window_info anchor="bottom" id="CMake" order="12" visible="true" weight="0.3587922" />
       <window_info anchor="right" id="Commander" order="0" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
@@ -375,7 +361,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/mainwindow.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
+        <state relative-caret-position="324">
           <caret line="18" selection-start-line="18" selection-end-line="18" />
         </state>
       </provider>
@@ -389,15 +375,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/shader.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
+        <state relative-caret-position="342">
           <caret line="19" column="25" selection-start-line="19" selection-start-column="25" selection-end-line="19" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/worker.h">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
         </state>
       </provider>
     </entry>
@@ -411,31 +390,38 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/worker.h">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="396">
+          <caret line="22" column="4" selection-start-line="22" selection-start-column="4" selection-end-line="22" selection-end-column="4" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/dglgeometry.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
+        <state relative-caret-position="216">
           <caret line="12" selection-start-line="12" selection-end-line="12" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dgl_object.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="502">
-          <caret line="38" column="24" lean-forward="true" selection-start-line="38" selection-start-column="24" selection-end-line="38" selection-end-column="24" />
+        <state relative-caret-position="684">
+          <caret line="39" column="24" selection-start-line="39" selection-start-column="24" selection-end-line="39" selection-end-column="24" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dglwidget.h">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-483">
-          <caret line="110" column="8" selection-start-line="110" selection-start-column="8" selection-end-line="110" selection-end-column="8" />
+        <state relative-caret-position="2196">
+          <caret line="122" column="8" selection-start-line="122" selection-start-column="8" selection-end-line="122" selection-end-column="8" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/dglwidget.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="10055">
-          <caret line="912" column="53" selection-start-line="912" selection-start-column="53" selection-end-line="912" selection-end-column="53" />
+        <state relative-caret-position="-497">
+          <caret line="869" column="53" selection-start-line="869" selection-start-column="53" selection-end-line="869" selection-end-column="53" />
         </state>
       </provider>
     </entry>

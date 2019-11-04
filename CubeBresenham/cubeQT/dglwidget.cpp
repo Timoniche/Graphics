@@ -98,7 +98,7 @@ dglWidget::dglWidget(QWidget *parent) : QWidget(parent)
         dgl_cube *o1 = new dgl_cube(cube1, bmp1);
         dgl_cube *o2 = new dgl_cube(cube2, bmp2);
         objects.push_back(o1);
-        objects.push_back(o2);
+        //objects.push_back(o2);
     } catch (std::runtime_error& e) {
         qDebug() << e.what();
     }
@@ -125,8 +125,33 @@ void dglWidget::keyPressEvent(QKeyEvent *e)
         _blending = !_blending;
         repaint();
         break;
+    case Qt::Key_M:
+        screen();
+        break;
     default:
         break;
+    }
+}
+
+void dglWidget::screen()
+{
+    static bool tmp = true;
+    if (tmp)
+    {
+        freopen("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/screen", "w", stdout);
+        for ( int row = 0; row < 100; ++row )
+            for ( int col = 0; col < 100; ++col )
+            {
+                QColor clrCurrent( m_image->pixel(col, m_height - row - 1) );
+
+                std::cout << "Pixel at [" << row << "," << col << "] contains color ("
+                          << clrCurrent.red() << ", "
+                          << clrCurrent.green() << ", "
+                          << clrCurrent.blue() << ", "
+                          << clrCurrent.alpha() << ")."
+                          << std::endl;
+            }
+        tmp = false;
     }
 }
 
@@ -315,7 +340,7 @@ void dglWidget::paintEvent(QPaintEvent *event)
         }
     }
 
-    pnt.drawImage(0, 0, *m_image);
+    pnt.drawImage(xTR, yTR, *m_image);
 }
 
 void dglWidget::cout_matrices()
@@ -329,7 +354,7 @@ void dglWidget::cout_matrices()
 
 void dglWidget::set_pixel(int x, int y, QRgb color)
 {
-    auto *rowData = reinterpret_cast<QRgb *>(m_image->scanLine(m_height - y));
+    auto *rowData = reinterpret_cast<QRgb *>(m_image->scanLine(m_height - y - 1));
     rowData[x] = color;
 }
 
@@ -637,11 +662,13 @@ void dglWidget::triangle_scanline(vec4f w0,
                     }
 
                     buf[idx].emplace_back(1 / ZP, qcol);
-                    set_pixel(int(P.x + xTR), int(P.y - yTR), qcol);
+                    //set_pixel(int(P.x + xTR), int(P.y - yTR), qcol);
+                    set_pixel(static_cast<int>(P.x), static_cast<int>(P.y), qcol);
 
                 } else
                 {
-                    set_pixel(static_cast<int>(P.x) + xTR, static_cast<int>(P.y) - yTR, qRgba(colorR, colorG, colorB, static_cast<int>(alp)));
+                    //set_pixel(static_cast<int>(P.x) + xTR, static_cast<int>(P.y) - yTR, qRgba(colorR, colorG, colorB, static_cast<int>(alp)));
+                    set_pixel(static_cast<int>(P.x), static_cast<int>(P.y), qRgba(colorR, colorG, colorB, static_cast<int>(alp)));
                 }
             }
         }
@@ -869,8 +896,10 @@ void dglWidget::draw_quad(vec4f bv0,
     vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
     vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
 
-    triangle_scanline(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
-    triangle_scanline(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    triangle_scanline(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, 1.f);
+    triangle_scanline(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, 1.f);
+    //    triangle_scanline(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    //    triangle_scanline(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
 
     //triangle_scanline_barycentric(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
     //triangle_scanline_barycentric(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);

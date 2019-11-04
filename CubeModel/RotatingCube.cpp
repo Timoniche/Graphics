@@ -5,6 +5,10 @@
 #include <iomanip>
 #include <iostream>
 #include <array>
+#include <vector>
+
+using namespace std;
+
 bool fullscreen = false;
 bool mouseDown = false;
 
@@ -14,45 +18,89 @@ float xdiff = 0.0f;
 float ydiff = 0.0f;
 GLuint texture[1];
 
-GLuint LoadTexture(const char *filename)
+int LoadBitmap(char *filename)
 {
-    GLuint texture;
-    int width, height;
-    unsigned char *data;
-    FILE *file;
-    file = fopen(filename, "rb");
-    if (file == nullptr) return 0;
-    width = 256;
-    height = 256;
-    data = (unsigned char *) malloc(static_cast<size_t>(width * height * 3));
-    fread(data, static_cast<size_t>(width * height * 3), 1, file);
-    fclose(file);
 
-    for (int i = 0; i < width * height; ++i)
+    unsigned char *l_texture;
+    int i, j=0;
+    FILE *l_file;
+    BITMAPFILEHEADER fileheader;
+    BITMAPINFOHEADER infoheader;
+    RGBTRIPLE rgb;
+    int num_texture;
+
+    if( (l_file = fopen(filename, "rb"))==NULL) return (-1);
+    fread(&fileheader, sizeof(fileheader), 1, l_file);
+    fseek(l_file, sizeof(fileheader), SEEK_SET);
+    fread(&infoheader, sizeof(infoheader), 1, l_file);
+
+    l_texture = (BYTE *) malloc(infoheader.biWidth * infoheader.biHeight * 4);
+    memset(l_texture, 0, infoheader.biWidth * infoheader.biHeight * 4);
+
+    for (i=0; i < infoheader.biWidth*infoheader.biHeight; i++)
     {
-        int index = i * 3;
-        unsigned char B, R;
-        B = data[index];
-        R = data[index + 2];
+        fread(&rgb, sizeof(rgb), 1, l_file);
 
-        data[index] = R;
-        data[index + 2] = B;
-
+        l_texture[j+0] = rgb.rgbtRed; // Red component
+        l_texture[j+1] = rgb.rgbtRed; // Green component
+        l_texture[j+2] = rgb.rgbtBlue; // Blue component
+        l_texture[j+3] = 255; // Alpha value
+        j += 4; // Go to the next position
     }
+    fclose(l_file);
+    glBindTexture(GL_TEXTURE_2D, num_texture);
 
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
-    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
-    free(data);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+    glTexImage2D(GL_TEXTURE_2D, 0, 4, infoheader.biWidth, infoheader.biHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, l_texture);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, 4, infoheader.biWidth, infoheader.biHeight, GL_RGBA, GL_UNSIGNED_BYTE, l_texture);
+    free(l_texture);
+    return num_texture;
 
-    return texture;
 }
+
+//GLuint LoadTexture(const char *filename)
+//{
+//    GLuint texture;
+//    int width, height;
+//    unsigned char *data;
+//    FILE *file;
+//    file = fopen(filename, "rb");
+//    if (file == nullptr) return 0;
+//    width = 256;
+//    height = 256;
+//    data = (unsigned char *) malloc(static_cast<size_t>(width * height * 3));
+//    fread(data, static_cast<size_t>(width * height * 3), 1, file);
+//    fclose(file);
+//
+//    for (int i = 0; i < width * height; ++i)
+//    {
+//        int index = i * 3;
+//        unsigned char B, R;
+//        B = data[index];
+//        R = data[index + 2];
+//
+//        data[index] = R;
+//        data[index + 2] = B;
+//
+//    }
+//
+//    glGenTextures(1, &texture);
+//    glBindTexture(GL_TEXTURE_2D, texture);
+//    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+//
+//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, width, height, GL_RGB, GL_UNSIGNED_BYTE, data);
+//    free(data);
+//
+//    return texture;
+//}
 
 void drawBox()
 {
@@ -135,7 +183,9 @@ bool init()
 //    glMaterialfv(GL_FRONT, GL_DIFFUSE, dif);
     //
 
-    texture[0] = LoadTexture("./one.bmp");
+    //texture[0] = LoadTexture("./one.bmp");
+    texture[0] = static_cast<GLuint>(LoadBitmap(const_cast<char *>("./one.bmp")));
+
 
     glEnable(GL_TEXTURE_2D);
     glClearColor(BLACK, 0.0f);
@@ -153,90 +203,32 @@ void display()
 
     gluLookAt(
             2, 2, 1, //eyeX eyeY eyeZ
-            0.0f, 0.0f, 0.0f,
+            0.2f, 0.5f, 0.3f,
             0.0f, 1.0f, 0.0f);
-//    float proj[16];
-//    glGetFloatv(GL_MODELVIEW_MATRIX, proj);
-//
-//    //std::cout << "w:" << w << " h:" << h << std::endl;
-//    std::cout << "ModelView\n";
-//    for (int i = 0; i < 16; ++i)
-//    {
-//        std::cout << proj[i] << " ";
-//    }
 
-    GLdouble model_view[16];
-    glGetDoublev(GL_MODELVIEW_MATRIX, model_view);
-
-    GLdouble projection[16];
-    glGetDoublev(GL_PROJECTION_MATRIX, projection);
-
-    GLint viewport[4];
-    glGetIntegerv(GL_VIEWPORT, viewport);
-
-    GLdouble pos3D_x, pos3D_y, pos3D_z;
-    double winX, winY, winZ;
-    std::cout << "MODELVIEW" << std::endl;
-    for (int i = 0; i < 16; ++i)
-    {
-        std::cout << model_view[i] << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "PROJ" << std::endl;
-    for (int i = 0; i < 16; ++i)
-    {
-        std::cout << projection[i] << " ";
-    }
-    std::cout << std::endl;
-
-    std::cout << "Viewport" << std::endl;
-    for (int i = 0; i < 4; ++i)
-    {
-        std::cout << viewport[i] << " ";
-    }
-    std::cout << std::endl;
-
-    float cube[2][4][3]
-            {
-                    {
-                            {-0.5f, -0.5f, 0.5f},
-                            {0.5f, -0.5f, 0.5f},
-                            {0.5f, 0.5f, 0.5f},
-                            {-0.5f, 0.5f, 0.5f},
-                    },
-                    {
-                            {-0.5f, -0.5f, -0.5f},
-                            {-0.5f, 0.5f, -0.5f},
-                            {0.5f, 0.5f, -0.5f},
-                            {0.5f, -0.5f, -0.5f},
-                    }
-            };
-
-    float a, b, c;
-    for (int i = 0; i < 2; ++i)
-    {
-        for (int j = 0; j < 4; ++j)
-        {
-            a = cube[i][j][0];
-            b = cube[i][j][1];
-            c = cube[i][j][2];
-            std::cout << "abc: " << a << " " << b << " " << c << std::endl;
-            gluProject(a, b, c,
-                       model_view, projection, viewport,
-                       &winX, &winY, &winZ);
-            std::cout << std::setprecision(9) << winX << " " << winY << " " << winZ << std::endl;
-        }
-    }
-
-
-    //glRotatef(xrot, 1.0f, 0.0f, 0.0f);
+    glRotatef(xrot, 1.0f, 0.0f, 0.0f);
     glRotatef(yrot, 0.0f, 1.0f, 0.0f);
 
 
     drawBox();
 
     glFlush();
+
+    freopen("C:/Users/Timoniche/Desktop/Graphics/CubeModel/screen", "w", stdout);
+    GLubyte *data = (GLubyte *) (malloc(4 * 100 * 100));
+    if (data)
+    {
+        glReadPixels(0, 0, 100, 100, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        for (int i = 0; i < 4 * 100 * 100; i += 4)
+        {
+            cout << "r: " << (int)data[i + 0] << " ";
+            cout << "g: " << (int)data[i + 1] << " ";
+            cout << "b: " << (int)data[i + 2] << " ";
+            cout << "a: " << (int)data[i + 3] << " ";
+            std::cout << std::endl;
+        }
+    }
+
     glutSwapBuffers();
 }
 
@@ -244,9 +236,10 @@ void resize(int w, int h)
 {
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
-
-    glViewport(0, 0, w, h);
+    int min_side = std::min(w, h);
+    int delta_w = std::abs(w - min_side) / 2;
+    int delta_h = std::abs(h - min_side) / 2;
+    glViewport(delta_w, delta_h, min_side, min_side);
 
     gluPerspective(80.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
@@ -268,6 +261,25 @@ void keyboard(unsigned char key, int x, int y)
     }
 }
 
+
+void get_pixel(int x, int y)
+{
+    std::cout << "x " << x << " y " << y << " ";
+    std::vector< unsigned char > pixels( 1 * 1 * 4 );
+    glReadPixels
+            (
+                    x, glutGet( GLUT_WINDOW_HEIGHT ) - y,
+                    1, 1,
+                    GL_RGBA, GL_UNSIGNED_BYTE, &pixels[0]
+            );
+
+    cout << "r: " << (int)pixels[0] << " ";
+    cout << "g: " << (int)pixels[1] << " ";
+    cout << "b: " << (int)pixels[2] << " ";
+    cout << "a: " << (int)pixels[3] << " ";
+    cout << endl;
+}
+
 void specialKeyboard(int key, int x, int y)
 {
     if (key == GLUT_KEY_F1)
@@ -282,10 +294,45 @@ void specialKeyboard(int key, int x, int y)
             glutPositionWindow(50, 50);
         }
     }
+    if (key == GLUT_KEY_F2)
+    {
+
+
+//        get_pixel(229, 260);
+//        for ( int row = 0 ; row < 500 ; ++row )
+//            for ( int col = 0 ; col < 500 ; ++col )
+//            {
+//                get_pixel(col, row);
+//            }
+    }
 }
 
 void mouse(int button, int state, int x, int y)
 {
+    //get_pixel(x, y);
+    //freopen("C:/Users/Timoniche/Desktop/Graphics/CubeModel/screen", "w", stdout);
+//    get_pixel(x, y);
+//    for ( int row = 0 ; row < 100 ; ++row )
+//            for ( int col = 0 ; col < 100 ; ++col )
+//            {
+//                get_pixel(col, row);
+//            }
+
+        freopen("C:/Users/Timoniche/Desktop/Graphics/CubeModel/screen", "w", stdout);
+        GLubyte *data = (GLubyte *) (malloc(4 * 100 * 100));
+        if (data)
+        {
+            glReadPixels(0, 100, 100, 100, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            for (int i = 0; i < 4 * 100 * 100; i += 4)
+            {
+                cout << "r: " << (int)data[i + 0] << " ";
+                cout << "g: " << (int)data[i + 1] << " ";
+                cout << "b: " << (int)data[i + 2] << " ";
+                cout << "a: " << (int)data[i + 3] << " ";
+                std::cout << std::endl;
+            }
+        }
+
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         mouseDown = true;
@@ -310,9 +357,9 @@ void mouseMotion(int x, int y)
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
-    resize(1 << 10, 1 << 9);
+    resize(100, 100);
     glutInitWindowPosition(50, 50);
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(100, 100);
 
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 

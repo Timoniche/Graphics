@@ -58,7 +58,10 @@ DISTFILES += \
     TallGreenGrass.bmp \
     one.bmp \
     textures/TallGreenGrass.bmp \
-    textures/one.bmp
+    textures/one.bmp \
+    screen \
+    screen \
+    screen
 
 RESOURCES += \
     res.qrc

@@ -139,17 +139,20 @@ void dglWidget::screen()
     if (tmp)
     {
         freopen("C:/Users/Timoniche/Desktop/Graphics/CubeBresenham/cubeQT/screen", "w", stdout);
-        for ( int row = 0; row < 100; ++row )
-            for ( int col = 0; col < 100; ++col )
+        for ( int row = 0; row < 300; ++row )
+            for ( int col = 0; col < 300; ++col )
             {
-                QColor clrCurrent( m_image->pixel(col, m_height - row - 1) );
-
-                std::cout << "Pixel at [" << row << "," << col << "] contains color ("
-                          << clrCurrent.red() << ", "
-                          << clrCurrent.green() << ", "
-                          << clrCurrent.blue() << ", "
-                          << clrCurrent.alpha() << ")."
-                          << std::endl;
+                QColor clrCurrent( m_image->pixel(col, 300 - row - 1) );
+                if (clrCurrent.red() != 0 || clrCurrent.green() != 0 || clrCurrent.blue() != 0)
+                {
+//                    std::cout << "Pixel at [" << row << "," << col << "] contains color ("
+//                              << clrCurrent.red() << ", "
+//                              << clrCurrent.green() << ", "
+//                              << clrCurrent.blue() << ", "
+//                              << clrCurrent.alpha() << ")."
+//                              << std::endl;
+                    std::cout << row << " " << col << std::endl;
+                }
             }
         tmp = false;
     }
@@ -312,12 +315,19 @@ void dglWidget::paintEvent(QPaintEvent *event)
                 norms[i] = intensity;
 
             }
-            int a[6][3]{{255, 0,   0},
-                        {0,   255, 0},
-                        {0,   0,   255},
-                        {255, 255, 0},
-                        {255, 0,   255},
-                        {0,   255, 255}};
+            //            int a[6][3]{{255, 0,   0},
+            //                        {0,   255, 0},
+            //                        {0,   0,   255},
+            //                        {255, 255, 0},
+            //                        {255, 0,   255},
+            //                        {0,   255, 255}};
+            int a[6][3]{{0, 255, 0},
+                        {0, 255, 0},
+                        {0, 255, 0},
+                        {0, 255, 0},
+                        {0, 255, 0},
+                        {0, 255, 0}};
+
             for (int i = 0; i < 6; i++)
             {
                 //vec3f tmp[4];
@@ -896,10 +906,10 @@ void dglWidget::draw_quad(vec4f bv0,
     vec2i tt2 = {int(t2[0] * 255), int(t2[1] * 255)};
     vec2i tt3 = {int(t3[0] * 255), int(t3[1] * 255)};
 
-    triangle_scanline(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, 1.f);
-    triangle_scanline(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, 1.f);
-    //    triangle_scanline(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
-    //    triangle_scanline(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
+    triangle_scanline(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorG, colorB, alp, nullptr, 1.f);
+    triangle_scanline(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorG, colorB, alp, nullptr, 1.f);
+    //triangle_scanline(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorG, colorB, alp, _bmp, intensity);
+    //triangle_scanline(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorG, colorB, alp, _bmp, intensity);
 
     //triangle_scanline_barycentric(bv1, bv2, bv3, tt1, tt2, tt3, colorR, colorB, colorG, alp, _bmp, intensity);
     //triangle_scanline_barycentric(bv0, bv1, bv3, tt0, tt1, tt3, colorR, colorB, colorG, alp, _bmp, intensity);

@@ -104,61 +104,62 @@ int LoadBitmap(char *filename)
 
 void drawBox()
 {
-    glBindTexture(GL_TEXTURE_2D, texture[0]);
+    //glBindTexture(GL_TEXTURE_2D, texture[0]);
     glBegin(GL_QUADS);
 
-    glTexCoord2f(0.0f, 0.0f);
+    glColor3f(.0f, 1.f, .0f);
+    //glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-0.5f, -0.5f, 0.5f);
-    glTexCoord2f(1.f, 0.0f);
+    //glTexCoord2f(1.f, 0.0f);
     glVertex3f(0.5f, -0.5f, 0.5f);
-    glTexCoord2f(1.f, 1.f);
+    //glTexCoord2f(1.f, 1.f);
     glVertex3f(0.5f, 0.5f, 0.5f);
-    glTexCoord2f(0.0f, 1.f);
+    //glTexCoord2f(0.0f, 1.f);
     glVertex3f(-0.5f, 0.5f, 0.5f);
 
-    glTexCoord2f(1.f, 0.0f);
+    //glTexCoord2f(1.f, 0.0f);
     glVertex3f(-0.5f, -0.5f, -0.5f);
-    glTexCoord2f(1.f, 1.f);
+    //glTexCoord2f(1.f, 1.f);
     glVertex3f(-0.5f, 0.5f, -0.5f);
-    glTexCoord2f(0.0f, 1.f);
+    //glTexCoord2f(0.0f, 1.f);
     glVertex3f(0.5f, 0.5f, -0.5f);
-    glTexCoord2f(0.0f, 0.0f);
+    //glTexCoord2f(0.0f, 0.0f);
     glVertex3f(0.5f, -0.5f, -0.5f);
 
-    glTexCoord2f(0.0f, 1.f);
+    //glTexCoord2f(0.0f, 1.f);
     glVertex3f(-0.5f, 0.5f, -0.5f);
-    glTexCoord2f(0.0f, 0.0f);
+    //glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-0.5f, 0.5f, 0.5f);
-    glTexCoord2f(1.f, 0.0f);
+    //glTexCoord2f(1.f, 0.0f);
     glVertex3f(0.5f, 0.5f, 0.5f);
-    glTexCoord2f(1.f, 1.f);
+    //glTexCoord2f(1.f, 1.f);
     glVertex3f(0.5f, 0.5f, -0.5f);
 
-    glTexCoord2f(1.f, 1.f);
+    //glTexCoord2f(1.f, 1.f);
     glVertex3f(-0.5f, -0.5f, -0.5f);
-    glTexCoord2f(0.0f, 1.f);
+    //glTexCoord2f(0.0f, 1.f);
     glVertex3f(0.5f, -0.5f, -0.5f);
-    glTexCoord2f(0.0f, 0.0f);
+    //glTexCoord2f(0.0f, 0.0f);
     glVertex3f(0.5f, -0.5f, 0.5f);
-    glTexCoord2f(1.f, 0.0f);
+    //glTexCoord2f(1.f, 0.0f);
     glVertex3f(-0.5f, -0.5f, 0.5f);
 
-    glTexCoord2f(1.f, 0.0f);
+    //glTexCoord2f(1.f, 0.0f);
     glVertex3f(0.5f, -0.5f, -0.5f);
-    glTexCoord2f(1.f, 1.f);
+    //glTexCoord2f(1.f, 1.f);
     glVertex3f(0.5f, 0.5f, -0.5f);
-    glTexCoord2f(0.0f, 1.f);
+    //glTexCoord2f(0.0f, 1.f);
     glVertex3f(0.5f, 0.5f, 0.5f);
-    glTexCoord2f(0.0f, 0.0f);
+    //glTexCoord2f(0.0f, 0.0f);
     glVertex3f(0.5f, -0.5f, 0.5f);
 
-    glTexCoord2f(0.0f, 0.0f);
+    //glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-0.5f, -0.5f, -0.5f);
-    glTexCoord2f(1.f, 0.0f);
+    //glTexCoord2f(1.f, 0.0f);
     glVertex3f(-0.5f, -0.5f, 0.5f);
-    glTexCoord2f(1.f, 1.f);
+    //glTexCoord2f(1.f, 1.f);
     glVertex3f(-0.5f, 0.5f, 0.5f);
-    glTexCoord2f(0.0f, 1.f);
+    //glTexCoord2f(0.0f, 1.f);
     glVertex3f(-0.5f, 0.5f, -0.5f);
 
     glEnd();
@@ -184,10 +185,10 @@ bool init()
     //
 
     //texture[0] = LoadTexture("./one.bmp");
-    texture[0] = static_cast<GLuint>(LoadBitmap(const_cast<char *>("./one.bmp")));
+    //texture[0] = static_cast<GLuint>(LoadBitmap(const_cast<char *>("./one.bmp")));
 
 
-    glEnable(GL_TEXTURE_2D);
+   // glEnable(GL_TEXTURE_2D);
     glClearColor(BLACK, 0.0f);
 
     glEnable(GL_DEPTH_TEST);
@@ -215,17 +216,24 @@ void display()
     glFlush();
 
     freopen("C:/Users/Timoniche/Desktop/Graphics/CubeModel/screen", "w", stdout);
-    GLubyte *data = (GLubyte *) (malloc(4 * 100 * 100));
+    GLubyte *data = (GLubyte *) (malloc(4 * 300 * 300));
     if (data)
     {
-        glReadPixels(0, 0, 100, 100, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        for (int i = 0; i < 4 * 100 * 100; i += 4)
+        glReadPixels(0, 0, 300, 300, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        for (int i = 0; i < 4 * 300 * 300; i += 4)
         {
-            cout << "r: " << (int)data[i + 0] << " ";
-            cout << "g: " << (int)data[i + 1] << " ";
-            cout << "b: " << (int)data[i + 2] << " ";
-            cout << "a: " << (int)data[i + 3] << " ";
-            std::cout << std::endl;
+            if (data[i + 0] != 0 || data[i + 1] != 0 || data[i + 2] != 0)
+            {
+                int xi = (i / 4) / 300;
+                int yi = (i / 4) % 300;
+                cout << xi << " " << yi;
+//                cout << "[" << xi << " " << yi << "] ";
+//                cout << "r: " << (int) data[i + 0] << " ";
+//                cout << "g: " << (int) data[i + 1] << " ";
+//                cout << "b: " << (int) data[i + 2] << " ";
+//                cout << "a: " << (int) data[i + 3] << " ";
+                std::cout << std::endl;
+            }
         }
     }
 
@@ -290,7 +298,7 @@ void specialKeyboard(int key, int x, int y)
             glutFullScreen();
         else
         {
-            glutReshapeWindow(500, 500);
+            glutReshapeWindow(300, 300);
             glutPositionWindow(50, 50);
         }
     }
@@ -309,30 +317,6 @@ void specialKeyboard(int key, int x, int y)
 
 void mouse(int button, int state, int x, int y)
 {
-    //get_pixel(x, y);
-    //freopen("C:/Users/Timoniche/Desktop/Graphics/CubeModel/screen", "w", stdout);
-//    get_pixel(x, y);
-//    for ( int row = 0 ; row < 100 ; ++row )
-//            for ( int col = 0 ; col < 100 ; ++col )
-//            {
-//                get_pixel(col, row);
-//            }
-
-        freopen("C:/Users/Timoniche/Desktop/Graphics/CubeModel/screen", "w", stdout);
-        GLubyte *data = (GLubyte *) (malloc(4 * 100 * 100));
-        if (data)
-        {
-            glReadPixels(0, 100, 100, 100, GL_RGBA, GL_UNSIGNED_BYTE, data);
-            for (int i = 0; i < 4 * 100 * 100; i += 4)
-            {
-                cout << "r: " << (int)data[i + 0] << " ";
-                cout << "g: " << (int)data[i + 1] << " ";
-                cout << "b: " << (int)data[i + 2] << " ";
-                cout << "a: " << (int)data[i + 3] << " ";
-                std::cout << std::endl;
-            }
-        }
-
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
     {
         mouseDown = true;
@@ -357,9 +341,9 @@ void mouseMotion(int x, int y)
 int main(int argc, char *argv[])
 {
     glutInit(&argc, argv);
-    resize(100, 100);
+    resize(300, 300);
     glutInitWindowPosition(50, 50);
-    glutInitWindowSize(100, 100);
+    glutInitWindowSize(300, 300);
 
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
 

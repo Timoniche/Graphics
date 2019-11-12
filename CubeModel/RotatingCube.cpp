@@ -102,6 +102,21 @@ int LoadBitmap(char *filename)
 //    return texture;
 //}
 
+void drawTriangle()
+{
+    glBegin(GL_TRIANGLES);
+    glColor3f(.0f, 1.f, .0f);
+    glVertex3f(0.f, 0.f, 0.f);
+    glVertex3f(1.f, 0.f, 0.f);
+    glVertex3f(0.5f, 1.f, 0.f);
+
+    glColor3f(1.f, 0.f, .0f);
+    glVertex3f(1.f, 1.f, 0.f);
+    glVertex3f(1.f, 0.f, 0.f);
+    glVertex3f(0.5f, 1.f, 0.f);
+    glEnd();
+}
+
 void drawBox()
 {
     //glBindTexture(GL_TEXTURE_2D, texture[0]);
@@ -203,15 +218,16 @@ void display()
     glLoadIdentity();
 
     gluLookAt(
-            2, 2, 1, //eyeX eyeY eyeZ
-            0.2f, 0.5f, 0.3f,
+            0, 0, 1, //eyeX eyeY eyeZ
+            0.0f, 0.0f, 0.0f,
             0.0f, 1.0f, 0.0f);
 
     glRotatef(xrot, 1.0f, 0.0f, 0.0f);
     glRotatef(yrot, 0.0f, 1.0f, 0.0f);
 
 
-    drawBox();
+    //drawBox();
+    drawTriangle();
 
     glFlush();
 
@@ -226,7 +242,7 @@ void display()
             {
                 int xi = (i / 4) / 300;
                 int yi = (i / 4) % 300;
-                cout << xi << " " << yi;
+                cout << xi << " " << yi << " " << (int)data[i + 0] << " " << (int)data[i + 1] << " " << (int)data[i + 2];
 //                cout << "[" << xi << " " << yi << "] ";
 //                cout << "r: " << (int) data[i + 0] << " ";
 //                cout << "g: " << (int) data[i + 1] << " ";
@@ -249,7 +265,7 @@ void resize(int w, int h)
     int delta_h = std::abs(h - min_side) / 2;
     glViewport(delta_w, delta_h, min_side, min_side);
 
-    gluPerspective(80.0f, 4.0f / 3.0f, 0.1f, 100.0f);
+    gluPerspective(90.0f, 4.0f / 3.0f, 0.1f, 100.0f);
 
     std::cout << std::endl << std::endl;
     glMatrixMode(GL_MODELVIEW);

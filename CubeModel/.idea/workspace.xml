@@ -13,8 +13,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a4b7115c-ef35-48e8-be44-233ed5dad7ba" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/../CubeBresenham/cubeQT/dglwidget.cpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/RotatingCube.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/RotatingCube.cpp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screen" beforeDir="false" afterPath="$PROJECT_DIR$/screen" afterDir="false" />
     </list>
@@ -40,7 +38,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="191">
+            <state relative-caret-position="270">
               <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
               <folding>
                 <element signature="e#17#59#0" expanded="true" />
@@ -52,8 +50,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/RotatingCube.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="5724">
-              <caret line="318" column="1" selection-start-line="318" selection-start-column="1" selection-end-line="318" selection-end-column="1" />
+            <state relative-caret-position="56">
+              <caret line="244" column="49" selection-start-line="244" selection-start-column="49" selection-end-line="244" selection-end-column="49" />
               <folding>
                 <element signature="e#0#20#0" expanded="true" />
               </folding>
@@ -63,11 +61,7 @@
       </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/screen">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="76">
-              <caret line="4567" column="7" lean-forward="true" selection-start-line="4567" selection-start-column="7" selection-end-line="4567" selection-end-column="7" />
-            </state>
-          </provider>
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -97,7 +91,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Graphics.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="47">
+            <state relative-caret-position="108">
               <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
               <folding>
                 <element signature="e#17#59#0" expanded="true" />
@@ -120,6 +114,7 @@
       <find>vec3f</find>
       <find>1.f</find>
       <find>glTexCoord2f</find>
+      <find>drawBox</find>
     </findStrings>
     <replaceStrings>
       <replace>0.5f</replace>
@@ -142,8 +137,8 @@
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
-  <component name="ProjectFrameBounds" extendedState="7">
-    <option name="x" value="948" />
+  <component name="ProjectFrameBounds" extendedState="6">
+    <option name="x" value="421" />
     <option name="width" value="981" />
     <option name="height" value="1032" />
   </component>
@@ -230,6 +225,7 @@
       <workItem from="1571599362801" duration="5000" />
       <workItem from="1572873390743" duration="12968000" />
       <workItem from="1573496585428" duration="5942000" />
+      <workItem from="1573582669389" duration="3018000" />
     </task>
     <task id="LOCAL-00001" summary="texture added">
       <created>1566172640023</created>
@@ -242,17 +238,18 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="84889000" />
+    <option name="totallyTimeSpent" value="87907000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="7" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49695122" weight="0.2082671" />
       <window_info id="Structure" order="1" sideWeight="0.5030488" side_tool="true" weight="0.24960254" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49920508" weight="0.55950266" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" sideWeight="0.49920508" visible="true" weight="0.55950266" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.39964476" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -299,6 +296,16 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/main.cpp">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
+          <folding>
+            <element signature="e#17#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/one.bmp">
       <provider selected="true" editor-type-id="images" />
     </entry>
@@ -317,7 +324,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Graphics.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="47">
+        <state relative-caret-position="108">
           <caret line="9" column="9" selection-start-line="9" selection-start-column="9" selection-end-line="9" selection-end-column="9" />
           <folding>
             <element signature="e#17#59#0" expanded="true" />
@@ -326,27 +333,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.cpp">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="191">
-          <caret line="15" column="10" selection-start-line="15" selection-start-column="10" selection-end-line="15" selection-end-column="10" />
-          <folding>
-            <element signature="e#17#59#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/screen">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="76">
-          <caret line="4567" column="7" lean-forward="true" selection-start-line="4567" selection-start-column="7" selection-end-line="4567" selection-end-column="7" />
-        </state>
-      </provider>
+      <provider selected="true" editor-type-id="text-editor" />
     </entry>
     <entry file="file://$PROJECT_DIR$/RotatingCube.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5724">
-          <caret line="318" column="1" selection-start-line="318" selection-start-column="1" selection-end-line="318" selection-end-column="1" />
+        <state relative-caret-position="56">
+          <caret line="244" column="49" selection-start-line="244" selection-start-column="49" selection-end-line="244" selection-end-column="49" />
           <folding>
             <element signature="e#0#20#0" expanded="true" />
           </folding>

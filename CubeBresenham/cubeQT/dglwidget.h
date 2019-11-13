@@ -101,6 +101,8 @@ public slots:
 
     int right_bias(vec3f low, vec3f up, vec3f point);
 
+    int top_bias(vec3f low, vec3f up, vec3f point);
+
 public slots:
 
     void onLineEditTextChanged(const QString &text);

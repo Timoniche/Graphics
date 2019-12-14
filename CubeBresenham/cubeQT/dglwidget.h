@@ -93,8 +93,6 @@ public slots:
 
     void screen();
 
-    int float_to_int(float a);
-
     vec4f get_bilinear(BMP* bmp, float u, float v);
 
     int up_left_bias(vec3f low, vec3f up, vec3f point);

@@ -4,37 +4,15 @@
 #include "hulllib_global.h"
 #include <vector>
 
+#include "primitives.h"
+
 const float PI_F = 3.14159265358979f;
 const float PI_F_2 = 3.14159265358979f / 2;
 
-struct HULLLIBSHARED_EXPORT StackExtended
-{
-public:
-    void push(size_t x);
-    int top();
-    int top_next();
-    int pop();
-public:
-    std::vector<size_t> _data;
-};
-
-struct HULLLIBSHARED_EXPORT Point
-{
-    float x = -1;
-    float y = -1;
-
-    Point();
-    Point(float x, float y);
-    Point(Point const &p);
-    Point(Point &&p);
-    Point &operator=(Point const &p);
-    Point &operator=(Point &&p);
-    void swap(Point& p);
-};
-
+using namespace PRIMITIVES;
 typedef std::vector<Point> vector_of_points;
 
-class HULLLIBSHARED_EXPORT HullLib
+class /**HULLLIBSHARED_EXPORT**/ HullLib
 {
 
 public:

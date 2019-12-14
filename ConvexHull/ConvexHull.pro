@@ -13,6 +13,29 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = ConvexHull
 TEMPLATE = app
 
+#BOOST_ROOT = C:\msys64\boost
+#INCLUDEPATH +=  $${BOOST_ROOT}\include
+
+##BOOST LIBRARY:
+
+#LIBS += -L$${BOOST_ROOT}\lib
+##LIBS += -lboost_filesystem
+##LIBS += -lboost_thread
+##LIBS += -lboost_serialization
+#LIBS += -lboost_regex
+#LIBS += -lboost_date_time
+##LIBS += -lboost_locale
+##LIBS += -lboost_chrono
+#LIBS += -lboost_system
+
+win32-g++ {
+    INCLUDEPATH += C:/boost_1_72_0/boost_mingw_73_64/include/boost-1_72
+    LIBS += "-LC:/boost_1_72_0/boost_mingw_73_64/lib" \
+
+} else:win32-msvc* {
+    INCLUDEPATH += C:/boost/boost_msvc/include/boost-1_72
+}
+
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -32,14 +55,22 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     glwidget.cpp \
-    glworker.cpp
+    glworker.cpp \
+    hulllib.cpp \
+    triangulation.cpp \
+    primitives.cpp \
+    voronoi_visualizer.cpp
 
 HEADERS += \
         mainwindow.h \
     glwidget.h \
     glworker.h \
     hulllib.h \
-    hulllib_global.h
+    hulllib_global.h \
+    triangulation.h \
+    primitives.h \
+    voronoi_visualizer.h \
+    voronoi_visual_utils.hpp
 
 FORMS += \
         mainwindow.ui

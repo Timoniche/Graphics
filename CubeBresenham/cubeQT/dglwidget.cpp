@@ -296,75 +296,75 @@ void dglWidget::paintEvent(QPaintEvent *event)
     dgl_rotate(_xrot, 1.0f, 0.0f, 0.0f);
     dgl_rotate(_yrot, 0.0f, 1.0f, 0.0f);
 
-//        for (auto o : objects)
-//        {
-//            if (auto *t = dynamic_cast<dgl_cube *>(o))
-//            {
-//                Shader shader(&model_view, &proj, m_width, m_height);
-//                auto cube = t->quads;
-//                auto textures = t->textures;
-//                float norms[6];
-//                for (int i = 0; i < 6; i++)
-//                {
-//                    vec3f t0 = cube[i][0];
-//                    vec3f t1 = cube[i][1];
-//                    vec3f t2 = cube[i][2];
-//                    vec3f n = (t2 - t0) ^(t1 - t0);
-//                    n.normalize();
-//                    m_light_v.normalize();
-//                    float intensity = n * m_light_v;
-//                    intensity = std::max(0.2f, intensity);
-//                    norms[i] = intensity;
+        for (auto o : objects)
+        {
+            if (auto *t = dynamic_cast<dgl_cube *>(o))
+            {
+                Shader shader(&model_view, &proj, m_width, m_height);
+                auto cube = t->quads;
+                auto textures = t->textures;
+                float norms[6];
+                for (int i = 0; i < 6; i++)
+                {
+                    vec3f t0 = cube[i][0];
+                    vec3f t1 = cube[i][1];
+                    vec3f t2 = cube[i][2];
+                    vec3f n = (t2 - t0) ^(t1 - t0);
+                    n.normalize();
+                    m_light_v.normalize();
+                    float intensity = n * m_light_v;
+                    intensity = std::max(0.2f, intensity);
+                    norms[i] = intensity;
 
-//                }
-//                //            int a[6][3]{{255, 0,   0},
-//                //                        {0,   255, 0},
-//                //                        {0,   0,   255},
-//                //                        {255, 255, 0},
-//                //                        {255, 0,   255},
-//                //                        {0,   255, 255}};
-//                int a[6][3]{{0, 255, 0},
-//                            {0, 255, 0},
-//                            {0, 255, 0},
-//                            {0, 255, 0},
-//                            {0, 255, 0},
-//                            {0, 255, 0}};
+                }
+                //            int a[6][3]{{255, 0,   0},
+                //                        {0,   255, 0},
+                //                        {0,   0,   255},
+                //                        {255, 255, 0},
+                //                        {255, 0,   255},
+                //                        {0,   255, 255}};
+                int a[6][3]{{0, 255, 0},
+                            {0, 255, 0},
+                            {0, 255, 0},
+                            {0, 255, 0},
+                            {0, 255, 0},
+                            {0, 255, 0}};
 
-//                for (int i = 0; i < 6; i++)
-//                {
-//                    //vec3f tmp[4];
-//                    vec4f bv[4];
-//                    for (int j = 0; j < 4; j++)
-//                    {
+                for (int i = 0; i < 6; i++)
+                {
+                    //vec3f tmp[4];
+                    vec4f bv[4];
+                    for (int j = 0; j < 4; j++)
+                    {
 
-//                        //tmp[j] = shader.count_coordinates(cube[i][j]);
-//                        bv[j] = shader.before_viewport(cube[i][j]);
-//                    }
-//                    //                if (bv[0].second > 1e-2 && bv[1].second > 1e-2 &&
-//                    //                        bv[2].second > 1e-2 && bv[3].second > 1e-2)
-//                    //                {
+                        //tmp[j] = shader.count_coordinates(cube[i][j]);
+                        bv[j] = shader.before_viewport(cube[i][j]);
+                    }
+                    //                if (bv[0].second > 1e-2 && bv[1].second > 1e-2 &&
+                    //                        bv[2].second > 1e-2 && bv[3].second > 1e-2)
+                    //                {
 
-//                    draw_quad(bv[0], bv[1], bv[2], bv[3],
-//                            textures[i][0], textures[i][1], textures[i][2], textures[i][3],
-//                            a[i][0], a[i][1], a[i][2], 255, norms[i], &t->bmp);
-//                    //                }
-//                }
-//            }
-//        }
+                    draw_quad(bv[0], bv[1], bv[2], bv[3],
+                            textures[i][0], textures[i][1], textures[i][2], textures[i][3],
+                            a[i][0], a[i][1], a[i][2], 255, norms[i], &t->bmp);
+                    //                }
+                }
+            }
+        }
 
 
-    Shader shader(&model_view, &proj, m_width, m_height);
-    vec3f tr1[3] = {{0.f, 0.f, 0.f}, {1.f, 0.f, 0.f}, {0.5f, 1.f, 0.f}};
-    vec3f tr2[3] = {{1.f, 1.f, 0.f}, {1.f, 0.f, 0.f}, {0.5f, 1.f, 0.f}};
-    vec4f p1[3];
-    vec4f p2[3];
-    for (int i = 0; i < 3; i++)
-    {
-        p1[i] = shader.before_viewport(tr1[i]);
-        p2[i] = shader.before_viewport(tr2[i]);
-    }
-    triangle_scanline(p1[0], p1[1], p1[2], {}, {}, {}, 0, 255, 0, 255, nullptr, 1);
-    triangle_scanline(p2[0], p2[1], p2[2], {}, {}, {}, 255, 0, 0, 255, nullptr, 1);
+//    Shader shader(&model_view, &proj, m_width, m_height);
+//    vec3f tr1[3] = {{0.f, 0.f, 0.f}, {1.f, 0.f, 0.f}, {0.5f, 1.f, 0.f}};
+//    vec3f tr2[3] = {{1.f, 1.f, 0.f}, {1.f, 0.f, 0.f}, {0.5f, 1.f, 0.f}};
+//    vec4f p1[3];
+//    vec4f p2[3];
+//    for (int i = 0; i < 3; i++)
+//    {
+//        p1[i] = shader.before_viewport(tr1[i]);
+//        p2[i] = shader.before_viewport(tr2[i]);
+//    }
+//    triangle_scanline(p1[0], p1[1], p1[2], {}, {}, {}, 0, 255, 0, 255, nullptr, 1);
+//    triangle_scanline(p2[0], p2[1], p2[2], {}, {}, {}, 255, 0, 0, 255, nullptr, 1);
 
 
 
@@ -560,8 +560,6 @@ void dglWidget::triangle_bbox_barycentric(vec4f w0,
     }
 }
 
-int dglWidget::float_to_int(float a) { return int(a + 0.5f);}
-
 /**
   @param point - center of the pixel
  * LINE: (x - x1) / (x2 - x1) = (y - y1) / (y2 - y1)
@@ -583,7 +581,7 @@ int dglWidget::up_left_bias(vec3f low, vec3f up, vec3f point)
         if (point.y <= low.y) { return 0; }
         return 1;
     }
-    //__________________________________________
+
     float x1 = low.x, y1 = low.y, x2 = up.x, y2 = up.y, x = point.x, y = point.y;
     if (x1 < x2) {
         std::swap(x1, x2);
@@ -625,7 +623,7 @@ int dglWidget::top_bias(vec3f low, vec3f up, vec3f point)
         if (point.y <= low.y) { return 0; }
         return -1;
     }
-    //__________________________________________
+
     float x1 = low.x, y1 = low.y, x2 = up.x, y2 = up.y, x = point.x, y = point.y;
     if (x1 < x2) {
         std::swap(x1, x2);
@@ -650,18 +648,13 @@ void dglWidget::triangle_scanline(vec4f w0,
     float Z1 = 1 / w1[3];
     float Z2 = 1 / w2[3];
 
-    vec3i t0 = viewport_f(vec3f{w0[0], w0[1], w0[2]}  * Z0, m_width, m_height);
-    vec3i t1 = viewport_f(vec3f{w1[0], w1[1], w1[2]}  * Z1, m_width, m_height);
-    vec3i t2 = viewport_f(vec3f{w2[0], w2[1], w2[2]}  * Z2, m_width, m_height);
-
-    vec3f t0f = viewport_f(vec3f{w0[0], w0[1], w0[2]}  * Z0, m_width, m_height);
-    vec3f t1f = viewport_f(vec3f{w1[0], w1[1], w1[2]}  * Z1, m_width, m_height);
-    vec3f t2f = viewport_f(vec3f{w2[0], w2[1], w2[2]}  * Z2, m_width, m_height);
+    /**vec3f*/ vec3i t0 = viewport_f(vec3f{w0[0], w0[1], w0[2]}  * Z0, m_width, m_height);
+    /**vec3f*/ vec3i t1 = viewport_f(vec3f{w1[0], w1[1], w1[2]}  * Z1, m_width, m_height);
+    /**vec3f*/ vec3i t2 = viewport_f(vec3f{w2[0], w2[1], w2[2]}  * Z2, m_width, m_height);
 
     b0 = b0 * Z0;
     b1 = b1 * Z1;
     b2 = b2 * Z2;
-
     using std::swap;
     if (t0.get_y() > t1.get_y())
     {
@@ -681,7 +674,7 @@ void dglWidget::triangle_scanline(vec4f w0,
         swap(b1, b2);
         swap(Z1, Z2);
     }
-    int total_height = int(t2.y - t0.y);
+    int total_height = int(ceilf(t2.y - t0.y));
     int beginh = int(std::abs(std::max(0, t0.y) - t0.y));
     int endh = int(std::abs(std::min(m_height - 1, t2.y) - t2.y));
     for (int i = 0 + beginh; i < total_height - endh; i++)
@@ -746,7 +739,7 @@ void dglWidget::triangle_scanline(vec4f w0,
             vec2f Pb = ((Ab * d1) + ((Bb * d2) - (Ab * d1)) * phi);
             P.x = j;
             P.y = t0.y + i;
-            size_t idx = size_t(j + (t0.y + i) * m_width);
+            size_t idx = size_t(j + (int(t0.y) + i) * m_width);
             if (isnanf(ZP)) continue;
             //if (isnan(ZP)) continue;
             if ((1 / ZP) < near || (1 / ZP) > far) continue;
@@ -761,7 +754,7 @@ void dglWidget::triangle_scanline(vec4f w0,
                     {
                         if (buf[idx][i].first > 1 / ZP)
                         {
-                            if (buf[idx][i].first - 1 / ZP <  min_delta)
+                            if (buf[idx][i].first - 1 / ZP < min_delta)
                             {
                                 min_delta = buf[idx][i].first - 1 / ZP;
                                 mix = buf[idx][i].second;
@@ -801,12 +794,10 @@ void dglWidget::triangle_scanline(vec4f w0,
                     }
 
                     buf[idx].emplace_back(1 / ZP, qcol);
-                    //set_pixel(int(P.x + xTR), int(P.y - yTR), qcol);
                     set_pixel(static_cast<int>(P.x), static_cast<int>(P.y), qcol);
 
                 } else
                 {
-                    //set_pixel(static_cast<int>(P.x) + xTR, static_cast<int>(P.y) - yTR, qRgba(colorR, colorG, colorB, static_cast<int>(alp)));
                     set_pixel(static_cast<int>(P.x), static_cast<int>(P.y), qRgba(colorR, colorG, colorB, static_cast<int>(alp)));
                 }
             }

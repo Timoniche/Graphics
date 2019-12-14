@@ -88,12 +88,12 @@ void GLWidget::draw_vector_lines(vector_of_points const& data)
 }
 
 void GLWidget::draw_line(float x1, float y1,
-                         float x2, float y2)
+                         float x2, float y2, float r = 1.f, float g = 0.f, float b = 0.f, float width = 5)
 {
     makeCurrent();
-    glLineWidth(5);
+    glLineWidth(width);
     glBegin(GL_LINES);
-    glColor3f(1, 0, 0);
+    glColor3f(r, g, b);
     glVertex2f(x1, y1);
     glVertex2f(x2, y2);
     glEnd();

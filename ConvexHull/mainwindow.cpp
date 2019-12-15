@@ -136,14 +136,36 @@ void MainWindow::emplace_points(float x, float y)
 
 void MainWindow::voronoi_boost()
 {
-    std::vector<::Vertex> points;
-    points.push_back(::Vertex(0, 0));
-    points.push_back(::Vertex(1, 6));
-    std::vector<Segment> segments;
-    segments.push_back(Segment(-4, 5, 5, -1));
-    segments.push_back(Segment(3, -11, 13, -1));
+    vector<Vertex> points;
+    static float scale = 10000;
+    for (auto& v : _counter_clock_wise_hull) points.emplace_back(v.x * scale, v.y * scale);
     voronoi_diagram<double> vd;
-    construct_voronoi(points.begin(), points.end(), segments.begin(), segments.end(), &vd);
+    construct_voronoi(points.begin(), points.end(), &vd);
+
+    for (const auto& vertex: vd.vertices())
+    {
+        std::vector<Vertex> triangle;
+        auto edge = vertex.incident_edge();
+        do
+        {
+            auto cell = edge->cell();
+            assert(cell->contains_point());
+
+            triangle.push_back(points[cell->source_index()]);
+            if (triangle.size() == 3)
+            {
+                float ax = triangle[0].a / scale, ay = triangle[0].b / scale,
+                      bx = triangle[1].a / scale, by = triangle[1].b / scale,
+                      cx  =triangle[2].a / scale, cy = triangle[2].b / scale;
+                ui->openGLWidget->draw_line(ax, ay, bx, by, 0.f, 0.f, 1.f, 1.f);
+                ui->openGLWidget->draw_line(ax, ay, cx, cy, 0.f, 0.f, 1.f, 1.f);
+                ui->openGLWidget->draw_line(bx, by, cx, cy, 0.f, 0.f, 1.f, 1.f);
+                triangle.erase(triangle.begin() + 1);
+            }
+
+            edge = edge->rot_next();
+        } while (edge != vertex.incident_edge());
+    }
 
 }
 
@@ -168,7 +190,7 @@ void MainWindow::ear_triangulate()
     float x0 = _counter_clock_wise_hull[0].x;
     float y0 = _counter_clock_wise_hull[0].y;
     std::sort(_counter_clock_wise_hull.begin() + 1, _counter_clock_wise_hull.end(), [=](const Point &a,
-                                                                                                 const Point &b)
+              const Point &b)
     {
         Point at{a.y - y0, a.x - x0};
         Point bt{b.y - y0, b.x - x0};

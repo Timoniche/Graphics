@@ -21,5 +21,7 @@ add_executable(sfml main.cpp
         triangle.h
         triangle.cpp
         vector2.h
-        vector2.cpp)
+        vector2.cpp circumcenter.h
+        #graham.cpp
+        )
 target_link_libraries(sfml sfml-system sfml-window sfml-graphics sfml-network sfml-audio)

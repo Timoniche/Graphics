@@ -1,16 +1,80 @@
-#include <SFML/Graphics.hpp>
+//#include <SFML/Graphics.hpp>
 
 #include <iostream>
 #include <cassert>
 #include <unordered_map>
 #include <set>
+#include <iomanip>
 
-#include "vector2.h"
+//#include "vector2.h"
 #include "triangle.h"
 #include "delaunay.h"
 #include "circumcenter.h"
 
 #define FOR(i, n) for (int i = 0; i < n; i++)
+
+struct Vector2
+{
+    Vector2() = default;
+    Vector2(const Vector2 &v) = default;
+    Vector2(Vector2&&) = default;
+    Vector2(const double vx, const double vy);
+
+    double dist2(const Vector2 &v) const;
+    double dist(const Vector2 &v) const;
+    double norm2() const;
+
+    Vector2 &operator=(const Vector2&) = default;
+    Vector2 &operator=(Vector2&&) = default;
+    bool operator ==(const Vector2 &v) const;
+    friend std::ostream &operator <<(std::ostream &str, const Vector2 &v);
+
+    double x;
+    double y;
+};
+
+Vector2::Vector2(const double vx, const double vy) :
+        x(vx), y(vy)
+{}
+
+double
+Vector2::dist2(const Vector2 &v) const
+{
+    const double dx = x - v.x;
+    const double dy = y - v.y;
+    return dx * dx + dy * dy;
+}
+
+double
+Vector2::dist(const Vector2 &v) const
+{
+    return hypot(x - v.x, y - v.y);
+}
+
+double
+Vector2::norm2() const
+{
+    return x * x + y * y;
+}
+
+bool
+Vector2::operator ==(const Vector2 &v) const
+{
+    return (this->x == v.x) && (this->y == v.y);
+}
+
+std::ostream &
+operator <<(std::ostream &str, const Vector2 &v)
+{
+    return str << "Point x: " << v.x << " y: " << v.y;
+}
+
+bool almost_equal(const Vector2 &v1, const Vector2 &v2, int ulp)
+{
+    return almost_equal(v1.x, v2.x, ulp) && almost_equal(v1.y, v2.y, ulp);
+}
+
+bool almost_equal(const Vector2 &v1, const Vector2 &v2, int ulp=2);
 
 typedef pair<double, double> pdd;
 typedef pair<int, int> pii;
@@ -242,8 +306,10 @@ bool is_left(const pdd &p1, const pdd &p2, const pdd &q)
     return u.first * v.second - u.second * v.first > 0;
 }
 
+int max_x, max_y;
 bool tryEmplace(pdd const &v, std::set<pdd> *const &hulls, int index, pdd before, pdd now)
 {
+    if (v.first < 0 || v.first > max_x || v.second < 0 || v.second > max_y) return false;
     if (v.first != FLT_MAX && !is_left(before, now, v))
     {
         hulls[index].emplace(v);
@@ -255,7 +321,7 @@ bool tryEmplace(pdd const &v, std::set<pdd> *const &hulls, int index, pdd before
 
 int main()
 {
-    int max_x, max_y, n;
+    int n;
     cin >> max_x >> max_y >> n;
     // points: {0, 0}, {0, max_y}, {max_x, 0}, {max_x, max_y}
     //borders:
@@ -271,6 +337,7 @@ int main()
     unordered_map<pii, int, hash_pair> point_index_map;
     std::set<pdd> hulls[n];
     std::vector<Vector2> points;
+    std::vector<pdd> pointsPddView;
     vector_of_points pointsView;
     FOR(i, n)
     {
@@ -278,6 +345,7 @@ int main()
         cin >> x >> y;
         points.emplace_back(x, y);
         pointsView.emplace_back(x, y);
+        pointsPddView.emplace_back(x, y);
         point_index_map[{x, y}] = i;
     }
 
@@ -305,8 +373,10 @@ int main()
 
         int index = i % sz;
 
-        pdd fromPred;
-        pdd fromNext;
+        //pdd fromPred;
+        //pdd fromNext;
+
+        index = point_index_map[{hull[index].x, hull[index].y}];
 
         pdd predWithLow = lineLineIntersection(a1, b1, c1, alow, blow, clow);
         pdd predWithHigh = lineLineIntersection(a1, b1, c1, ahigh, bhigh, chigh);
@@ -328,14 +398,49 @@ int main()
         if (tryEmplace(nextWithRight, hulls, index, now, after)) /**fromNext = RIGHT*/;
 
     }
+    auto it_leftlow = std::min_element(pointsPddView.begin(),
+                                       pointsPddView.end(),
+                                       [](const pdd &a, const pdd &b)
+                                       {
+                                           return distance_pow2(a.first, a.second, 0, 0) <
+                                                  distance_pow2(b.first, b.second, 0, 0);
+                                       });
+    auto it_lefthigh = std::min_element(pointsPddView.begin(),
+                                       pointsPddView.end(),
+                                       [](const pdd &a, const pdd &b)
+                                       {
+                                           return distance_pow2(a.first, a.second, 0, max_y) <
+                                                  distance_pow2(b.first, b.second, 0, max_y);
+                                       });
+    auto it_rightlow = std::min_element(pointsPddView.begin(),
+                                        pointsPddView.end(),
+                                        [](const pdd &a, const pdd &b)
+                                        {
+                                            return distance_pow2(a.first, a.second, max_x, 0) <
+                                                   distance_pow2(b.first, b.second, max_x, 0);
+                                        });
+    auto it_righthigh = std::min_element(pointsPddView.begin(),
+                                        pointsPddView.end(),
+                                        [](const pdd &a, const pdd &b)
+                                        {
+                                            return distance_pow2(a.first, a.second, max_x, max_y) <
+                                                   distance_pow2(b.first, b.second, max_x, max_y);
+                                        });
+    //todo: replace by distance
+    hulls[point_index_map[{(*it_leftlow).first, (*it_leftlow).second}]].emplace(0, 0);
+    hulls[point_index_map[{(*it_lefthigh).first, (*it_lefthigh).second}]].emplace(0, max_y);
+    hulls[point_index_map[{(*it_rightlow).first, (*it_rightlow).second}]].emplace(max_x, 0);
+    hulls[point_index_map[{(*it_righthigh).first, (*it_righthigh).second}]].emplace(max_x, max_y);
+
+
 
     std::vector<pdd> voronoi_vertices;
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Delaunay triangulation");
-    int scaleX = 800 / max_x;
-    int scaleY = 600 / max_y;
+//    sf::RenderWindow window(sf::VideoMode(800, 600), "Delaunay triangulation");
+//    int scaleX = 800 / max_x;
+//    int scaleY = 600 / max_y;
 
-    window.setFramerateLimit(1);
+//    window.setFramerateLimit(1);
 
     for (auto &t : triangles)
     {
@@ -350,25 +455,25 @@ int main()
         hulls[point_index_map[{int(t.b->x), int(t.b->y)}]].emplace(center);
         hulls[point_index_map[{int(t.c->x), int(t.c->y)}]].emplace(center);
 
-        sf::RectangleShape s{sf::Vector2f(4, 4)};
-        s.setPosition(static_cast<float>(center.first * scaleX),
-                      static_cast<float>(center.second * scaleY));
-        window.draw(s);
+//        sf::RectangleShape s{sf::Vector2f(4, 4)};
+//        s.setPosition(static_cast<float>(center.first * scaleX),
+//                      static_cast<float>(center.second * scaleY));
+//        window.draw(s);
     }
 
 //______________________________________________________________________________________________________________________
 
-    std::vector<std::array<sf::Vertex, 2> > lines;
-    for (const auto &e : edges)
-    {
-        const std::array<sf::Vertex, 2> line{{sf::Vertex(sf::Vector2f(
-                static_cast<float>(scaleX * e.v->x + 2.),
-                static_cast<float>(scaleY * e.v->y + 2.))), sf::Vertex(sf::Vector2f(
-                static_cast<float>(scaleX * e.w->x + 2.),
-                static_cast<float>(scaleY * e.w->y + 2.))),
-                                             }};
-        window.draw(std::data(line), 2, sf::Lines);
-    }
+//    std::vector<std::array<sf::Vertex, 2> > lines;
+//    for (const auto &e : edges)
+//    {
+//        const std::array<sf::Vertex, 2> line{{sf::Vertex(sf::Vector2f(
+//                static_cast<float>(scaleX * e.v->x + 2.),
+//                static_cast<float>(scaleY * e.v->y + 2.))), sf::Vertex(sf::Vector2f(
+//                static_cast<float>(scaleX * e.w->x + 2.),
+//                static_cast<float>(scaleY * e.w->y + 2.))),
+//                                             }};
+//        window.draw(std::data(line), 2, sf::Lines);
+//    }
 
     FOR(i, n)
     {
@@ -405,20 +510,20 @@ int main()
         cout << k << endl;
         FOR(j, k)
         {
-            cout << _hull[j].first << " " << _hull[j].second << endl;
+            cout << /**std::setprecision(18) <<*/ _hull[j].first << " " << _hull[j].second << endl;
         }
     }
 //______________________________________________________________________________________________________________________
-    window.display();
-
-    while (window.isOpen())
-    {
-        sf::Event event;
-        while (window.pollEvent(event))
-        {
-            if (event.type == sf::Event::Closed)
-                window.close();
-        }
-    }
+//    window.display();
+//
+//    while (window.isOpen())
+//    {
+//        sf::Event event;
+//        while (window.pollEvent(event))
+//        {
+//            if (event.type == sf::Event::Closed)
+//                window.close();
+//        }
+//    }
     return 0;
 }

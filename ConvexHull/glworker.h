@@ -18,7 +18,7 @@ public slots:
     void gift_wrapping(vector_of_points const &);
     void graham(vector_of_points const &);
 signals:
-    void send_line(float, float, float, float);
+    void send_line(float, float, float, float, float, float, float, float);
     void send_vector_lines(vector_of_points const&);
     void send_square(float);
     void send_max_bar(size_t);

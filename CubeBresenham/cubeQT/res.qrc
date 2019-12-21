@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/textures">
+        <file>textures/TallGreenGrass.bmp</file>
+        <file>textures/one.bmp</file>
+    </qresource>
+</RCC>

@@ -9,7 +9,7 @@
 
 #include "hulllib.h"
 
-typedef std::vector<Point> vector_of_points;
+typedef std::vector<PRIMITIVES::Point> vector_of_points;
 
 class GLWidget : public QOpenGLWidget, protected QOpenGLFunctions
 {
@@ -29,7 +29,7 @@ public slots:
     void set_points(int);
     void get_square_from(float);
     void random_points();
-    void draw_line(float, float, float, float);
+    void draw_line(float, float, float, float, float, float, float, float);
     void draw_vector_lines(vector_of_points const&);
 private:
     int m_points = 10;

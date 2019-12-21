@@ -66,6 +66,20 @@
         </item>
         <item row="2" column="0">
          <layout class="QGridLayout" name="gridLayout_2">
+          <item row="6" column="1">
+           <widget class="QPushButton" name="grahamButton">
+            <property name="text">
+             <string>graham</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QPushButton" name="voronoiButton">
+            <property name="text">
+             <string>voronoi_boost</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1">
            <widget class="QPushButton" name="genButton">
             <property name="text">
@@ -73,24 +87,24 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="1">
-           <widget class="QPushButton" name="grahamButton">
-            <property name="text">
-             <string>graham</string>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
+          <item row="5" column="1">
            <widget class="QPushButton" name="hullButton">
             <property name="text">
              <string>gift</string>
             </property>
            </widget>
           </item>
-          <item row="5" column="1">
+          <item row="7" column="1">
            <widget class="QPushButton" name="squareButton">
             <property name="text">
              <string>square</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QPushButton" name="earButton">
+            <property name="text">
+             <string>ear</string>
             </property>
            </widget>
           </item>

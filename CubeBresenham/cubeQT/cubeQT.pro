@@ -28,12 +28,22 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
     dglwidget.cpp \
-    dglgeometry.cpp
+    dglgeometry.cpp \
+    dgl.cpp \
+    worker.cpp \
+    shader.cpp \
+    dgl_object.cpp
 
 HEADERS += \
         mainwindow.h \
     dglwidget.h \
-    dglgeometry.h
+    dglgeometry.h \
+    matrix.h \
+    dgl.h \
+    worker.h \
+    shader.h \
+    bmp.h \
+    dgl_object.h
 
 FORMS += \
         mainwindow.ui
@@ -42,3 +52,16 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+DISTFILES += \
+    CMakeLists \
+    TallGreenGrass.bmp \
+    one.bmp \
+    textures/TallGreenGrass.bmp \
+    textures/one.bmp \
+    screen \
+    screen \
+    screen
+
+RESOURCES += \
+    res.qrc

@@ -208,3 +208,38 @@ vector_of_points const &graham(vector_of_points const &points)
 }
 
 
+int main()
+{
+    int N;
+    std::cin >> N;
+    vector_of_points data;
+    for (int i = 0; i < N; ++i)
+    {
+        int x, y;
+        std::cin >> x >> y;
+        data.emplace_back(x, y);
+    }
+    std::sort(data.begin(), data.end(), [](const Point& a, const Point& b)
+    {
+        if (a.x == b.x) return a.y <= b.y;
+        return a.x < b.x;
+    });
+
+    vector_of_points to;
+    if (!data.empty()) to.emplace_back(data[0].x, data[0].y);
+    for (int i = 1; i < data.size(); i++)
+    {
+        if (data[i] != data[i - 1])
+        {
+            to.emplace_back(data[i].x, data[i].y);
+        }
+    }
+
+    const vector_of_points &ans = graham(to);
+    std::cout << ans.size() << std::endl;
+    for (auto& p : ans)
+    {
+        std::cout << p << std::endl;
+    }
+    return 0;
+}

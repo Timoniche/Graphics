@@ -83,10 +83,7 @@ operator<<(std::ostream &str, const Vector2 &v)
 
 bool almost_equal(const double x, const double y, int ulp)
 {
-    // the machine epsilon has to be scaled to the magnitude of the values used
-    // and multiplied by the desired precision in ULPs (units in the last place)
     return std::abs(x - y) <= std::numeric_limits<double>::epsilon() * std::abs(x + y) * static_cast<double>(ulp)
-           // unless the result is subnormal
            || std::abs(x - y) < std::numeric_limits<double>::min();
 }
 
@@ -590,24 +587,34 @@ vector_of_points const &graham(vector_of_points const &points)
                                                 {
                                                     return a.y < b.y;
                                                 });
-
+    auto it_to_max_y_element = std::min_element(data_counter_clock_from_p0.begin(),
+                                                data_counter_clock_from_p0.end(),
+                                                [](const Point &a, const Point &b)
+                                                {
+                                                    return a.y > b.y;
+                                                });
     data_counter_clock_from_p0.begin()->swap(*it_to_min_y_element);
     double x0 = data_counter_clock_from_p0[0].x;
     double y0 = data_counter_clock_from_p0[0].y;
-    std::sort(data_counter_clock_from_p0.begin() + 1, data_counter_clock_from_p0.end(), [x0, y0](const Point &a,
-                                                                                                 const Point &b)
+    double maxx = (*it_to_max_y_element).x;
+    double maxy = (*it_to_max_y_element).y;
+    Point tomax{maxx - x0, maxy - y0};
+    std::sort(data_counter_clock_from_p0.begin() + 1, data_counter_clock_from_p0.end(), [x0, y0, tomax](const Point &a,
+                                                                                                        const Point &b)
     {
-        Point at{a.y - y0, a.x - x0};
-        Point bt{b.y - y0, b.x - x0};
+        Point at{a.x - x0, a.y - y0};
+        Point bt{b.x - x0, b.y - y0};
         double cross = at.x * bt.y - at.y * bt.x;
+
         if (cross == 0)
         {
+            double cross_with_max = at.x * tomax.y - at.y * tomax.x;
             double dis_a_p0 = distance_pow2(a.x, a.y, x0, y0);
             double dis_b_p0 = distance_pow2(b.x, b.y, x0, y0);
-            return dis_a_p0 < dis_b_p0;
+            return cross_with_max >= 0 ? dis_a_p0 < dis_b_p0 : dis_a_p0 > dis_b_p0;
         } else
         {
-            return cross < 0;
+            return cross > 0;
         }
     });
     _stack.push(0);
@@ -775,76 +782,63 @@ int main()
     const std::vector<Triangle> triangles = triangulation.triangulate(points);
     const std::vector<Edge> edges = triangulation.getEdges();
 
-//    vector_of_points hull = graham(pointsView);
-//    int sz = int(hull.size());
-//    for (int i = 1; i <= hull.size(); i++)
-//    {
-//        Point nowP = hull[i % sz];
-//        Point beforeP;
-//        //hull is a line
-//        /**
-//         |d|
-//         |c|
-//         |b|
-//         |a|
-//         |e|
-//         ed & de edges are longer than others
-//         */
-//        if (triangles.empty() && i == sz)
-//        {
-//            beforeP = hull[(i + 1) % sz];
-//        } else
-//        {
-//            beforeP = hull[i - 1];
-//        }
-//        Point afterP;
-//        //hull is a line
-//        if (triangles.empty() && i == sz - 1)
-//        {
-//            afterP = hull[i - 1];
-//        } else
-//        {
-//            afterP = hull[(i + 1) % sz];
-//        }
-//        pdd now = {nowP.x, nowP.y};
-//        pdd before = {beforeP.x, beforeP.y};
-//        pdd after = {afterP.x, afterP.y};
-//
-//        double a1, b1, c1;
-//        double a2, b2, c2;
-//        lineFromPoints(before, now, a1, b1, c1);
-//        lineFromPoints(now, after, a2, b2, c2);
-//        // c = -bx + ay
-//        perpendicularBisectorFromLine(before, now, a1, b1, c1);
-//        perpendicularBisectorFromLine(now, after, a2, b2, c2);
-//
-//        int index = i % sz;
-//
-//        //pdd fromPred;
-//        //pdd fromNext;
-//
-//        index = point_index_map[{hull[index].x, hull[index].y}];
-//
-//        pdd predWithLow = lineLineIntersection(a1, b1, c1, alow, blow, clow);
-//        pdd predWithHigh = lineLineIntersection(a1, b1, c1, ahigh, bhigh, chigh);
-//        pdd predWithLeft = lineLineIntersection(a1, b1, c1, aleft, bleft, cleft);
-//        pdd predWithRight = lineLineIntersection(a1, b1, c1, aright, bright, cright);
-//        if (tryEmplace(predWithLow, hulls, index, before, now)) /**fromPred = LOW*/;
-//        if (tryEmplace(predWithHigh, hulls, index, before, now)) /**fromPred = HIGH*/;
-//        if (tryEmplace(predWithLeft, hulls, index, before, now)) /**fromPred = LEFT*/;
-//        if (tryEmplace(predWithRight, hulls, index, before, now)) /**fromPred = RIGHT*/;
-//
-//
-//        pdd nextWithLow = lineLineIntersection(a2, b2, c2, alow, blow, clow);
-//        pdd nextWithHigh = lineLineIntersection(a2, b2, c2, ahigh, bhigh, chigh);
-//        pdd nextWithLeft = lineLineIntersection(a2, b2, c2, aleft, bleft, cleft);
-//        pdd nextWithRight = lineLineIntersection(a2, b2, c2, aright, bright, cright);
-//        if (tryEmplace(nextWithLow, hulls, index, now, after)) /**fromNext = LOW*/;
-//        if (tryEmplace(nextWithHigh, hulls, index, now, after)) /**fromNext = HIGH*/;
-//        if (tryEmplace(nextWithLeft, hulls, index, now, after)) /**fromNext = LEFT*/;
-//        if (tryEmplace(nextWithRight, hulls, index, now, after)) /**fromNext = RIGHT*/;
-//
-//    }
+    vector_of_points hull = graham(pointsView);
+    int sz = int(hull.size());
+    //hull is a line
+    if (triangles.empty())
+    {
+        for (int i = sz - 1 - 1; i >= 0 + 1; i--)
+        {
+            hull.push_back(hull[i]);
+        }
+    }
+    sz = int(hull.size());
+    for (int i = 1; i <= hull.size(); i++)
+    {
+        Point nowP = hull[i % sz];
+        Point beforeP;
+        beforeP = hull[i - 1];
+        Point afterP;
+        afterP = hull[(i + 1) % sz];
+        pdd now = {nowP.x, nowP.y};
+        pdd before = {beforeP.x, beforeP.y};
+        pdd after = {afterP.x, afterP.y};
+
+        double a1, b1, c1;
+        double a2, b2, c2;
+        lineFromPoints(before, now, a1, b1, c1);
+        lineFromPoints(now, after, a2, b2, c2);
+        // c = -bx + ay
+        perpendicularBisectorFromLine(before, now, a1, b1, c1);
+        perpendicularBisectorFromLine(now, after, a2, b2, c2);
+
+        int index = i % sz;
+
+        //pdd fromPred;
+        //pdd fromNext;
+
+        index = point_index_map[{hull[index].x, hull[index].y}];
+
+        pdd predWithLow = lineLineIntersection(a1, b1, c1, alow, blow, clow);
+        pdd predWithHigh = lineLineIntersection(a1, b1, c1, ahigh, bhigh, chigh);
+        pdd predWithLeft = lineLineIntersection(a1, b1, c1, aleft, bleft, cleft);
+        pdd predWithRight = lineLineIntersection(a1, b1, c1, aright, bright, cright);
+        if (tryEmplace(predWithLow, hulls, index, before, now)) /**fromPred = LOW*/;
+        if (tryEmplace(predWithHigh, hulls, index, before, now)) /**fromPred = HIGH*/;
+        if (tryEmplace(predWithLeft, hulls, index, before, now)) /**fromPred = LEFT*/;
+        if (tryEmplace(predWithRight, hulls, index, before, now)) /**fromPred = RIGHT*/;
+
+
+        pdd nextWithLow = lineLineIntersection(a2, b2, c2, alow, blow, clow);
+        pdd nextWithHigh = lineLineIntersection(a2, b2, c2, ahigh, bhigh, chigh);
+        pdd nextWithLeft = lineLineIntersection(a2, b2, c2, aleft, bleft, cleft);
+        pdd nextWithRight = lineLineIntersection(a2, b2, c2, aright, bright, cright);
+        if (tryEmplace(nextWithLow, hulls, index, now, after)) /**fromNext = LOW*/;
+        if (tryEmplace(nextWithHigh, hulls, index, now, after)) /**fromNext = HIGH*/;
+        if (tryEmplace(nextWithLeft, hulls, index, now, after)) /**fromNext = LEFT*/;
+        if (tryEmplace(nextWithRight, hulls, index, now, after)) /**fromNext = RIGHT*/;
+
+    }
     auto it_leftlow = std::min_element(pointsPddView.begin(),
                                        pointsPddView.end(),
                                        [](const pdd &a, const pdd &b)
@@ -891,9 +885,13 @@ int main()
         voronoi_vertices.push_back(center);
 
         //todo: center could be negative, clip one more time
+//        if (center.first >= 0 && center.first <= max_x &&
+//            center.second >= 0 && center.second <= max_y)
+//        {
         hulls[point_index_map[{int(t.a->x), int(t.a->y)}]].emplace(center);
         hulls[point_index_map[{int(t.b->x), int(t.b->y)}]].emplace(center);
         hulls[point_index_map[{int(t.c->x), int(t.c->y)}]].emplace(center);
+//        }
 
     }
 
@@ -911,7 +909,7 @@ int main()
         vector<pdd> hullV(hulls[i].begin(), hulls[i].end());
         assert(!hullV.empty());
         vector_of_points hulltmp;
-        for (auto& e : hullV) hulltmp.push_back({e.first, e.second});
+        for (auto &e : hullV) hulltmp.push_back({e.first, e.second});
         //sort_hull(_hull);
         vector_of_points _hull = graham(hulltmp);
         //______________________________________________________________________________________________________________
@@ -1000,4 +998,9 @@ int main()
 
 //tests:
 //6 5 5 2 1 2 2 2 3 1 4 3 4
+//6 5 5 3 1 3 2 3 3 2 4 4 4
+//10 10 5 4 1 4 2 4 3 3 4 5 4
 //6 5 4 2 1 2 2 2 3 3 4
+//no triangles tests:
+//6 5 5 1 1 1 2 1 3 1 4 1 5
+//10 10 5 1 1 2 2 3 3 4 4 5 5

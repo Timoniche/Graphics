@@ -1,7 +1,3 @@
-//
-// Created by Timoniche on 11/14/2019.
-//
-
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -17,67 +13,78 @@ using namespace std;
 typedef long long ll;
 typedef pair<ll, ll> pll;
 
+pll a1{};
+pll b1{};
+double dist = numeric_limits<double>::max();
 
-vector<pll> points;
-tuple<pll, pll, long double> ans = {{}, {}, numeric_limits<long double>::max()};
-
-long double dist(pll const &a, pll const &b)
+double distance(pll const &a, pll const &b)
 {
     return sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 }
 
-void find(ll l, ll r)
+ll dist_x(pll const &a, ll bx)
+{
+    return abs(bx - a.x);
+}
+
+void find(size_t l, size_t r, vector<pll> &points, vector<pll> &points_maintaining_y)
 {
     if (r - l <= 3)
     {
-        for (ll i = l; i <= r; ++i)
+        for (size_t i = l; i <= r; ++i)
         {
-            for (ll j = i + 1; j <= r; ++j)
+            for (size_t j = i + 1; j <= r; ++j)
             {
-                long double run = dist(points[i], points[j]);
-                if (run < get<2>(ans))
+                double run = distance(points[i], points[j]);
+                if (run < dist)
                 {
-                    get<0>(ans) = points[i];
-                    get<1>(ans) = points[j];
-                    get<2>(ans) = run;
+                    a1 = points[i];
+                    b1 = points[j];
+                    dist = run;
                 }
             }
         }
+        sort(points.begin() + l,
+             points.begin() + r + 1, [](pll const &a, pll const &b)
+             {
+                 return a.y < b.y;
+             });
         return;
     }
-    ll m = l + (r - l) / 2;
-    find(l, m);
-    find(m + 1, r);
-    ll left_index = m, right_index = m + 1;
-    for (; left_index >= l; --left_index)
-    {
-        if (dist(points[left_index], points[m]) > get<2>(ans))
-        {
-            break;
-        }
-    }
-    left_index = max(l, left_index);
+    size_t m = l + (r - l) / 2;
+    ll m_x = points[m].x; //store now, as points will be mixed
+    find(l, m, points, points_maintaining_y);
+    find(m + 1, r, points, points_maintaining_y);
 
-    for (; right_index <= r; right_index++)
-    {
-        if (dist(points[right_index], points[m + 1]) > get<2>(ans))
-        {
-            break;
-        }
-    }
-    right_index = min(r, right_index);
+    merge(points.begin() + l, points.begin() + m + 1,
+          points.begin() + m + 1, points.begin() + r + 1,
+          points_maintaining_y.begin(), [](pll const &a, pll const &b)
+          {
+              return a.y < b.y;
+          });
+    copy(points_maintaining_y.begin(),
+         points_maintaining_y.begin() + r - l + 1, points.begin() + l);
 
-    for (ll i = left_index; i <= m; ++i)
+    size_t sz = 0;
+    for (size_t i = l; i <= r; ++i) //pi from B
     {
-        for (ll j = m + 1; j <= right_index; ++j)
+        //finding B: ai.x - med.x < dist
+        if (dist_x(points[i], m_x) < dist)
         {
-            long double run = dist(points[i], points[j]);
-            if (run < get<2>(ans))
+            //finding in pj = C(pi from B): yi - h < yj <= yi
+            for (ll j = sz - 1;
+                 j >= 0 && points[i].y - points_maintaining_y[j].y < dist;
+                 j--)
             {
-                get<0>(ans) = points[i];
-                get<1>(ans) = points[j];
-                get<2>(ans) = run;
+                double run = distance(points[i], points_maintaining_y[j]);
+                if (run < dist)
+                {
+                    a1 = points[i];
+                    b1 = points_maintaining_y[j];
+                    dist = run;
+                }
             }
+            points_maintaining_y[sz++] = points[i];
         }
     }
 }
@@ -86,21 +93,21 @@ int main()
 {
     freopen("rendezvous.in", "r", stdin);
     freopen("rendezvous.out", "w", stdout);
-    ll n;
+    size_t n;
     cin >> n;
-    vector<pll> *rpoints = &points;
-    tuple<pll, pll, long double> *rans = &ans;
+    vector<pll> points;
+    vector<pll> points_maintaining_y;
 
-    for (ll i = 0; i < n; ++i)
+    for (size_t i = 0; i < n; ++i)
     {
-        ll x, y;
+        size_t x, y;
         cin >> x >> y;
         points.emplace_back(x, y);
     }
     sort(points.begin(), points.end());
-    find(0, n - 1);
-    cout << get<0>(ans).x << " " << get<0>(ans).y
-         << " " << get<1>(ans).x << " " << get<1>(ans).y;
+    points_maintaining_y.resize(n);
+    find(0, n - 1, points, points_maintaining_y);
+    cout << a1.x << " " << a1.y << " " << b1.x << " " << b1.y << endl;
     return 0;
 }
 

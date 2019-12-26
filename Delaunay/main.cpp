@@ -9,6 +9,7 @@
 #include <float.h>
 #include <cmath>
 #include <algorithm>
+#include <functional>
 //#include "vector2.h"
 //#include "triangle.h"
 //#include "delaunay.h"
@@ -673,25 +674,11 @@ bool is_left(const pdd &p1, const pdd &p2, const pdd &q)
     return cross(p1, p2, q) > 0;
 }
 
-
-int max_x, max_y;
-
-bool tryEmplace(pdd const &v, std::set<pdd> *const &hulls, int index, pdd before, pdd now)
-{
-    if (v.first < 0 || v.first > max_x || v.second < 0 || v.second > max_y) return false;
-    if (v.first != FLT_MAX && !is_left(before, now, v))
-    {
-        hulls[index].emplace(v);
-        return true;
-    }
-    return false;
-}
-
-
 bool belongs(const pdd &ebeg, const pdd &eend, const pdd &q)
 {
     double rot = cross(ebeg, eend, q);
-    if (rot == 0)
+    //double eps = numeric_limits<double>::epsilon();
+    if (rot <= 1e-5 && rot >= -1e-5)
     {
         double low = min(ebeg.second, eend.second);
         double high = max(ebeg.second, eend.second);
@@ -735,15 +722,94 @@ void sort_hull(vector<pdd> &_hull)
     });
 }
 
+int max_x, max_y;
+
+
+vector_of_points clip_hull(vector_of_points _hull, int MAXX, int MAXY, int deltaX, int deltaY)
+{
+    vector_of_points ret;
+
+    double alow, blow, clow;
+    double ahigh, bhigh, chigh;
+    double aleft, bleft, cleft;
+    double aright, bright, cright;
+    lineFromPoints({0, 0}, {MAXX, 0}, alow, blow, clow);
+    lineFromPoints({0, MAXY}, {MAXX, MAXY}, ahigh, bhigh, chigh);
+    lineFromPoints({0, 0}, {0, MAXY}, aleft, bleft, cleft);
+    lineFromPoints({MAXX, 0}, {MAXX, MAXY}, aright, bright, cright);
+
+    int k = int(_hull.size());
+
+    for (int i = 0; i < k; ++i)
+    {
+//        if ((_hull[i].x == max_x && _hull[i].y == max_y) ||
+//            (_hull[i].x == 0 && _hull[i].y == max_y) ||
+//            (_hull[i].x == max_x && _hull[i].y == 0) ||
+//            (_hull[i].x == 0 && _hull[i].y == 0))
+//            ret.emplace_back(_hull[i].x / 10, _hull[i].y / 10);
+        _hull[i].x -= deltaX;
+        _hull[i].y -= deltaY;
+    }
+
+    for (int i = 0; i < k; ++i)
+    {
+//        std::function<bool(pdd)> in([MAXX, MAXY](pdd now) {
+//            return now.first >= 0 && now.first <= MAXX && now.second >= 0 && now.second <= MAXY;
+//        });
+
+        pdd now = {_hull[i].x, _hull[i].y};
+        if (now.first >= 0 && now.first <= MAXX && now.second >= 0 && now.second <= MAXY)
+        {
+            ret.emplace_back(now.first, now.second);
+        }
+        pdd after = {_hull[(i + 1) % k].x, _hull[(i + 1) % k].y};
+
+        double a, b, c;
+        lineFromPoints(now, after, a, b, c);
+        pdd withLow = lineLineIntersection(a, b, c, alow, blow, clow);
+        if (belongs({0, 0}, {MAXX, 0}, withLow) &&
+            belongs(now, after, withLow)) ret.emplace_back(withLow.first, withLow.second);
+        pdd withHigh = lineLineIntersection(a, b, c, ahigh, bhigh, chigh);
+        if (belongs({0, MAXY}, {MAXX, MAXY}, withHigh) &&
+            belongs(now, after, withHigh)) ret.emplace_back(withHigh.first, withHigh.second);
+        pdd withLeft = lineLineIntersection(a, b, c, aleft, bleft, cleft);
+        if (belongs({0, 0}, {0, MAXY}, withLeft) &&
+            belongs(now, after, withLeft)) ret.emplace_back(withLeft.first, withLeft.second);
+        pdd withRight = lineLineIntersection(a, b, c, aright, bright, cright);
+        if (belongs({MAXX, 0}, {MAXX, MAXY}, withRight) &&
+            belongs(now, after, withRight)) ret.emplace_back(withRight.first, withRight.second);
+    }
+    return ret;
+}
+
+bool tryEmplace(pdd const &v, std::set<pdd> *const &hulls, int index, pdd before, pdd now)
+{
+    if (v.first < 0 || v.first > max_x || v.second < 0 || v.second > max_y) return false;
+    if (v.first != FLT_MAX && !is_left(before, now, v))
+    {
+        hulls[index].emplace(v);
+        return true;
+    }
+    return false;
+}
+
 int main()
 {
     int n;
-    cin >> max_x >> max_y >> n;
+    int MAXX, MAXY, deltaX, deltaY;
+    //cin >> max_x >> max_y >> n;
+    cin >> MAXX >> MAXY >> n;
+    max_x = 10 * MAXX;
+    max_y = 10 * MAXY;
+    deltaX = max_x / 2;
+    deltaY = max_y / 2;
 
     sf::RenderWindow window(sf::VideoMode(800, 600), "Delaunay triangulation");
     window.setFramerateLimit(1);
-    int scaleX = 800 / max_x;
-    int scaleY = 600 / max_y;
+    //double scaleX = 800 / max_x;
+    //double scaleY = 600 / max_y;
+    double scaleX = 800 / MAXX;
+    double scaleY = 600 / MAXY;
 
     // points: {0, 0}, {0, max_y}, {max_x, 0}, {max_x, max_y}
     //borders:
@@ -765,16 +831,28 @@ int main()
     {
         int x, y;
         cin >> x >> y;
+
+        //
+        sf::RectangleShape s{sf::Vector2f(4, 4)};
+        s.setPosition(static_cast<float>(x * scaleX),
+                      static_cast<float>((MAXY - y) * scaleY));
+        window.draw(s);
+        //
+
+        //
+        x += deltaX;
+        y += deltaY;
+        //
         points.emplace_back(x, y);
         pointsView.emplace_back(x, y);
         pointsPddView.emplace_back(x, y);
         point_index_map[{x, y}] = i;
 
         //
-        sf::RectangleShape s{sf::Vector2f(4, 4)};
-        s.setPosition(static_cast<float>(x * scaleX),
-                      static_cast<float>((max_y - y) * scaleY));
-        window.draw(s);
+//        sf::RectangleShape s{sf::Vector2f(4, 4)};
+//        s.setPosition(static_cast<float>(x * scaleX),
+//                      static_cast<float>((max_y - y) * scaleY));
+//        window.draw(s);
         //
     }
 
@@ -898,7 +976,34 @@ int main()
 //______________________________________________________________________________________________________________________
     std::vector<std::array<sf::Vertex, 2> > lines;
 
-
+    auto leftlow = std::min_element(pointsPddView.begin(),
+                                    pointsPddView.end(),
+                                    [MAXX, MAXY, deltaX, deltaY](const pdd &a, const pdd &b)
+                                    {
+                                        return distance_pow2(a.first - deltaX, a.second - deltaY, 0, 0) <
+                                               distance_pow2(b.first - deltaX, b.second - deltaY, 0, 0);
+                                    });
+    auto lefthigh = std::min_element(pointsPddView.begin(),
+                                     pointsPddView.end(),
+                                     [MAXX, MAXY, deltaX, deltaY](const pdd &a, const pdd &b)
+                                     {
+                                         return distance_pow2(a.first - deltaX, a.second - deltaY, 0, MAXY) <
+                                                distance_pow2(b.first - deltaX, b.second - deltaY, 0, MAXY);
+                                     });
+    auto rightlow = std::min_element(pointsPddView.begin(),
+                                     pointsPddView.end(),
+                                     [MAXX, MAXY, deltaX, deltaY](const pdd &a, const pdd &b)
+                                     {
+                                         return distance_pow2(a.first - deltaX, a.second - deltaY, MAXX, 0) <
+                                                distance_pow2(b.first - deltaX, b.second - deltaY, MAXX, 0);
+                                     });
+    auto righthigh = std::min_element(pointsPddView.begin(),
+                                      pointsPddView.end(),
+                                      [MAXX, MAXY, deltaX, deltaY](const pdd &a, const pdd &b)
+                                      {
+                                          return distance_pow2(a.first - deltaX, a.second - deltaY, MAXX, MAXY) <
+                                                 distance_pow2(b.first - deltaX, b.second - deltaY, MAXX, MAXY);
+                                      });
     FOR(i, n)
     {
         if (pointsPddView[i] == *it_leftlow) hulls[i].emplace(0, 0);
@@ -913,23 +1018,50 @@ int main()
         //sort_hull(_hull);
         vector_of_points _hull = graham(hulltmp);
         //______________________________________________________________________________________________________________
+        _hull = clip_hull(_hull, MAXX, MAXY, deltaX, deltaY);
+
+        if (pointsPddView[i] == *leftlow) _hull.emplace_back(0, 0);
+        if (pointsPddView[i] == *lefthigh) _hull.emplace_back(0, MAXY);
+        if (pointsPddView[i] == *rightlow) _hull.emplace_back(MAXX, 0);
+        if (pointsPddView[i] == *righthigh) _hull.emplace_back(MAXX, MAXY);
+
+        _hull = graham(_hull);
+        //______________________________________________________________________________________________________________
         int k = int(_hull.size());
         cout << k << endl;
         FOR(j, k)
         {
             auto v = _hull[j];
             auto w = _hull[(j + 1) % k];
+            //cout << _hull[j].x << " " << _hull[j].y << endl;
             cout << _hull[j].x << " " << _hull[j].y << endl;
 
+
+//            const std::array<sf::Vertex, 2> line{{sf::Vertex(sf::Vector2f(
+//                    static_cast<float>(scaleX * v.x + 2.),
+//                    static_cast<float>(scaleY * (max_y - v.y) + 2.))), sf::Vertex(sf::Vector2f(
+//                    static_cast<float>(scaleX * w.x + 2.),
+//                    static_cast<float>(scaleY * (max_y - w.y) + 2.))),
+//                                                 }};
+//            window.draw(std::data(line), 2, sf::Lines);
+            scaleX = 800 / MAXX;
+            scaleY = 600 / MAXY;
             const std::array<sf::Vertex, 2> line{{sf::Vertex(sf::Vector2f(
                     static_cast<float>(scaleX * v.x + 2.),
-                    static_cast<float>(scaleY * (max_y - v.y) + 2.))), sf::Vertex(sf::Vector2f(
+                    static_cast<float>(scaleY * (MAXY - v.y) + 2.))), sf::Vertex(sf::Vector2f(
                     static_cast<float>(scaleX * w.x + 2.),
-                    static_cast<float>(scaleY * (max_y - w.y) + 2.))),
+                    static_cast<float>(scaleY * (MAXY - w.y) + 2.))),
                                                  }};
             window.draw(std::data(line), 2, sf::Lines);
 
         }
+        //______________________________________________________________________________________________________________
+
+
+
+
+
+
 //        std::set<pdd> final_points;
 //        for (int p = 0; p < k; p++)
 //        {

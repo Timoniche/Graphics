@@ -12,7 +12,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d5b71528-8cde-4b70-ad5d-bc8fe1f06e51" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.cpp" beforeDir="false" afterPath="$PROJECT_DIR$/main.cpp" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/cmake-build-debug/" />
@@ -37,10 +36,11 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.cpp">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="119">
-              <caret line="1131" column="2" lean-forward="true" selection-start-line="1131" selection-start-column="2" selection-end-line="1131" selection-end-column="27" />
+            <state relative-caret-position="4">
+              <caret line="829" column="46" selection-start-line="829" selection-start-column="46" selection-end-line="829" selection-end-column="46" />
               <folding>
-                <element signature="e#0#28#0" expanded="true" />
+                <element signature="e#34#62#0" expanded="true" />
+                <element signature="e#17318#17338#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -118,13 +118,18 @@
       <find>ll</find>
       <find>hull</find>
       <find>pdd</find>
-      <find>Point</find>
       <find>almost_equal</find>
+      <find>belongs</find>
+      <find>assert</find>
+      <find>double</find>
+      <find>/**</find>
+      <find>Point</find>
     </findStrings>
     <replaceStrings>
       <replace>double</replace>
       <replace>Point</replace>
       <replace>Vector2</replace>
+      <replace>long double</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
@@ -145,10 +150,10 @@
     </option>
   </component>
   <component name="OCFindUsagesOptions" text="true" ivars="false" properties="true" derivedClasses="false" />
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-12" />
-    <option name="width" value="987" />
-    <option name="height" value="1044" />
+  <component name="ProjectFrameBounds" extendedState="7">
+    <option name="x" value="-11" />
+    <option name="width" value="980" />
+    <option name="height" value="1031" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -241,22 +246,23 @@
       <workItem from="1576737111602" duration="4797000" />
       <workItem from="1577319838969" duration="5386000" />
       <workItem from="1577328611855" duration="5593000" />
-      <workItem from="1577370388401" duration="5008000" />
+      <workItem from="1577370388401" duration="15742000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="54936000" />
+    <option name="totallyTimeSpent" value="65670000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1295" height="695" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" weight="0.24960254" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.3285968" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.26465365" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.8348135" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.44404975" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
@@ -272,15 +278,6 @@
     </layout>
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
-          <url>file://$PROJECT_DIR$/main.cpp</url>
-          <line>753</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="CMakeRunConfiguration">
         <watch expression="now" />
@@ -380,10 +377,11 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.cpp">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="119">
-          <caret line="1131" column="2" lean-forward="true" selection-start-line="1131" selection-start-column="2" selection-end-line="1131" selection-end-column="27" />
+        <state relative-caret-position="4">
+          <caret line="829" column="46" selection-start-line="829" selection-start-column="46" selection-end-line="829" selection-end-column="46" />
           <folding>
-            <element signature="e#0#28#0" expanded="true" />
+            <element signature="e#34#62#0" expanded="true" />
+            <element signature="e#17318#17338#0" expanded="true" />
           </folding>
         </state>
       </provider>

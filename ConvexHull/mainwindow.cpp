@@ -10,7 +10,7 @@
 #include <QMessageBox>
 
 #include "triangulation.h"
-
+//#include "boost/thread/thread.hpp"
 #include "boost/polygon/voronoi.hpp"
 using boost::polygon::voronoi_builder;
 using boost::polygon::voronoi_diagram;
@@ -19,7 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
+
     ui->setupUi(this);
+    //boost::thread_group tg;
     setWindowTitle("Convex Hull");
     qRegisterMetaType<vector_of_points>("vector_of_points");
     qRegisterMetaType<size_t>("size_t");

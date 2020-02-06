@@ -676,7 +676,7 @@ bool is_left(const pdd &p1, const pdd &p2, const pdd &q)
 bool belongs(const pdd &ebeg, const pdd &eend, const pdd &q)
 {
     long double rot = cross(ebeg, eend, q);
-    long double eps = 1e-4;
+    long double eps = 1e-7;
     //long double eps = numeric_limits<long double>::epsilon();
     //if (rot <= eps && rot >= -eps)
     {
@@ -761,9 +761,9 @@ int main()
     int n;
     int MAXX, MAXY, deltaX, deltaY;
     //cin >> MAXX >> MAXY >> n;
-    n = 10000;
-    MAXX = 10000;
-    MAXY = 10000;
+    n = 1000;
+    MAXX = 100000;
+    MAXY = 100000;
     vector_of_points input;
     std::default_random_engine eng(std::random_device{}());
     std::uniform_real_distribution<long double> dist_w(0, MAXX);

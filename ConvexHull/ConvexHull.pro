@@ -20,7 +20,7 @@ TEMPLATE = app
 
 #LIBS += -L$${BOOST_ROOT}\lib
 ##LIBS += -lboost_filesystem
-##LIBS += -lboost_thread
+#LIBS += -lboost_thread
 ##LIBS += -lboost_serialization
 #LIBS += -lboost_regex
 #LIBS += -lboost_date_time
@@ -35,6 +35,8 @@ win32-g++ {
 } else:win32-msvc* {
     INCLUDEPATH += C:/boost/boost_msvc/include/boost-1_72
 }
+
+#LIBS += -lboost_thread
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which has been marked as deprecated (the exact warnings
